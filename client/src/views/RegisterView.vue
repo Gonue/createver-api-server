@@ -1,59 +1,48 @@
 <template>
-	<div>
-
-		<body>
-			<div class="container-fluid">
-				<div class="row main-content bg-success text-center">
-					<div class="col-md-4 text-center company__info">
-						<span class="company__logo">
-							<h2><span class="fa fa-android"></span></h2>
-						</span>
-						<h4 class="company_title">Your Company Logo</h4>
-					</div>
-					<div class="col-md-8 col-xs-12 col-sm-12 login_form ">
-						<div class="container-fluid">
-							<div class="row">
-								<h2>Register</h2>
-							</div>
-							<div class="row">
-								<form @submit.prevent="onSubmit" class="form-group">
-									<div class="row">
-										<input v-model="nickName" type="text" name="nickName" id="nickName"
-											class="form__input" placeholder="닉네임">
-											<p v-if="!nickName" class="warning-text">닉네임을 입력해주세요.</p>
-									</div>
-									<div class="row">
-										<input v-model="email" type="text" name="email" id="email" class="form__input"
-											placeholder="이메일">
-											<p v-if="!email" class="warning-text">이메일을 입력해주세요.</p>
-											<p v-if="email && !isEmailValid" class="warning-text">유효한 이메일 형식이 아닙니다.</p>
-
-									</div>
-									<div class="row">
-										<input v-model="password" type="password" name="password" id="password"
-											class="form__input" placeholder="비밀번호">
-											<p v-if="password.length < 4 || password.length > 12" class="warning-text">비밀번호는 4~12자 구성이어야 합니다.</p>
-
-									</div>
-									<div class="row">
-										<input v-model="checkPassword" type="password" name="checkPassword"
-											id="checkPassword" class="form__input" placeholder="비밀번호 확인">
-											<p v-if="password !== checkPassword" class="warning-text">비밀번호가 일치하지 않습니다.</p>
-
-									</div>
-									<div class="col">
-										<input type="button" value="Submit" @click="onSubmit" class="btn">
-									</div>
-								</form>
-							</div>
-							<div class="row">
-								<p>이미 아이디가 있으신가요? <a href="/login"> 로그인 </a></p>
-							</div>
-						</div>
-					</div>
-				</div>
+	<div class="container-fluid">
+		<div class="d-flex flex-column align-items-center justify-content-center">
+			<div class="d-flex flex-column align-items-center justify-content-center">
+				<h1 class="fw-bold mt-5">Create your account</h1>
 			</div>
-		</body>
+			<div class="d-flex flex-column mt-5">
+				<div class="d-flex flex-column align-items-center justify-content-center">
+					<button class="btn d-flex align-items-center justify-content-center" style="background-color: rgb(184, 196, 196);">
+						<img src="https://github.com/Gonue/mine/assets/109960034/a4be770d-aeb3-4b83-a515-54eeeefae07c" alt="Google logo"
+							height="24" width="24" class="me-3">
+						<span class="fw-bold ho">Continue with Google</span>
+					</button>
+				</div>
+				<div class="d-flex align-items-center justify-content-between mt-4">
+					<hr class="flex-grow-1">
+					<span class="me-3 ms-3">Or</span>
+					<hr class="flex-grow-1">
+				</div>
+				<form @submit.prevent="onSubmit" id="login-form" class="d-flex flex-column align-items-center mt-5">
+					<div class="d-flex flex-column mb-4">
+						<input v-model="email" type="email" class="ar form-control" placeholder="Email address" required>
+						<p v-if="!email" class="warning-text">* Required value</p>
+						<p v-if="email && !isEmailValid" class="warning-text">This is not a valid email format.</p>
+
+						<input v-model="nickName" type="nickName" class="ar form-control mt-3" placeholder="NickName" required>
+						<p v-if="!nickName" class="warning-text">* Required value</p>
+						
+						<input v-model="password" type="password" class="ar form-control mt-3" placeholder="Password" required>
+						<p v-if="password.length < 4 || password.length > 12" class="warning-text">* Must consist of 4 to 12 characters</p>
+						
+						<input v-model="checkPassword" type="password" class="ar form-control mt-3" placeholder="Check Password" required>
+						<p v-if="password !== checkPassword" class="warning-text">* Passwords do not match</p>
+						
+					</div>
+					<button type="submit" class="fw-bold  text-white btn d-flex align-items-center justify-content-center" style="background-color:rgb(82, 79, 87)">
+						Continue
+					</button>
+					<a href="/login" class="mt-4">
+						Already have an account?
+						<span class="fw-bold text-white ms-2">Log in</span>
+					</a>
+				</form>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -104,107 +93,57 @@ export default {
 		}
 	}
 }
-
 </script>
-  
+
+
 <style scoped>
 
-.warning-text {
-	color: #d11801;
+.container-fluid {
+	background-color: #141827;
+	color: white;
+	min-height: 100vh;
+	padding: 0;
 }
 
-.main-content {
-	width: 50%;
-	border-radius: 20px;
-	box-shadow: 0 5px 5px rgba(0, 0, 0, .4);
-	margin: 5em auto;
-	display: flex;
+.ar {
+	width: 350px !important;
+	height: 50px !important;
+	box-sizing: border-box;
+	color: white !important;
+	background-color: #141827 !important;
+	/* 배경색 */
+
 }
 
-.company__info {
-	background-color: #008080;
-	border-top-left-radius: 20px;
-	border-bottom-left-radius: 20px;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	color: #fff;
+.ar::placeholder {
+	/* Chrome, Firefox, Opera, Safari 10.1+ */
+	color: white !important;
+	opacity: 1;
+	/* Firefox */
 }
 
-.fa-android {
-	font-size: 3em;
-}
-
-@media screen and (max-width: 640px) {
-	.main-content {
-		width: 80%;
-	}
-
-	.company__info {
-		display: none;
-	}
-
-	.login_form {
-		border-top-left-radius: 20px;
-		border-bottom-left-radius: 20px;
-	}
-}
-
-@media screen and (min-width: 642px) and (max-width:800px) {
-	.main-content {
-		width: 70%;
-	}
-}
-
-.row>h2 {
-	color: #008080;
-}
-
-.login_form {
-	background-color: #fff;
-	border-top-right-radius: 20px;
-	border-bottom-right-radius: 20px;
-	border-top: 1px solid #ccc;
-	border-right: 1px solid #ccc;
-}
-
-form {
-	padding: 0 2em;
-}
-
-.form__input {
-	width: 100%;
-	border: 0px solid transparent;
-	border-radius: 0;
-	border-bottom: 1px solid #aaa;
-	padding: 1em .5em .5em;
-	padding-left: 2em;
-	outline: none;
-	margin: 1.5em auto;
-	transition: all .5s ease;
-}
-
-.form__input:focus {
-	border-bottom-color: #008080;
-	box-shadow: 0 0 5px rgba(0, 80, 80, .4);
-	border-radius: 4px;
+h1{
+	font-family: 'Courier New', Courier, monospace;
 }
 
 .btn {
-	transition: all .5s ease;
-	width: 70%;
-	border-radius: 30px;
-	color: #008080;
-	font-weight: 600;
-	background-color: #fff;
-	border: 1px solid #008080;
-	margin-top: 1.5em;
-	margin-bottom: 1em;
+	width: 350px;
+	height: 50px;
+}
+.btn:hover {
+    color: black !important;
 }
 
-.btn:hover,
-.btn:focus {
-	background-color: #008080;
-	color: #fff;
+.ho:hover{
+	color: white !important;
+}
+
+a {
+	color: rgb(111, 120, 121) !important;
+	text-decoration: none !important;
+}
+
+.warning-text {
+	color: #827776;
 }
 </style>

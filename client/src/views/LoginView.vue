@@ -1,44 +1,41 @@
 <template>
-	<div>
-
-		<body>
-			<div class="container-fluid">
-				<div class="row main-content bg-success text-center">
-					<div class="col-md-4 text-center company__info">
-						<span class="company__logo">
-							<h2><span class="fa fa-android"></span></h2>
-						</span>
-						<h4 class="company_title">Your Company Logo</h4>
-					</div>
-					<div class="col-md-8 col-xs-12 col-sm-12 login_form ">
-						<div class="container-fluid">
-							<div class="row">
-								<h2>Log In</h2>
-							</div>
-							<div class="row">
-								<form @submit.prevent="onSubmit" class="form-group">
-									<div class="row">
-										<input v-model="email" type="text" name="email" id="email" class="form__input"
-											placeholder="Email">
-									</div>
-									<div class="row">
-										<!-- <span class="fa fa-lock"></span> -->
-										<input v-model="password" type="password" name="password" id="password"
-											class="form__input" placeholder="Password">
-									</div>
-									<div class="col">
-										<input type="button" value="Submit" @click="onSubmit" class="btn">
-									</div>
-								</form>
-							</div>
-							<div class="row">
-								<p>Don't have an account? <a href="/register">Register Here</a></p>
-							</div>
+	<div class="container-fluid">
+		<div class="d-flex flex-column align-items-center justify-content-center">
+			<div class="d-flex flex-column align-items-center justify-content-center">
+				<h1 class="fw-bold mt-5">Welcome back</h1>
+			</div>
+			<div class="d-flex flex-column mt-5">
+				<div class="d-flex flex-column align-items-center justify-content-center">
+					<button class="btn d-flex align-items-center justify-content-center" style="background-color: rgb(184, 196, 196);">
+						<img src="https://github.com/Gonue/mine/assets/109960034/a4be770d-aeb3-4b83-a515-54eeeefae07c" alt="Google logo"
+							height="24" width="24" class="me-3">
+						<span class="fw-bold ho">Continue with Google</span>
+					</button>
+				</div>
+				<div class="d-flex align-items-center justify-content-between mt-4">
+					<hr class="flex-grow-1">
+					<span class="me-3 ms-3">Or</span>
+					<hr class="flex-grow-1">
+				</div>
+				<form @submit.prevent="onSubmit" id="login-form" class="d-flex flex-column align-items-center mt-5">
+					<div class="d-flex flex-column mb-4">
+						<input v-model="email" type="email" class="ar form-control" placeholder="Email address" required>
+						<div class="d-flex flex-column align-items-end mt-3">
+							<input v-model="password" type="password" class="ar form-control" placeholder="Password"
+								required>
+							<a href="/accountRecovery" class="mt-2">Forgot password</a>
 						</div>
 					</div>
-				</div>
+					<button type="submit" class="fw-bold  text-white btn d-flex align-items-center justify-content-center" style="background-color:rgb(82, 79, 87)">
+						Log in
+					</button>
+					<a href="/register" class="mt-4">
+						Don't have an account?
+						<span class="fw-bold text-white">Sign up for free</span>
+					</a>
+				</form>
 			</div>
-		</body>
+		</div>
 	</div>
 </template>
 
@@ -53,14 +50,11 @@ export default {
 	},
 	methods: {
 		async onSubmit() {
-			console.log("onSubmit called");  // 여기에 첫 번째 로그
 			try {
 				await this.$store.dispatch('login', {
 					email: this.email,
 					password: this.password
 				})
-			console.log("onSubmit sus");  // 여기에 첫 번째 로그
-				
 
 			} catch (error) {
 				console.error('Login failed:', error);
@@ -69,100 +63,50 @@ export default {
 	}
 }
 </script>
-  
+
+
 <style scoped>
-.main-content {
-	width: 50%;
-	border-radius: 20px;
-	box-shadow: 0 5px 5px rgba(0, 0, 0, .4);
-	margin: 5em auto;
-	display: flex;
+
+.container-fluid {
+	background-color: #141827;
+	color: white;
+	min-height: 100vh;
+	padding: 0;
 }
 
-.company__info {
-	background-color: #008080;
-	border-top-left-radius: 20px;
-	border-bottom-left-radius: 20px;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	color: #fff;
+.ar {
+	width: 350px !important;
+	height: 50px !important;
+	box-sizing: border-box;
+	color: white !important;
+	background-color: #141827 !important;
+	/* 배경색 */
+
 }
 
-.fa-android {
-	font-size: 3em;
+.ar::placeholder {
+	color: white !important;
+	opacity: 1;
 }
 
-@media screen and (max-width: 640px) {
-	.main-content {
-		width: 80%;
-	}
-
-	.company__info {
-		display: none;
-	}
-
-	.login_form {
-		border-top-left-radius: 20px;
-		border-bottom-left-radius: 20px;
-	}
-}
-
-@media screen and (min-width: 642px) and (max-width:800px) {
-	.main-content {
-		width: 70%;
-	}
-}
-
-.row>h2 {
-	color: #008080;
-}
-
-.login_form {
-	background-color: #fff;
-	border-top-right-radius: 20px;
-	border-bottom-right-radius: 20px;
-	border-top: 1px solid #ccc;
-	border-right: 1px solid #ccc;
-}
-
-form {
-	padding: 0 2em;
-}
-
-.form__input {
-	width: 100%;
-	border: 0px solid transparent;
-	border-radius: 0;
-	border-bottom: 1px solid #aaa;
-	padding: 1em .5em .5em;
-	padding-left: 2em;
-	outline: none;
-	margin: 1.5em auto;
-	transition: all .5s ease;
-}
-
-.form__input:focus {
-	border-bottom-color: #008080;
-	box-shadow: 0 0 5px rgba(0, 80, 80, .4);
-	border-radius: 4px;
+h1{
+	font-family: 'Courier New', Courier, monospace;
 }
 
 .btn {
-	transition: all .5s ease;
-	width: 70%;
-	border-radius: 30px;
-	color: #008080;
-	font-weight: 600;
-	background-color: #fff;
-	border: 1px solid #008080;
-	margin-top: 1.5em;
-	margin-bottom: 1em;
+	width: 350px;
+	height: 50px;
+}
+.btn:hover {
+    color: black !important;
 }
 
-.btn:hover,
-.btn:focus {
-	background-color: #008080;
-	color: #fff;
+.ho:hover{
+	color: white !important;
+}
+
+a {
+	color: rgb(111, 120, 121) !important;
+	text-decoration: none !important;
 }
 </style>

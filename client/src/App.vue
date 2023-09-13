@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Header v-if="showHeader"/>
+    <headerView/>
     <div id="contnet" class="content">
       <router-view></router-view>
     </div>
@@ -8,23 +8,17 @@
 </template>
 
 <script>
-import Header from './components/layout/Header.vue'
+import headerView from './components/layout/Header.vue'
 
 export default {
   name: 'App',
   components: {
-    Header,
+    headerView,
   },
   created(){
     this.$store.commit('initializeStore');
   },
-  computed: {
-    showHeader(){
-      const excludePaths = ['/login', '/register'];
-      return !excludePaths.includes(this.$route.path);
-    }
-  }
-
+  
 }
 </script>
 
