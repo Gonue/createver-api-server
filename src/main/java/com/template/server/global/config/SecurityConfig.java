@@ -1,11 +1,9 @@
 package com.template.server.global.config;
 
+import com.template.server.domain.member.service.MemberService;
 import com.template.server.global.auth.filter.JwtAuthenticationFilter;
 import com.template.server.global.auth.filter.JwtVerificationFilter;
-import com.template.server.global.auth.handler.MemberAccessDeniedHandler;
-import com.template.server.global.auth.handler.MemberAuthenticationEntryPoint;
-import com.template.server.global.auth.handler.MemberAuthenticationFailureHandler;
-import com.template.server.global.auth.handler.MemberAuthenticationSuccessHandler;
+import com.template.server.global.auth.handler.*;
 import com.template.server.global.auth.jwt.JwtTokenizer;
 import com.template.server.global.auth.utils.CustomAuthorityUtils;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -25,6 +24,7 @@ public class SecurityConfig {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils authorityUtils;
     private final CorsConfigurationSource corsConfigurationSource;
+    private final MemberService memberService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -45,10 +45,14 @@ public class SecurityConfig {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeRequests(authorize -> authorize
+                        .antMatchers("/oauth2/authorization/**").permitAll()
+                        .antMatchers("/login/oauth2/code/*").permitAll()
                         .antMatchers("/api/v1/member/join", "/api/v1/member/login").permitAll()
                         .antMatchers("/api/v1/member/**").hasAnyRole("USER","ADMIN")
                         .anyRequest().permitAll()
-                );
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(new OAuth2MemberSuccessHandler(jwtTokenizer, authorityUtils, memberService)));
         return http.build();
     }
 
@@ -67,7 +71,7 @@ public class SecurityConfig {
 
             builder
                     .addFilter(jwtAuthenticationFilter)
-                    .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
+                    .addFilterAfter(jwtVerificationFilter, OAuth2LoginAuthenticationFilter.class);
         }
     }
 }
