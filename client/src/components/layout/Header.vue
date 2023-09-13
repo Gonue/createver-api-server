@@ -13,8 +13,8 @@
                                 <ul id="con" class="nav col-12 col-lg-auto ms-lg-auto justify-content-lg-end mb-2 mb-md-0">
                                     <li><a href="/" class="nav-link text-white">Home</a></li>
                                     <li><a href="/image" class="nav-link text-white">Image</a></li>
-                                    <li><a href="/" class="nav-link text-white">Home</a></li>
-                                    <li><a href="/image" class="nav-link text-white">Image</a></li>
+                                    <li><a href="/community" class="nav-link text-white">Community</a></li>
+                                    <li><a href="/community" class="nav-link text-white">Community</a></li>
                                     <li v-if="!token">
                                         <a class="custom-btn nav-link text-white fw-bold" href="/login">Log-In</a>
                                     </li>
@@ -57,7 +57,7 @@ export default {
             return this.$store.state.nickName;
         },
         profileImage() {
-            return this.$store.state.profileImage || 'https://github.com/Gonue/mine/assets/109960034/d75f1bc8-cf6b-4aee-8b7a-262d2b22e21f';
+            return this.$store.state.profileImage;
         },
         token() {
             return this.$store.state.token;
