@@ -7,7 +7,10 @@ public enum ExceptionCode {
 
     DUPLICATED_EMAIL(409, "이메일 중복"),
     MEMBER_NOT_FOUND(404,"멤버를 찾을 수 없음"),
-    INTERNAL_SERVER_ERROR(500,"내부 서버 오류");
+    INTERNAL_SERVER_ERROR(500,"내부 서버 오류"),
+    ARTICLE_NOT_FOUND(404,"게시물을 찾을 수 없음"),
+    INVALID_PERMISSION(401, "권한 없음"),
+    ;
 
     private int status;
     private String message;
