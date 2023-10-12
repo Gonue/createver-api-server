@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -14,21 +15,36 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class S3UploadService {
 
-        @Value("${cloud.aws.s3.bucket}")
-        private String bucket;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
-        private final AmazonS3 amazonS3;
+    private final AmazonS3 amazonS3;
 
-        public String upload(MultipartFile multipartFile) throws IOException {
-            String s3FileName = UUID.randomUUID() + "_" + multipartFile.getOriginalFilename();
+    public String upload(MultipartFile multipartFile) throws IOException {
+        String s3FileName = UUID.randomUUID() + "_" + multipartFile.getOriginalFilename();
 
-            ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentLength(multipartFile.getInputStream().available());
-            objectMetadata.setContentDisposition("inline"); // 이미지를 인라인으로 표시하도록 지시
-            objectMetadata.setContentType(multipartFile.getContentType()); // 이미지의 콘텐츠 타입 설정
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(multipartFile.getInputStream().available());
+        objectMetadata.setContentDisposition("inline"); // 이미지를 인라인으로 표시하도록 지시
+        objectMetadata.setContentType(multipartFile.getContentType()); // 이미지의 콘텐츠 타입 설정
 
-            amazonS3.putObject(bucket, s3FileName, multipartFile.getInputStream(), objectMetadata);
+        amazonS3.putObject(bucket, s3FileName, multipartFile.getInputStream(), objectMetadata);
 
-            return amazonS3.getUrl(bucket, s3FileName).toString();
+        return amazonS3.getUrl(bucket, s3FileName).toString();
+    }
+
+    public String upload(byte[] imageData, String contentType) {
+        String s3FileName = UUID.randomUUID().toString() + ".png";  // 파일명은 랜덤 UUID로 생성
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(imageData.length);
+        objectMetadata.setContentDisposition("inline");
+        objectMetadata.setContentType(contentType);
+
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(imageData);
+
+        amazonS3.putObject(bucket, s3FileName, byteArrayInputStream, objectMetadata);
+
+        return amazonS3.getUrl(bucket, s3FileName).toString();
     }
 }
