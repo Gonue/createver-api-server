@@ -12,4 +12,5 @@ import java.io.Serializable;
 public class PromptRequest implements Serializable {
 
     private String prompt;
+    private int option;
 }
