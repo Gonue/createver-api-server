@@ -24,24 +24,47 @@
                             </div>
                             <div class="offcanvas-body">
                                 <!-- 컨텐츠 -->
-                                <a href="/" class="nav-link text-white"><h2>Home</h2></a>
-                                <a href="/image" class="nav-link text-white"><h2>Image</h2></a>
-                                <a href="/community" class="nav-link text-white"><h2>Community</h2></a>
+                                <a href="/" class="nav-link text-white under-line">
+                                    <h2>Home</h2>
+                                </a>
+                                <a class="nav-link text-white under-line">
+                                    <h3>Image</h3>
+                                    <router-link to="/image/create" class="custom-link">create</router-link>
+                                    <br>
+                                    <router-link to="/image/search" class="custom-link">search</router-link>
+                                </a>
+                                <a href="/community" class="nav-link text-white under-line">
+                                    <h2>Community</h2>
+                                </a>
                             </div>
                         </div>
 
                         <!-- 로고 -->
                         <a href="/" id="logo"
                             class=" d-flex align-items-center justify-content-center mb-lg-0 link-body-emphasis text-decoration-none text-white fw-bold">
-                            <img src="https://github.com/Gonue/mine/assets/109960034/d75f1bc8-cf6b-4aee-8b7a-262d2b22e21f"
-                                width="32" height="32">Createver
+                            <img src="../../assets/mainlogo2.png" width="130" height="40">
                         </a>
 
 
                         <!-- 데스크톱 메뉴 -->
                         <ul id="con" class="nav d-none d-lg-flex ms-lg-auto mb-2 mb-md-0">
-                            <li><a href="/" class="nav-link text-white">Home</a></li>
-                            <li><a href="/image" class="nav-link text-white">Image</a></li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-white" id="navbarDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Image
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item text-white custom-dropdown-item"
+                                            href="/image/create">Create</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-white custom-dropdown-item"
+                                            href="/image/search">Search</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="/" class="nav-link text-white">Music</a></li>
+                            <li><a href="/" class="nav-link text-white">FAQ</a></li>
                             <li><a href="/community" class="nav-link text-white">Community</a></li>
                         </ul>
 
@@ -56,11 +79,12 @@
                                     <img :src="profileImage" alt="profile" width="32" height="32" class="rounded-circle">
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-dark text-small">
-                                    <li><a class="dropdown-item" href="/mypage">My Page</a></li>
+                                    <li><a class="dropdown-item custom-dropdown-item" href="/mypage">My Page</a></li>
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
-                                    <li><a class="dropdown-item" @click="logout" href="#">Sign out</a></li>
+                                    <li><a class="dropdown-item custom-dropdown-item" @click="logout" href="#">Sign out</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -139,7 +163,7 @@ body {
     width: 250px !important;
 }
 
-.offcanvas-body a {
+ .under-line {
     border-bottom: 1px solid #515b65;
     padding-bottom: 10px;
     margin-bottom: 10px;
@@ -147,5 +171,23 @@ body {
 
 .offcanvas-body a:last-child {
     border-bottom: none;
+}
+
+.nav-item.dropdown .dropdown-toggle::after {
+    display: none;
+}
+
+.custom-dropdown-item:focus,
+.custom-dropdown-item:hover {
+    background-color: #515b65;
+    color: white;
+}
+.custom-link {
+    color: white; /* 글자색을 하얀색으로 */
+    text-decoration: none; /* 밑줄 제거 */
+}
+
+.custom-link:hover, .custom-link:focus {
+    color: white; /* 마우스 호버나 포커스 시에도 하얀색 유지 */
 }
 </style>

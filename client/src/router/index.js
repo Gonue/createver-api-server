@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import ImageView from "../views/ImageView.vue";
+import ImageCreateView from "../views/ImageCreateView.vue";
+import ImageSearchView from "../views/ImageSearchView.vue";
 import LoginView from "../views/LoginView.vue";
 import RegisterView from "../views/RegisterView.vue"
 import CommunityList from "../views/CommunityList.vue"
@@ -19,9 +20,14 @@ const routes = [
     component: LoginView,
   },
   {
-    path: "/image",
-    name: "image",
-    component: ImageView,
+    path: "/image/create",
+    name: "imageCreate",
+    component: ImageCreateView,
+  },
+  {
+    path: "/image/search",
+    name: "imageSearch",
+    component: ImageSearchView,
   },
   {
     path: "/register",
@@ -38,9 +44,11 @@ const routes = [
     path: "/user-oauth",
     name: "user-oauth",
     component : UserOauth
-  }
-
-
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    redirect: "/"
+  },
 ];
 
 const router = createRouter({

@@ -6,10 +6,11 @@
         <div class="row justify-content-center align-items-center">
             <div class="col-10 col-md-8 col-lg-6 text-center">
 
-                <div class="input-group mb-3">
-                    <textarea class="form-control ar me-2" placeholder="What do you want to generate?"
-                        style="background-color: #3a3d47; color: #fff;" v-model="inputText"></textarea>
-                    <button class="btn btn-lg fw-bold" style="background-color: #4266db;" @click="drawImage">
+                <div class="d-flex align-items-center justify-content-center mb-3 gw">
+                    <textarea class="form-control ar" placeholder="What do you want to generate?"
+                        style="background-color: #3a3d47; color: #fff;" v-model="inputText"
+                        @keydown.enter.prevent="drawImage"></textarea>
+                    <button class="btn btn-lg fw-bold gw align-items-center" style="background-color: #4266db;" @click="drawImage">
                         <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                                 class="bi bi-brush" viewBox="0 0 16 16">
                                 <path
@@ -58,25 +59,25 @@
                         </div>
                     </div>
                 </transition>
-                <!-- <div v-if="isLoading || s3Url" class="image-box"> -->
-
-                <!-- <div v-if="isLoading" class="elapsed-time">{{ elapsedTime }}s</div> -->
-
-
 
                 <div class="col-lg-12 col-md-8 col-sm-12 mt-5">
-                    <div v-if="isLoading || s3Urls.length" class="image-box">
 
-                        <div class="loading-container">
-                            <div v-if="isLoading" class="elapsed-time">{{ displayTime }}</div>
+                    <div class="loading-container" v-if="isLoading">
+                        <!-- <div class="loading-container"> -->
+                        <div class="elapsed-time">{{ displayTime }}</div>
+                        <div class="loading-gif">
+                            <img src="../assets/loding.gif">
+                        </div>
+                    </div>
 
-                            <div v-if="isLoading" class="loading-gif">
-                                <img src="../assets/loding.gif">
-                            </div>
+                    <div v-if="isLoading || results.length" class="image-box">
+
+                        <div v-for="item in results" :key="item.galleryId">
+                            <img :src="item.s3Url" alt="Generated Image" @click="selectImage(item)" />
                         </div>
-                        <div class="row" v-for="url in s3Urls" :key="url">
-                            <img :src="url" alt="Generated Image" />
-                        </div>
+
+                        <ImageModal :selectedImageInfo="selectedImageInfo" @close="deselectImage" />
+
                     </div>
                 </div>
 
@@ -91,6 +92,8 @@
 import axios from 'axios';
 import ImageGalleryVue from '@/components/ImageGallery.vue';
 import ExplanationMainVue from '@/components/ExplanationMain.vue';
+import ImageModal from '@/components/ImageModal.vue';
+
 
 const server = axios.create({
     baseURL: process.env.SERVER_URL,
@@ -99,22 +102,20 @@ const server = axios.create({
 export default {
     components: {
         ImageGalleryVue,
-        ExplanationMainVue
+        ExplanationMainVue,
+        ImageModal
     },
     data() {
         return {
             selectedButton: 1, // 선택된 버튼의 ID를 저장, 초기 값은 1로 설정
             inputText: '',  // 사용자가 입력한 텍스트를 저장할 변수
-            s3Urls: [
-            require('@/assets/photo.jpeg'),
-            require('@/assets/photo.jpeg'),
-            require('@/assets/photo.jpeg'),
-            require('@/assets/photo.jpeg')
-        ],
+            results: [],  // API 응답 결과를 저장
+            selectedImageInfo: null,  // 선택한 이미지의 상세 정보
             isLoading: false,  // 로딩 상태를 관리
             elapsedTime: 0,    // 경과된 시간
             timer: null,        // 타이머 ID
             displayTime: '0.0s'
+
         };
     },
 
@@ -140,7 +141,7 @@ export default {
                 });
 
                 if (response.data.status === 200) {
-                    this.s3Urls = response.data.result.map(item => item.s3Url);
+                    this.results = response.data.result;
 
                 } else {
                     console.error('API 호출 실패:', response.data.message);
@@ -148,10 +149,18 @@ export default {
             } catch (error) {
                 console.error('API 호출 중 에러 발생:', error);
             }
-
             clearInterval(this.timer);
             this.isLoading = false;
+
+        },
+        selectImage(item) {
+            this.selectedImageInfo = item;  // 선택한 이미지의 상세 정보 설정
+
+        },
+        deselectImage() {
+            this.selectedImageInfo = null;
         }
+
 
     },
 };
@@ -224,38 +233,29 @@ export default {
     box-sizing: border-box;
     transition: all 0.3s ease;
     border: 2px solid transparent;
-    /* 추가된 부분 */
     border-radius: 10px;
     border: 3px solid transparent;
     position: relative;
 
 }
-
 /* 반응형: 화면 크기가 768px 미만일 때 */
 @media (max-width: 768px) {
     .custom-btn {
-        min-width: calc(50% - 20px);
-        /* 2x2 그리드로 버튼이 나열됨 */
+        min-width: calc(25% - 20px);
         max-width: calc(50% - 20px);
+
     }
-
-
-    .input-group textarea,
-    .input-group button {
+    
+    .gw {
         margin-top: 15px;
         flex: 1 0 100%;
-        /* 모바일 환경에서는 너비 100%로 설정 */
+        flex-direction: column;
+        width: 100%;
     }
-}
-
-.input-group>textarea.form-control.ar {
-    border-top-right-radius: 5px !important;
-    border-bottom-right-radius: 5px !important;
-}
-
-.input-group>.btn {
-    border-top-left-radius: 5px !important;
-    border-bottom-left-radius: 5px !important;
+    textarea.form-control {
+        width: 100% !important; /* 너비를 100%로 조절 */
+        margin: 0 !important;
+    }
 }
 
 .button-container {
@@ -272,22 +272,51 @@ export default {
     color: #8F94A3;
     text-decoration: none;
     font-size: 14px;
-    /* 추가된 부분 */
 }
 
 textarea.form-control {
-    resize: none;
-    width: 550px;
+    border: 1px solid white !important;
+    width: 60%;
+    padding: none;
     height: 50px;
+    border: none;
+    resize: none;
+    margin-right: 10px;
 
 }
-
 .ar::placeholder {
     color: white !important;
     opacity: 1;
     font-family: 'Courier New', Courier, monospace;
 }
 
+.image-box {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 25px;
+    justify-content: center;
+    width: 100%;
+    align-items: flex-start;
+    height: auto;
+}
+
+
+.image-box img {
+    flex: 1;
+    width: 350px;
+    height: auto;
+    margin: 5px;
+    border-radius: 15px;
+    max-width: 100%;
+    max-height: 100%;
+    overflow: hidden;    
+    transition: all 0.3s ease-in-out;
+}
+
+.image-box img:hover {
+    transform: scale(0.95);
+}
 
 .fade-enter-active,
 .fade-leave-active {
@@ -304,28 +333,18 @@ textarea.form-control {
     opacity: 1;
 }
 
-.image-box {
-    display: flex;
-    flex-wrap: wrap;
+.loading-container {
+    width: 250px;
+    height: 250px;
     position: relative;
-    height: 500px;  /* 높이를 명시적으로 설정 */
-    background-color: black;
-}
-
-/* 각 이미지 스타일 */
-
-.image-box img {
-    flex-shrink: 1;
-    width: calc(50% - 10px);
-    height: calc(50% - 10px);
-    margin: 5px;
+    margin: auto;
 }
 
 .elapsed-time {
-    position: absolute;
     top: 0;
-    right: 0;
-    font-size: 22px;
+    left: 100%;
+    position: absolute;
+    font-size: 15px;
     font-weight: bold;
 }
 
@@ -334,5 +353,10 @@ textarea.form-control {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.loading-gif img {
+    width: 50%;
+    height: auto;
 }
 </style>
