@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/image/create")
@@ -19,9 +21,9 @@ public class ImageGenerationController {
     private final ImageGenerationService imageGenerationService;
 
     @PostMapping
-    public Response<CustomGenerationResponse> InputRequest(@RequestBody PromptRequest request){
-        CustomGenerationResponse customGenerationResponse = imageGenerationService.makeImages(request);
-        return Response.success(200,customGenerationResponse);
+    public Response<List<CustomGenerationResponse>> InputRequest(@RequestBody PromptRequest request){
+        List<CustomGenerationResponse> customGenerationResponses = imageGenerationService.makeImages(request);
+        return Response.success(200, customGenerationResponses);
     }
 }
 

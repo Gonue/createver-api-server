@@ -1,13 +1,18 @@
 package com.template.server.domain.image.dto.response;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CustomGenerationResponse {
 
+    private Long galleryId;
+    private String prompt;
     private String s3Url;
+    private int option;
+    private LocalDateTime createdAt;
 }
