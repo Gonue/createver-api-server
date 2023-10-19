@@ -5,6 +5,7 @@ import com.template.server.domain.member.service.MemberService;
 import com.template.server.global.auth.jwt.JwtTokenizer;
 import com.template.server.global.auth.utils.CustomAuthorityUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -26,6 +27,13 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+
+    @Value("${custom.oauth.redirect.scheme}")
+    private String scheme;
+
+    @Value("${custom.oauth.redirect.host}")
+    private String host;
+
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils authorityUtils;
     private final MemberService memberService;
@@ -82,9 +90,8 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
         return UriComponentsBuilder
                 .newInstance()
-                .scheme("http")
-                .host("localhost")
-                .port("80")
+                .scheme("scheme")
+                .host("host")
                 .path("/user-oauth")
                 .queryParams(queryParams)
                 .build()

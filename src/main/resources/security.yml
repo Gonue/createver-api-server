@@ -17,3 +17,9 @@ jwt:
   key: ${JWT_SECRET_KEY}
   access-token-expiration-minutes: 720
   refresh-token-expiration-minutes: 1440
+
+custom:
+  oauth:
+    redirect:
+      host: createver.site
+      scheme: https
