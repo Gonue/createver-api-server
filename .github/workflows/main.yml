@@ -19,10 +19,6 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-      # create keystore     
-      - name: Decode and Move keystore
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > src/main/resources/new-keystore.p12
 
       # gradle build
       - name: Build with Gradle
