@@ -90,8 +90,8 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
         return UriComponentsBuilder
                 .newInstance()
-                .scheme("scheme")
-                .host("host")
+                .scheme(scheme)
+                .host(host)
                 .path("/user-oauth")
                 .queryParams(queryParams)
                 .build()
