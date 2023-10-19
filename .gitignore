@@ -525,4 +525,6 @@ gradle-app.setting
 # Java heap dump
 *.hprof
 
+new-keystore.p12
+
 # End of https://www.toptal.com/developers/gitignore/api/intellij,intellij+all,intellij+iml,windows,macos,visualstudiocode,java,gradle,groovy,node,vuejs

@@ -13,7 +13,7 @@ spring:
     log-request-details: true
   jpa:
     defer-datasource-initialization: true
-    hibernate.ddl-auto: create
+    hibernate.ddl-auto: update
     open-in-view: false
     show-sql: true
     properties:
@@ -35,7 +35,12 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 
 server:
-  port: 80
+  ssl:
+    key-store: classpath:new-keystore.p12
+    key-store-type: PKCS12
+    key-store-password: ${KEY_STORE_PASSWORD}
+    key-alias: spring
+  port: 8443
 
 cloud:
   aws:
