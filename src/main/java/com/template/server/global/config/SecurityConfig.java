@@ -45,6 +45,7 @@ public class SecurityConfig {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeRequests(authorize -> authorize
+                        .antMatchers("/", "/index.html", "/static/**", "/image/**").permitAll()
                         .antMatchers("/oauth2/authorization/**").permitAll()
                         .antMatchers("/login/oauth2/code/*").permitAll()
                         .antMatchers("/api/v1/member/join", "/api/v1/member/login").permitAll()
