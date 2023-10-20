@@ -25,11 +25,15 @@
 						<div class="d-flex flex-column align-items-end mt-3">
 							<input v-model="password" type="password" class="ar form-control" placeholder="Password"
 								required>
-							<a href="/accountRecovery" class="mt-2">Forgot password</a>
+							<div class="d-flex align-items-center justify-content-between mt-2 w-100">
+								<span v-if="loginFailed" class="text-danger">Invalid input</span>
+								<span v-else class="text-transparent"></span>
+								<a href="/accountRecovery">Forgot password</a>
+							</div>
 						</div>
 					</div>
-					<button type="submit" class="fw-bold  text-white btn d-flex align-items-center justify-content-center"
-						style="background-color:rgb(82, 79, 87)">
+					<button type="submit" class="fw-bold text-white btn d-flex align-items-center justify-content-center"
+						style="background-color: rgb(82, 79, 87)">
 						Log in
 					</button>
 					<a href="/register" class="mt-4">
@@ -42,13 +46,15 @@
 	</div>
 </template>
 
+
 <script>
 
 export default {
 	data() {
 		return {
 			email: '',
-			password: ''
+			password: '',
+			loginFailed: false
 		};
 	},
 	methods: {
@@ -57,10 +63,14 @@ export default {
 				await this.$store.dispatch('login', {
 					email: this.email,
 					password: this.password
-				})
+				});
+				// 로그인 성공 시 에러 메시지 초기화
+				this.loginFailed = false;
 
 			} catch (error) {
 				console.error('Login failed:', error);
+				// 로그인 실패 시 에러 메시지 설정
+				this.loginFailed = true;
 			}
 		}
 	}
@@ -111,4 +121,5 @@ h1 {
 a {
 	color: rgb(111, 120, 121) !important;
 	text-decoration: none !important;
-}</style>
+}
+</style>

@@ -10,8 +10,11 @@
         </div>
         <div class="image-gallery">
             <div class="image-container" v-for="image in sortedImages" :key="image.galleryId">
-                <img :src="image.storageUrl" :alt="'Image ' + image.galleryId" @click="selectImage(image)">
 
+                <div class="image-box">
+                    <img :src="image.storageUrl" :alt="'Image ' + image.galleryId" @click="selectImage(image)">
+                </div>
+                <div class="text-box">
                 <a v-if="selectedTab === 'Inspirations'">
                     {{ truncateString(image.prompt, 18) }}
                 </a>
@@ -27,6 +30,7 @@
                         </svg> {{ timeSince(image.createdAt) }}
                     </a>
                 </a>
+            </div>
             </div>
         </div>
         <ImageModal :selectedImageInfo="selectedImageInfo" @close="deselectImage" />
@@ -57,16 +61,16 @@ export default {
     },
     computed: {
         sortedImages() {
-        let sorted = [...this.images];
-        
-        if (this.selectedTab === 'Resent') {
-            sorted.sort((a, b) => b.galleryId - a.galleryId);
-        } else if (this.selectedTab === 'Inspirations') {
-            sorted = this.shuffleArray(sorted);
-        }
+            let sorted = [...this.images];
 
-        return sorted;
-    }
+            if (this.selectedTab === 'Resent') {
+                sorted.sort((a, b) => b.galleryId - a.galleryId);
+            } else if (this.selectedTab === 'Inspirations') {
+                sorted = this.shuffleArray(sorted);
+            }
+
+            return sorted;
+        }
     },
     async mounted() {
         await this.loadImages();
@@ -133,12 +137,12 @@ export default {
         },
 
         shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-    },
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        },
 
     }
 }
@@ -166,6 +170,7 @@ export default {
     transform: scale(0.95);
     transition: transform 0.3s ease-in-out;
 }
+
 .header {
     display: flex;
     justify-content: center;
@@ -204,5 +209,9 @@ a {
 
 .time svg {
     margin-right: 4px;
+}
+
+.image-box, .text-box {
+    width: 100%;
 }
 </style>

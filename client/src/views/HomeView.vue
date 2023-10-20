@@ -2,88 +2,88 @@
   <div class="container-fluid">
 
 
-      <ExplanationMainVue></ExplanationMainVue>
-      <div class="row justify-content-center align-items-center">
-          <div class="col-10 col-md-8 col-lg-6 text-center">
+    <ExplanationMainVue></ExplanationMainVue>
+    <div class="row justify-content-center align-items-center">
+      <div class="col-10 col-md-8 col-lg-6 text-center justify-content-center">
+        <div class="row justify-content-center">
+          <div class="col-8 d-flex align-items-center justify-content-center gw">
+            <input class="form-control col-8" placeholder="What do you want to generate?"
+              style="background-color: #3a3d47; color: #fff;" v-model="inputText" @keydown.enter.prevent="drawImage">
+            <button class="col-4 btn btn-success btn fw-bold gw align-items-center" @click="drawImage">
+              <span>Draw</span>
+            </button>
 
-              <div class="d-flex align-items-center justify-content-center mb-3 gw">
-                  <textarea class="form-control ar" placeholder="What do you want to generate?"
-                      style="background-color: #3a3d47; color: #fff;" v-model="inputText"
-                      @keydown.enter.prevent="drawImage"></textarea>
-                  <button class="btn btn-lg fw-bold gw align-items-center" style="background-color: #4266db;" @click="drawImage">
-                      <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                              class="bi bi-brush" viewBox="0 0 16 16">
-                              <path
-                                  d="M15.825.12a.5.5 0 0 1 .132.584c-1.53 3.43-4.743 8.17-7.095 10.64a6.067 6.067 0 0 1-2.373 1.534c-.018.227-.06.538-.16.868-.201.659-.667 1.479-1.708 1.74a8.118 8.118 0 0 1-3.078.132 3.659 3.659 0 0 1-.562-.135 1.382 1.382 0 0 1-.466-.247.714.714 0 0 1-.204-.288.622.622 0 0 1 .004-.443c.095-.245.316-.38.461-.452.394-.197.625-.453.867-.826.095-.144.184-.297.287-.472l.117-.198c.151-.255.326-.54.546-.848.528-.739 1.201-.925 1.746-.896.126.007.243.025.348.048.062-.172.142-.38.238-.608.261-.619.658-1.419 1.187-2.069 2.176-2.67 6.18-6.206 9.117-8.104a.5.5 0 0 1 .596.04zM4.705 11.912a1.23 1.23 0 0 0-.419-.1c-.246-.013-.573.05-.879.479-.197.275-.355.532-.5.777l-.105.177c-.106.181-.213.362-.32.528a3.39 3.39 0 0 1-.76.861c.69.112 1.736.111 2.657-.12.559-.139.843-.569.993-1.06a3.122 3.122 0 0 0 .126-.75l-.793-.792zm1.44.026c.12-.04.277-.1.458-.183a5.068 5.068 0 0 0 1.535-1.1c1.9-1.996 4.412-5.57 6.052-8.631-2.59 1.927-5.566 4.66-7.302 6.792-.442.543-.795 1.243-1.042 1.826-.121.288-.214.54-.275.72v.001l.575.575zm-4.973 3.04.007-.005a.031.031 0 0 1-.007.004zm3.582-3.043.002.001h-.002z" />
-                          </svg> Draw</span>
-                  </button>
-              </div>
-              <transition name="fade" mode="out-in">
-
-                  <div v-if="inputText">
-                      <div class="button-container justify-content-center">
-
-                          <button type="button" class="custom-btn btn-space"
-                              :class="{ 'selected-btn': selectedButton === 1 }" @click="selectButton(1)">
-                              <div class="inner-container">
-                                  <img src="../assets/art.jpeg" alt="Style example" class="rounded-md custom-img">
-                                  <a :class="{ 'selected-text': selectedButton === 1 }" class="custom-text">Art</a>
-                              </div>
-                          </button>
-                          <button type="button" class="custom-btn btn-space"
-                              :class="{ 'selected-btn': selectedButton === 2 }" @click="selectButton(2)">
-                              <div class="inner-container">
-
-                                  <img src="../assets/draw.jpeg" alt="Style example" class="rounded-md custom-img">
-                                  <a :class="{ 'selected-text': selectedButton === 2 }" class="custom-text">Drawing</a>
-                              </div>
-
-                          </button> <button type="button" class="custom-btn btn-space"
-                              :class="{ 'selected-btn': selectedButton === 3 }" @click="selectButton(3)">
-                              <div class="inner-container">
-
-                                  <img src="../assets/photo.jpeg" alt="Style example" class="rounded-md custom-img">
-                                  <a :class="{ 'selected-text': selectedButton === 3 }" class="custom-text">Photo</a>
-
-                              </div>
-
-                          </button> <button type="button" class="custom-btn btn-space"
-                              :class="{ 'selected-btn': selectedButton === 4 }" @click="selectButton(4)">
-                              <div class="inner-container">
-
-                                  <img src="../assets/none.jpeg" alt="Style example" class="rounded-md custom-img">
-                                  <a :class="{ 'selected-text': selectedButton === 4 }" class="custom-text">None</a>
-                              </div>
-
-                          </button>
-                      </div>
-                  </div>
-              </transition>
-
-              <div class="col-lg-12 col-md-8 col-sm-12 mt-5">
-
-                  <div class="loading-container" v-if="isLoading">
-                      <!-- <div class="loading-container"> -->
-                      <div class="elapsed-time">{{ displayTime }}</div>
-                      <div class="loading-gif">
-                          <img src="../assets/loding.gif">
-                      </div>
-                  </div>
-
-                  <div v-if="isLoading || results.length" class="image-box">
-
-                      <div v-for="item in results" :key="item.galleryId">
-                          <img :src="item.s3Url" alt="Generated Image" @click="selectImage(item)" />
-                      </div>
-
-                      <ImageModal :selectedImageInfo="selectedImageInfo" @close="deselectImage" />
-
-                  </div>
-              </div>
-
-              <ImageGalleryVue></ImageGalleryVue>
           </div>
+          <div v-if="errorMessage" class="text-danger">
+            {{ errorMessage }}
+          </div>
+        </div>
+        <transition name="fade" mode="out-in">
+
+          <div v-if="inputText">
+            <div class="button-container justify-content-center">
+
+              <button type="button" class="custom-btn btn-space" :class="{ 'selected-btn': selectedButton === 1 }"
+                @click="selectButton(1)">
+                <div class="inner-container">
+                  <img src="../assets/art.jpeg" alt="Style example" class="rounded-md custom-img">
+                  <a :class="{ 'selected-text': selectedButton === 1 }" class="custom-text">Art</a>
+                </div>
+              </button>
+              <button type="button" class="custom-btn btn-space" :class="{ 'selected-btn': selectedButton === 2 }"
+                @click="selectButton(2)">
+                <div class="inner-container">
+
+                  <img src="../assets/draw.jpeg" alt="Style example" class="rounded-md custom-img">
+                  <a :class="{ 'selected-text': selectedButton === 2 }" class="custom-text">Drawing</a>
+                </div>
+
+              </button> <button type="button" class="custom-btn btn-space"
+                :class="{ 'selected-btn': selectedButton === 3 }" @click="selectButton(3)">
+                <div class="inner-container">
+
+                  <img src="../assets/photo.jpeg" alt="Style example" class="rounded-md custom-img">
+                  <a :class="{ 'selected-text': selectedButton === 3 }" class="custom-text">Photo</a>
+
+                </div>
+
+              </button> <button type="button" class="custom-btn btn-space"
+                :class="{ 'selected-btn': selectedButton === 4 }" @click="selectButton(4)">
+                <div class="inner-container">
+
+                  <img src="../assets/none.jpeg" alt="Style example" class="rounded-md custom-img">
+                  <a :class="{ 'selected-text': selectedButton === 4 }" class="custom-text">None</a>
+                </div>
+
+              </button>
+            </div>
+          </div>
+        </transition>
+
+        <div class="col-lg-12 col-md-8 col-sm-12 mt-5">
+
+          <div class="loading-container" v-if="isLoading">
+            <!-- <div class="loading-container"> -->
+            <div class="elapsed-time">{{ displayTime }}</div>
+            <div class="loading-gif">
+              <img src="../assets/loding.gif">
+            </div>
+          </div>
+
+          <div v-if="isLoading || results.length" class="image-box">
+
+            <div v-for="item in results" :key="item.galleryId">
+              <img :src="item.storageUrl" alt="Generated Image" @click="selectImage(item)" />
+            </div>
+
+            <ImageModal :selectedImageInfo="selectedImageInfo" @close="deselectImage" />
+
+          </div>
+        </div>
+
+        <ImageGalleryVue></ImageGalleryVue>
       </div>
+    </div>
 
   </div>
 </template>
@@ -101,65 +101,84 @@ const server = axios.create({
 
 export default {
   components: {
-      ImageGalleryVue,
-      ExplanationMainVue,
-      ImageModal
+    ImageGalleryVue,
+    ExplanationMainVue,
+    ImageModal
   },
   data() {
-      return {
-          selectedButton: 1, // 선택된 버튼의 ID를 저장, 초기 값은 1로 설정
-          inputText: '',  // 사용자가 입력한 텍스트를 저장할 변수
-          results: [],  // API 응답 결과를 저장
-          selectedImageInfo: null,  // 선택한 이미지의 상세 정보
-          isLoading: false,  // 로딩 상태를 관리
-          elapsedTime: 0,    // 경과된 시간
-          timer: null,        // 타이머 ID
-          displayTime: '0.0s'
-
-      };
+    return {
+      selectedButton: 1, // 선택된 버튼의 ID를 저장, 초기 값은 1로 설정
+      inputText: '',  // 사용자가 입력한 텍스트를 저장할 변수
+      results: [],  // API 응답 결과를 저장
+      selectedImageInfo: null,  // 선택한 이미지의 상세 정보
+      isLoading: false,  // 로딩 상태를 관리
+      elapsedTime: 0,    // 경과된 시간
+      timer: null,        // 타이머 ID
+      displayTime: '0.0s',
+      errorMessage: '',  // 에러 메시지를 저장할 새로운 속성
+    };
   },
 
   methods: {
-      selectButton(id) {
-          this.selectedButton = id; // 선택된 버튼의 ID를 저장
-      },
-      async drawImage() {
-          this.isLoading = true;  // 로딩 시작
-          this.elapsedTime = 0;
-
-          this.timer = setInterval(() => {
-              this.elapsedTime += 0.1;
-              this.elapsedTime = parseFloat(this.elapsedTime.toFixed(1));
-              this.displayTime = this.elapsedTime.toFixed(1) + 's';
-          }, 100);
-
-
-          try {
-              const response = await server.post("/api/v1/image/create", {
-                  prompt: this.inputText,
-                  option: this.selectedButton
-              });
-
-              if (response.data.status === 200) {
-                  this.results = response.data.result;
-
-              } else {
-                  console.error('API 호출 실패:', response.data.message);
-              }
-          } catch (error) {
-              console.error('API 호출 중 에러 발생:', error);
-          }
-          clearInterval(this.timer);
-          this.isLoading = false;
-
-      },
-      selectImage(item) {
-          this.selectedImageInfo = item;  // 선택한 이미지의 상세 정보 설정
-
-      },
-      deselectImage() {
-          this.selectedImageInfo = null;
+    selectButton(id) {
+      this.selectedButton = id; // 선택된 버튼의 ID를 저장
+    },
+    async drawImage() {
+      if (!this.inputText.trim()) {
+        this.errorMessage = '* Space cannot be entered';
+        return;
       }
+
+      if (this.inputText.length > 30) {
+        this.errorMessage = '* Too many characters';
+        return;
+      }
+
+      // 유효성 검증 통과시 에러 메시지 초기화
+      this.errorMessage = '';
+
+
+      this.isLoading = true;  // 로딩 시작
+      this.elapsedTime = 0;
+
+      this.timer = setInterval(() => {
+        this.elapsedTime += 0.1;
+        this.elapsedTime = parseFloat(this.elapsedTime.toFixed(1));
+        this.displayTime = this.elapsedTime.toFixed(1) + 's';
+      }, 100);
+
+
+      try {
+        const response = await server.post("/api/v1/image/create", {
+          prompt: this.inputText,
+          option: this.selectedButton
+        });
+
+        if (response.data.status === 200) {
+          this.results = response.data.result.map(item => {
+            if (item.s3Url && !item.storageUrl) {
+              item.storageUrl = item.s3Url;
+            }
+            return item;
+          });
+
+        } else {
+          console.error('API 호출 실패:', response.data.message);
+        }
+      } catch (error) {
+        console.error('API 호출 중 에러 발생:', error);
+      }
+      clearInterval(this.timer);
+      this.isLoading = false;
+
+    },
+    selectImage(item) {
+      this.selectedImageInfo = item;  // 선택한 이미지의 상세 정보 설정
+
+    },
+    deselectImage() {
+      this.selectedImageInfo = null;
+    }
 
 
   },
@@ -210,13 +229,9 @@ export default {
   margin: 10px;
 }
 
-/* 큰 버튼 스타일 */
-.btn-lg.btn-space {
-  margin-top: 20px;
-}
-
 /* 커스텀 버튼 컨테이너 */
 .button-container {
+  margin-top: 20px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -238,23 +253,26 @@ export default {
   position: relative;
 
 }
+
 /* 반응형: 화면 크기가 768px 미만일 때 */
 @media (max-width: 768px) {
   .custom-btn {
-      min-width: calc(25% - 20px);
-      max-width: calc(50% - 20px);
+    min-width: calc(25% - 20px);
+    max-width: calc(50% - 20px);
 
   }
-  
+
   .gw {
-      margin-top: 15px;
-      flex: 1 0 100%;
-      flex-direction: column;
-      width: 100%;
+    margin-top: 15px;
+    flex-direction: column;
+    width: 100%;
   }
-  textarea.form-control {
-      width: 100% !important; /* 너비를 100%로 조절 */
-      margin: 0 !important;
+
+  .form-control {
+    flex: 1;
+    width: 100% !important;
+    /* 너비를 100%로 조절 */
+    margin-right: 14px !important;
   }
 }
 
@@ -272,22 +290,6 @@ export default {
   color: #8F94A3;
   text-decoration: none;
   font-size: 14px;
-}
-
-textarea.form-control {
-  border: 1px solid white !important;
-  width: 60%;
-  padding: none;
-  height: 50px;
-  border: none;
-  resize: none;
-  margin-right: 10px;
-
-}
-.ar::placeholder {
-  color: white !important;
-  opacity: 1;
-  font-family: 'Courier New', Courier, monospace;
 }
 
 .image-box {
@@ -310,7 +312,7 @@ textarea.form-control {
   border-radius: 15px;
   max-width: 100%;
   max-height: 100%;
-  overflow: hidden;    
+  overflow: hidden;
   transition: all 0.3s ease-in-out;
 }
 
@@ -358,5 +360,40 @@ textarea.form-control {
 .loading-gif img {
   width: 50%;
   height: auto;
+}
+
+.form-control {
+  margin-right: 5px;
+  margin-left: 10px;
+  /* 버튼 왼쪽에 마진 추가 */
+}
+
+.btn-success {
+  margin-left: 5px;
+  /* 버튼 왼쪽에 마진 추가 */
+  margin-right: 10px;
+}
+
+.form-control {
+  border: 2px solid #ccc;
+  /* 테두리 설정 */
+  background-color: rgb(34 40 57);
+  color: white;
+}
+
+.form-control::placeholder {
+  color: white;
+  /* 하얀색으로 설정 */
+}
+
+.form-control:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  /* 포커스 상태에서 box-shadow 제거 */
+  border: 2px solid #ccc;
+  /* 테두리 설정 */
+
+  -webkit-text-fill-color: white;
+  /* 웹킷 브라우저에서 텍스트 색상 고정 */
 }
 </style>

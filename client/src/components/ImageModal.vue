@@ -13,7 +13,8 @@
             </div>
 
             <div>
-                <ImageSearchComponentVue :localSelectedImageInfo="localSelectedImageInfo" @image-selected="updateMainImage"/>
+                <ImageSearchComponentVue :localSelectedImageInfo="localSelectedImageInfo"
+                    @image-selected="updateMainImage" />
             </div>
 
             <div class="info-section">
@@ -77,6 +78,7 @@ export default {
     mounted() {
         this.localSelectedImageInfo = { ...this.selectedImageInfo };
         document.addEventListener('keydown', this.handleKeydown);
+
     },
     beforeUnmount() {
         document.removeEventListener('keydown', this.handleKeydown);
@@ -133,6 +135,7 @@ export default {
             immediate: true,
             handler(newVal) {
                 this.localSelectedImageInfo = { ...newVal };
+
             }
         }
     },
@@ -254,6 +257,14 @@ export default {
 th {
     color: #8f94a3;
     font-size: 13px;
+}
+
+.prompt-box {
+    color: white;
+}
+
+tr {
+    color: white;
 }
 
 @media (max-width: 768px) {
