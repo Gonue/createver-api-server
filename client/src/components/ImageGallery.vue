@@ -57,11 +57,16 @@ export default {
     },
     computed: {
         sortedImages() {
-            if (this.selectedTab === 'Resent') {
-                return [...this.images].sort((a, b) => b.galleryId - a.galleryId);
-            }
-            return this.images;
+        let sorted = [...this.images];
+        
+        if (this.selectedTab === 'Resent') {
+            sorted.sort((a, b) => b.galleryId - a.galleryId);
+        } else if (this.selectedTab === 'Inspirations') {
+            sorted = this.shuffleArray(sorted);
         }
+
+        return sorted;
+    }
     },
     async mounted() {
         await this.loadImages();
@@ -125,7 +130,15 @@ export default {
         },
         deselectImage() {
             this.selectedImageInfo = null;
+        },
+
+        shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
         }
+        return array;
+    },
 
     }
 }
@@ -139,7 +152,7 @@ export default {
 }
 
 .image-container {
-    flex: 0 0 calc(25% - 20px);
+    flex: 0 0 calc(35% - 20px);
     padding: 10px;
 }
 
@@ -179,6 +192,7 @@ export default {
 
 a {
     font-size: 12px;
+    font-weight: 400;
 }
 
 .time {
