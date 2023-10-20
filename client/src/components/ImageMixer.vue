@@ -46,6 +46,12 @@ export default {
             ctx.drawImage(originalImg, 90, 100, 90, 90); // 예시
 
         }
+    },
+
+    watch: {
+        originalImage() {
+            this.mixImages();
+        }
     }
 };
 </script>
