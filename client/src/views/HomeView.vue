@@ -89,15 +89,10 @@
 </template>
 
 <script>
-import axios from 'axios';
+import server from '@/axios-config';
 import ImageGalleryVue from '@/components/ImageGallery.vue';
 import ExplanationMainVue from '@/components/ExplanationMain.vue';
 import ImageModal from '@/components/ImageModal.vue';
-
-
-const server = axios.create({
-  baseURL: process.env.SERVER_URL,
-})
 
 export default {
   components: {
