@@ -9,7 +9,7 @@
 					<button class="btn d-flex align-items-center justify-content-center"
 						style="background-color: rgb(184, 196, 196);"
 						onclick="window.location.href='https://createver.site/oauth2/authorization/google'">
-						<img src="https://github.com/Gonue/mine/assets/109960034/a4be770d-aeb3-4b83-a515-54eeeefae07c"
+						<img src="../assets/googleLogo.svg"
 							alt="Google logo" height="24" width="24" class="me-3">
 						<span class="fw-bold ho">Continue with Google</span>
 					</button>
