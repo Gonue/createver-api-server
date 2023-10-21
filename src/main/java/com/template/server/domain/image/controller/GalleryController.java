@@ -11,10 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -32,6 +29,11 @@ public class GalleryController {
     @GetMapping("/list")
     public Response<Page<GalleryResponse>> galleryList(Pageable pageable){
         return Response.success(galleryService.galleryList(pageable).map(GalleryResponse::from));
+    }
+
+    @GetMapping("/list/search")
+    public Response<Page<GalleryResponse>> findGalleryList(@RequestParam String prompt, Pageable pageable){
+        return Response.success(galleryService.findGalleryList(prompt, pageable).map(GalleryResponse::from));
     }
 
     @GetMapping("/download/{galleryId}")
