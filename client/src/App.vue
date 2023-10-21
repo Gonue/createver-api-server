@@ -23,6 +23,10 @@ export default {
 </script>
 
 <style>
+#app{
+  background-color: #141827;
+}
+
 *::-webkit-scrollbar {
     display: none;
 }

@@ -1,5 +1,5 @@
 <template>
-    <div class="mt-5">
+    <div class="mt-5 text-center">
         <canvas ref="canvas" width="300" height="300"></canvas>
         <div>
             <button class="btn btn-success mt-2" style="width: 300px;" type="button">Buy</button>

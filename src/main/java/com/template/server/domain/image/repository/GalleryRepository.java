@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface GalleryRepository extends JpaRepository<Gallery, Long> {
+    Page<Gallery> findByMemberEmail(String email, Pageable pageable);
     Page<Gallery> findByPromptContaining(String prompt, Pageable pageable);
 }
 

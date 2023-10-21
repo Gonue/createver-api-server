@@ -8,6 +8,8 @@ import com.template.server.domain.image.dto.response.ImageGenerationResponse;
 
 import com.template.server.domain.image.entity.Gallery;
 import com.template.server.domain.image.repository.GalleryRepository;
+import com.template.server.domain.member.entity.Member;
+import com.template.server.domain.member.repository.MemberRepository;
 import com.template.server.global.config.OpenAiConfig;
 import com.template.server.global.error.exception.BusinessLogicException;
 import com.template.server.global.error.exception.ExceptionCode;
@@ -37,11 +39,12 @@ public class ImageGenerationService {
     private final RestTemplate restTemplate;
     private final S3UploadService s3UploadService;
     private final GalleryRepository galleryRepository;
+    private final MemberRepository memberRepository;
 
     @Value("${openai.api-key}")
     private String apiKey;
 
-    public List<CustomGenerationResponse> makeImages(PromptRequest promptRequest) {
+    public List<CustomGenerationResponse> makeImages(PromptRequest promptRequest, String email) {
         try {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setContentType(MediaType.parseMediaType(OpenAiConfig.MEDIA_TYPE));
@@ -70,11 +73,21 @@ public class ImageGenerationService {
             if (imageGenerationResponse == null || imageGenerationResponse.getData() == null) {
                 throw new BusinessLogicException(ExceptionCode.GENERAL_ERROR, "OpenAI API No Response");
             }
+
+            Member currentMember = null;
+            if (email != null){
+                currentMember = memberRepository.findByEmail(email).orElse(null);
+            }
+
+
             for (ImageGenerationResponse.ImageURL imageUrl : imageGenerationResponse.getData()) {
                 byte[] decodedImage = Base64.getDecoder().decode(imageUrl.getB64_json());
                 String s3Url = s3UploadService.upload(decodedImage, "image/png");
 
                 Gallery gallery = Gallery.create(promptRequest.getPrompt(), s3Url, promptRequest.getOption());
+                if (currentMember != null){
+                    gallery.setMember(currentMember);
+                }
                 Gallery savedGallery = galleryRepository.save(gallery);
                 CustomGenerationResponse customGenerationResponse = CustomGenerationResponse.builder()
                         .galleryId(savedGallery.getGalleryId())

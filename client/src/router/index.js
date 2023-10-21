@@ -6,6 +6,7 @@ import LoginView from "../views/LoginView.vue";
 import RegisterView from "../views/RegisterView.vue"
 import CommunityList from "../views/CommunityList.vue"
 import UserOauth from "../components/UserOauth.vue"
+import MyPageView from "../views/MyPageView.vue"
 
 const routes = [
   {
@@ -44,6 +45,11 @@ const routes = [
     path: "/user-oauth",
     name: "user-oauth",
     component : UserOauth
+  },
+  {
+    path: "/mypage",
+    name: "mypage",
+    component : MyPageView
   },
   {
     path: "/:pathMatch(.*)*",

@@ -11,10 +11,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Random;
 
 @RestController
@@ -53,7 +55,6 @@ public class GalleryController {
         headers.setContentDispositionFormData("attachment", fileName + ".png");
         return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
     }
-
 
     private String generateRandomKey(int length) {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

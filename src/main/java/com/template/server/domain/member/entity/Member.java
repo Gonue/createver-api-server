@@ -1,5 +1,6 @@
 package com.template.server.domain.member.entity;
 
+import com.template.server.domain.image.entity.Gallery;
 import com.template.server.global.audit.AuditingFields;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,6 +30,9 @@ public class Member extends AuditingFields {
     private String password;
     @Column(name = "profile_image")
     private String profileImage;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Gallery> galleries = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
