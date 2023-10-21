@@ -1,11 +1,17 @@
 package com.template.server.domain.member.service;
 
+import com.template.server.domain.image.dto.GalleryDto;
+import com.template.server.domain.image.entity.Gallery;
+import com.template.server.domain.image.repository.GalleryRepository;
 import com.template.server.domain.member.dto.MemberDto;
 import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.repository.MemberRepository;
 import com.template.server.global.auth.utils.CustomAuthorityUtils;
 import com.template.server.global.error.exception.BusinessLogicException;
 import com.template.server.global.error.exception.ExceptionCode;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,16 +21,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthorityUtils customAuthorityUtils;
-
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, CustomAuthorityUtils customAuthorityUtils) {
-        this.memberRepository = memberRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.customAuthorityUtils = customAuthorityUtils;
-    }
+    private final GalleryRepository galleryRepository;
 
     //회원가입
     @Transactional
@@ -77,6 +79,13 @@ public class MemberService {
         Member member = memberOrException(email);
         memberRepository.delete(member);
     }
+
+    //사용자가 생성한 이미지 목록
+    public Page<GalleryDto> getMyGalleries(String email, Pageable pageable){
+        Page<Gallery> galleryPage = galleryRepository.findByMemberEmail(email, pageable);
+        return galleryPage.map(GalleryDto::from);
+    }
+
 
     private Member memberOrException(String email) {
         return memberRepository.findByEmail(email).orElseThrow(() ->
