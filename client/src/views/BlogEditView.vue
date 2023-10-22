@@ -2,16 +2,16 @@
     <div class="container mt-5 text-white">
         <form @submit.prevent="updateArticle">
             <div class="mb-3">
-                <label for="title" class="form-label">제목</label>
+                <label for="title" class="form-label">Title</label>
                 <input type="text" id="title" v-model="title" class="form-control" />
             </div>
             <div class="mb-3">
-                <label for="content" class="form-label">내용</label>
+                <label for="content" class="form-label">Content</label>
                 <QuillEditor v-model:content="content" :modules="modules" contentType="html" theme="snow" toolbar="full" />
             </div>
             <div class="mb-3">
-                <button type="submit" class="btn btn-primary">수정</button>
-                <button type="button" @click="cancel" class="btn btn-secondary">취소</button>
+                <button type="submit" class="btn btn-primary">Update</button>
+                <button type="button" @click="cancel" class="btn btn-secondary">Cancle</button>
             </div>
         </form>
     </div>

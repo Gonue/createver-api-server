@@ -4,8 +4,8 @@
             <div class="col-3 d-none d-md-block"></div>
             <div class="col-12 col-md-6 tx-wrap">
                 <div class="d-flex justify-content-end" v-if="$store.state.roles.includes('ADMIN')">
-                    <router-link :to="`/blog/edit/${blog.articleId}`" class="btn btn-primary mr-2">수정</router-link>
-                    <button @click="deleteArticle" class="btn btn-danger">삭제</button>
+                    <router-link :to="`/blog/edit/${blog.articleId}`" class="btn btn-primary mr-2">Update</router-link>
+                    <button @click="deleteArticle" class="btn btn-danger">Delete</button>
 
                 </div>
                 <h1 class="text-bold mb-3">{{ blog.title }}</h1>

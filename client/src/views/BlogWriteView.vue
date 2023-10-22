@@ -2,11 +2,11 @@
     <div class="container mt-5 text-white">
         <form @submit.prevent="submit">
             <div class="mb-3">
-                <label for="title" class="form-label">제목</label>
+                <label for="title" class="form-label">Title</label>
                 <input type="text" id="title" v-model="title" class="form-control" />
             </div>
             <div class="mb-3">
-                <label for="content" class="form-label">내용</label>
+                <label for="content" class="form-label">Content</label>
                 <QuillEditor v-model:content="content" :modules="modules" contentType="html" theme="snow" toolbar="full"
                     class="text-dark" />
             </div>
@@ -111,5 +111,10 @@ export default {
 
 ::v-deep .ql-toolbar {
     background-color: rgb(188, 234, 238);
+}
+
+.btn{
+    margin-right: 10px;
+    margin-bottom: 50px;
 }
 </style>

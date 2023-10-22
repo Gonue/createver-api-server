@@ -6,7 +6,7 @@
             <div class="col-1"></div>
             <div class="col-10 mb-5">
                 <div class="d-flex justify-content-end mb-3" v-if="$store.state.roles.includes('ADMIN')">
-                    <router-link to="/blog/write" class="btn btn-success text-white">글 쓰기</router-link>
+                    <router-link to="/blog/write" class="btn btn-success text-white">Write</router-link>
                 </div>
                 <router-link :to="`/blog/${articles[0]?.articleId}`">
                     <div class="card mb-3 mx-auto" style="max-width: 1100px;">
