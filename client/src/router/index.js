@@ -10,7 +10,7 @@ import MyPageView from "../views/MyPageView.vue";
 import BlogView from "../views/BlogView.vue";
 import BlogWriteView from "../views/BlogWriteView";
 import BlogDetailView from "../views/BlogDetailView";
-import BlogEditView from "../views/BlogEditView"
+import BlogEditView from "../views/BlogEditView";
 
 const routes = [
   {
@@ -87,3 +87,21 @@ const router = createRouter({
 });
 
 export default router;
+
+import store from "@/store";
+
+router.beforeEach((to, from, next) => {
+  // 어드민만 접근 가능한 경로
+
+  const adminOnlyRoutes = ["blogWrite", "blogEdit"];
+
+  if (adminOnlyRoutes.includes(to.name)) {
+    if (store.state.roles.includes("ADMIN")) {
+      next();
+    } else {
+      next({ name: "home" });
+    }
+  } else {
+    next();
+  }
+});

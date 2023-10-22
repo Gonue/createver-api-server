@@ -1,8 +1,13 @@
 <template>
     <div class="container vh">
+
         <div class="row">
+
             <div class="col-1"></div>
             <div class="col-10 mb-5">
+                <div class="d-flex justify-content-end mb-3" v-if="$store.state.roles.includes('ADMIN')">
+                    <router-link to="/blog/write" class="btn btn-success text-white">글 쓰기</router-link>
+                </div>
                 <router-link :to="`/blog/${articles[0]?.articleId}`">
                     <div class="card mb-3 mx-auto" style="max-width: 1100px;">
                         <div class="row g-0">
@@ -11,15 +16,15 @@
                                     alt="...">
                             </div>
                             <div class="col-md-8">
-                                <div class="card-body">
-                                    <p class="card-text col-10" style="font-size: 18px;">
-                                        <span class="date">{{ formatDate(articles[0]?.createdAt) }}</span>
+                                <div class="card-body" style="padding: 35px;">
+                                    <p class="card-text col-10" style="font-size: 15px;">
+                                        <span class="date fw">{{ formatDate(articles[0]?.createdAt) }}</span>
                                         <span class="separator"></span>
-                                        <span class="author">By {{ articles[0]?.member?.nickName }}</span>
+                                        <span class="author fw">✏️ By {{ articles[0]?.member?.nickName }}</span>
                                     </p>
-                                    <h5 class="card-title mt-4" style="font-size: 30px;">{{ articles[0]?.title }}</h5>
-                                    <p class="card-text" style="font-size: 20px;" v-html="extractH2(articles[0]?.content)">
-                                    </p>
+                                    <h5 class="card-title mt-4" style="font-size: 25px;">{{ articles[0]?.title }}</h5>
+                                    <p class="card-text" style="font-size: 20px;" v-html="extractH2(articles[0]?.content)"></p>
+                                    <button class="btn custom-btn mt-5">ReadMore</button>
                                 </div>
                             </div>
                         </div>
@@ -35,16 +40,18 @@
                     <div class="col" v-for="article in articles.slice(1)" :key="article.articleId">
                         <router-link :to="`/blog/${article.articleId}`">
 
-                            <div class="card">
+                            <div class="card custom-card">
                                 <img :src="getFirstImageSrc(article.content)" class="card-img-top" alt="...">
                                 <div class="card-body">
                                     <p class="card-text">
-                                        <span class="date">{{ formatDate(article.createdAt) }}</span>
+                                        <span class="date fw">{{ formatDate(article.createdAt) }}</span>
                                         <span class="separator"></span>
-                                        <span class="author">By {{ article.member.nickName }}</span>
+                                        <span class="author fw">By {{ article.member.nickName }}</span>
                                     </p>
                                     <h5 class="card-title">{{ article.title }}</h5>
                                     <p class="card-text" v-html="extractH2(article.content)"></p>
+                                    <button class="btn custom-btn">ReadMore</button>
+
                                 </div>
                             </div>
                         </router-link>
@@ -133,8 +140,29 @@ img {
 }
 
 a {
-  text-decoration: none;
-  color: inherit;
+    text-decoration: none;
+    color: inherit;
 }
 
+.fw {
+    font-weight: 500;
+}
+
+.custom-card {
+    min-height: 500px;
+}
+
+.custom-btn {
+    background-color: #475b70;
+    color: white;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.custom-btn:hover {
+    background-color: #6599d1;
+    transform: scale(1.05);
+}
 </style>
