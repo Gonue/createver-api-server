@@ -9,7 +9,7 @@
 
             <div class="d-flex justify-content-end mt-4">
                 <!-- <button class="btn btn-success mx-1" type="button">Download</button> -->
-                <button class="btn btn-success mx-1" type="button" @click="downloadImage">Download</button>
+                <button class="btn btn-success mx-1 mb-3" type="button" @click="downloadImage">Download</button>
             </div>
 
             <div>

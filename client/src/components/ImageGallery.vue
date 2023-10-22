@@ -160,13 +160,14 @@ export default {
 }
 
 .image-container {
-    flex: 0 0 calc(35% - 20px);
+    flex: 0 0 calc(25% - 20px);
     padding: 10px;
 }
 
 .image-container img {
     max-width: 100%;
     border-radius: 5px;
+    border: solid 0.5px #8F94A3;
     height: auto;
 }
 

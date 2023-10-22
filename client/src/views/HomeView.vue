@@ -1,7 +1,6 @@
 <template>
   <div class="container-fluid">
 
-
     <ExplanationMainVue></ExplanationMainVue>
     <div class="row justify-content-center align-items-center">
       <div class="col-10 col-md-8 col-lg-6 text-center justify-content-center">
@@ -9,7 +8,7 @@
           <div class="col-8 d-flex align-items-center justify-content-center gw">
             <input class="form-control col-8" placeholder="What do you want to generate?"
               style="background-color: #3a3d47; color: #fff;" v-model="inputText" @keydown.enter.prevent="drawImage">
-            <button class="col-4 btn btn-success btn fw-bold gw align-items-center" @click="drawImage">
+            <button class="col-4 btn btn-success fw-bold gw align-items-center" @click="drawImage">
               <span>Draw</span>
             </button>
 
@@ -124,7 +123,7 @@ export default {
         return;
       }
 
-      if (this.inputText.length > 30) {
+      if (this.inputText.length > 200) {
         this.errorMessage = '* Too many characters';
         return;
       }
@@ -391,4 +390,28 @@ export default {
   -webkit-text-fill-color: white;
   /* 웹킷 브라우저에서 텍스트 색상 고정 */
 }
+
+
+  .btn-success {
+    margin-left: 5px;
+    margin-right: 10px;
+    background-color: #2c7aa3;
+    border-color: #2c7aa3;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .btn-success:hover {
+    background-color: #5c33ae;
+    border-color: #6239b4;
+  }
+
+  .btn-success:active {
+    transform: scale(0.95);
+  }
+
+  .btn-success:focus {
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
+  }
+
 </style>
