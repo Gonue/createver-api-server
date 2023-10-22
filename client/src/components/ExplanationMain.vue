@@ -19,7 +19,7 @@ export default {
     computed: {
         displayText() {
             if (this.$route.path === '/image/search') {
-                return 'Find AI generated images from the Craiyon database';
+                return 'Find AI generated images from the Createver database';
             }
             return 'Create AI Art with our free AI image generator.';
         }

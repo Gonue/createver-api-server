@@ -8,6 +8,18 @@ function getCookie(name) {
   if (parts.length === 2) return parts.pop().split(";").shift();
 }
 
+function decodePayload(token) {
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const payload = JSON.parse(atob(base64));
+    return payload;
+  } catch (error) {
+    console.error("Failed to decode token: ", error);
+    return null;
+  }
+}
+
 const server = axios.create({
   baseURL: process.env.BASE_URL,
 });
@@ -18,6 +30,7 @@ export default createStore({
     nickName: "",
     profileImage: "",
     token: "",
+    roles: [],
   },
 
   mutations: {
@@ -26,6 +39,11 @@ export default createStore({
       state.nickName = payload.nickName;
       state.profileImage = payload.profileImage;
       state.token = payload.token;
+      const decodedPayload = decodePayload(payload.token);
+      if (decodedPayload && decodedPayload.roles) {
+        state.roles = decodedPayload.roles;
+      }
+      console.log("Roles after login: ", state.roles);
     },
     updateProfileInfo(state, payload) {
       if (payload.nickName) state.nickName = payload.nickName;
@@ -46,6 +64,10 @@ export default createStore({
             state.email = userInfo.result.email;
             state.nickName = userInfo.result.nickName;
             state.profileImage = userInfo.result.profileImage;
+            const decodedPayload = decodePayload(state.token);
+            if (decodedPayload && decodedPayload.roles) {
+              state.roles = decodedPayload.roles;
+            }
           })
           .catch((err) => {
             console.error("Failed to fetch user info: ", err);

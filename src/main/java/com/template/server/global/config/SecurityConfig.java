@@ -9,6 +9,7 @@ import com.template.server.global.auth.utils.CustomAuthorityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -49,7 +50,14 @@ public class SecurityConfig {
                         .antMatchers("/oauth2/authorization/**").permitAll()
                         .antMatchers("/login/oauth2/code/*").permitAll()
                         .antMatchers("/api/v1/member/join", "/api/v1/member/login").permitAll()
-                        .antMatchers("/api/v1/member/**").hasAnyRole("USER","ADMIN")
+                        .antMatchers("/api/v1/member/**").hasAnyRole("USER", "ADMIN")
+
+                        .antMatchers(HttpMethod.POST, "/api/v1/image/upload").hasAnyRole("USER", "ADMIN")
+
+                        .antMatchers(HttpMethod.POST, "/api/v1/article").hasRole("ADMIN")  // 아티클 생성
+                        .antMatchers(HttpMethod.PATCH, "/api/v1/article/*").hasRole("ADMIN")  // 아티클 수정
+                        .antMatchers(HttpMethod.DELETE, "/api/v1/article/*").hasRole("ADMIN")  // 아티클 삭제
+
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2

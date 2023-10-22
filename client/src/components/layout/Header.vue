@@ -27,9 +27,11 @@
                                 <a href="/" class="nav-link text-white under-line">
                                     <h2>Home</h2>
                                 </a>
-                                <a class="nav-link text-white under-line">
-                                    <h3>Image</h3>
-                                    <router-link to="/image/search" class="custom-link">search</router-link>
+                                <a href="/blog" class="nav-link text-white under-line">
+                                    <h3>Blog</h3>
+                                </a>
+                                <a href="/image/search" class="nav-link text-white under-line">
+                                    <h3>Search</h3>
                                 </a>
                                 <a href="/community" class="nav-link text-white under-line">
                                     <h2>Community</h2>
@@ -45,25 +47,26 @@
                             </a>
                         </div>
 
-
                         <!-- 데스크톱 메뉴 -->
-                        <ul id="con" class="nav d-none d-lg-flex ms-lg-auto mb-2 mb-md-0">
-
+                        <ul id="con" class="nav d-none d-lg-flex ms-lg-auto mb-2 mb-md-0 ll">
+                            <li><a href="/" class="nav-link text-white">Home</a></li>
+                            <li><a href="/blog" class="nav-link text-white">Blog</a></li>
                             <li><a href="/image/search" class="nav-link text-white">Search</a></li>
                             <li><a href="/" class="nav-link text-white">Music</a></li>
-                            <li><a href="/" class="nav-link text-white">FAQ</a></li>
-                            <li><a href="/community" class="nav-link text-white">Community</a></li>
+                            <li><a href="/faq" class="nav-link text-white">FAQ</a></li>
+                            <li><a href="/pricing" class="nav-link text-white">Pricing</a></li>
+                            <!-- <li><a href="/community" class="nav-link text-white">Community</a></li> -->
                         </ul>
 
                         <div class="d-flex align-items-center ml-lg-auto">
                             <div v-if="!token" class="d-lg-block">
                                 <a class="custom-btn nav-link text-white fw-bold" href="/login">Log-In</a>
                             </div>
-                            <div v-if="token" class="fw-bold mx-3 text-white">{{ nickName }}</div>
                             <div v-if="token" class="dropdown text-end">
-                                <a href="#" class="d-block link-body-emphasis text-decoration-none"
+                                <a href="#" class="d-block link-body-emphasis text-decoration-none fw-bold mx-3 text-white"
                                     data-bs-toggle="dropdown" aria-expanded="false">
                                     <img :src="profileImage" alt="profile" width="32" height="32" class="rounded-circle">
+                                    {{ nickName }}
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-dark text-small">
                                     <li><a class="dropdown-item custom-dropdown-item" href="/mypage">My Page</a></li>
@@ -190,4 +193,6 @@ body {
         left: 45%;
         transform: translateX(-50%);
     }
-}</style>
+}
+
+</style>
