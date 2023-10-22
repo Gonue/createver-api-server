@@ -3,10 +3,14 @@ import HomeView from "../views/HomeView.vue";
 import ImageCreateView from "../views/ImageCreateView.vue";
 import ImageSearchView from "../views/ImageSearchView.vue";
 import LoginView from "../views/LoginView.vue";
-import RegisterView from "../views/RegisterView.vue"
-import CommunityList from "../views/CommunityList.vue"
-import UserOauth from "../components/UserOauth.vue"
-import MyPageView from "../views/MyPageView.vue"
+import RegisterView from "../views/RegisterView.vue";
+import CommunityList from "../views/CommunityList.vue";
+import UserOauth from "../components/UserOauth.vue";
+import MyPageView from "../views/MyPageView.vue";
+import BlogView from "../views/BlogView.vue";
+import BlogWriteView from "../views/BlogWriteView";
+import BlogDetailView from "../views/BlogDetailView";
+import BlogEditView from "../views/BlogEditView"
 
 const routes = [
   {
@@ -32,28 +36,48 @@ const routes = [
   },
   {
     path: "/register",
-    name : "regetser",
+    name: "regetser",
     component: RegisterView,
   },
   {
     path: "/community",
     name: "community",
-    component: CommunityList
+    component: CommunityList,
   },
 
   {
     path: "/user-oauth",
     name: "user-oauth",
-    component : UserOauth
+    component: UserOauth,
   },
   {
     path: "/mypage",
     name: "mypage",
-    component : MyPageView
+    component: MyPageView,
+  },
+  {
+    path: "/blog",
+    name: "blog",
+    component: BlogView,
+  },
+  {
+    path: "/blog/write",
+    name: "blogWrite",
+    component: BlogWriteView,
+  },
+  {
+    path: "/blog/:articleId",
+    name: "blogDetail",
+    component: BlogDetailView,
+  },
+  {
+    path: "/blog/edit/:articleId",
+    name: "blogEdit",
+    component: BlogEditView,
   },
   {
     path: "/:pathMatch(.*)*",
-    redirect: "/"
+    redirect: "/",
   },
 ];
 
