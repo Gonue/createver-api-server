@@ -11,6 +11,7 @@ import BlogView from "../views/BlogView.vue";
 import BlogWriteView from "../views/BlogWriteView";
 import BlogDetailView from "../views/BlogDetailView";
 import BlogEditView from "../views/BlogEditView";
+import PricingView from "../views/PricingView"
 
 const routes = [
   {
@@ -74,6 +75,11 @@ const routes = [
     path: "/blog/edit/:articleId",
     name: "blogEdit",
     component: BlogEditView,
+  },
+  {
+    path: "/pricing",
+    name: "pricingView",
+    component: PricingView,
   },
   {
     path: "/:pathMatch(.*)*",

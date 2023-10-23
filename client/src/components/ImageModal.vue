@@ -35,10 +35,10 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1024x1024</td>
+                            <td> - </td>
                             <td>Upscaled</td>
                             <td>{{ optionText }}</td>
-                            <td>1:1 - Landscape</td>
+                            <td> - </td>
                         </tr>
                     </tbody>
                 </table>
@@ -143,6 +143,8 @@ export default {
                 case 1: return "Art";
                 case 2: return "Drawing";
                 case 3: return "Photo";
+                case 4: return "None";
+                case 5: return "SD-Pro"
                 default: return "None";
             }
         },
