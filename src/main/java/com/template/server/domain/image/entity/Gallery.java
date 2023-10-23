@@ -1,5 +1,6 @@
 package com.template.server.domain.image.entity;
 
+import com.template.server.domain.member.entity.Member;
 import com.template.server.global.audit.AuditingFields;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -30,6 +31,10 @@ public class Gallery extends AuditingFields {
     @Setter
     @Column(name = "image_option", nullable = false)
     private int option;
+
+    @ManyToOne(fetch = FetchType.LAZY) @Setter
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     public static Gallery create(String prompt, String url, int option) {
         Gallery gallery = new Gallery();

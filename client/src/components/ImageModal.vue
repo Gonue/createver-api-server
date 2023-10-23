@@ -4,19 +4,23 @@
             <button class="close-button" @click="closeModal">X</button>
 
             <div class="image-wrapper mt-5">
-                <img :src="selectedImageInfo.s3Url" />
+                <img :src="localSelectedImageInfo.storageUrl" />
             </div>
 
             <div class="d-flex justify-content-end mt-4">
                 <!-- <button class="btn btn-success mx-1" type="button">Download</button> -->
-                <button class="btn btn-success mx-1" type="button" @click="downloadImage">Download</button>
+                <button class="btn btn-success mx-1 mb-3" type="button" @click="downloadImage">Download</button>
             </div>
 
+            <div>
+                <ImageSearchComponentVue :localSelectedImageInfo="localSelectedImageInfo"
+                    @image-selected="updateMainImage" />
+            </div>
 
             <div class="info-section">
                 <h2 class="text-color">Prompt</h2>
                 <div class="prompt-box text-bold">
-                    {{ selectedImageInfo.prompt }}
+                    {{ localSelectedImageInfo.prompt }}
                 </div>
                 <h2 class="text-color">Detail</h2>
 
@@ -31,20 +35,17 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1024x1024</td>
+                            <td> - </td>
                             <td>Upscaled</td>
                             <td>{{ optionText }}</td>
-                            <td>1:1 - Landscape</td>
+                            <td> - </td>
                         </tr>
                     </tbody>
                 </table>
-
-
-
             </div>
 
             <div>
-                <ImageMixer :originalImage="selectedImageInfo.s3Url" />
+                <ImageMixer :originalImage="localSelectedImageInfo.storageUrl" />
             </div>
         </div>
     </div>
@@ -53,18 +54,28 @@
 <script>
 import axios from 'axios';
 import ImageMixer from './ImageMixer.vue';
+import ImageSearchComponentVue from './ImageSearchComponent.vue';
 
 const server = axios.create({
     baseURL: process.env.SERVER_URL,
 })
 
 export default {
+    data() {
+        return {
+            localSelectedImageInfo: null, // 로컬 상태 변수
+        };
+    },
+
     components: {
-        ImageMixer
+        ImageMixer,
+        ImageSearchComponentVue
     },
     props: ['selectedImageInfo'],
     mounted() {
+        this.localSelectedImageInfo = { ...this.selectedImageInfo };
         document.addEventListener('keydown', this.handleKeydown);
+
     },
     beforeUnmount() {
         document.removeEventListener('keydown', this.handleKeydown);
@@ -80,53 +91,69 @@ export default {
             }
         },
         async downloadImage() {
-        try {
-            const response = await server.get(`/api/v1/image/download/${this.selectedImageInfo.galleryId}`, {
-                responseType: 'blob'
-            });
+            try {
+                const response = await server.get(`/api/v1/image/download/${this.localSelectedImageInfo.galleryId}`, {
+                    responseType: 'blob'
+                });
 
-            const blob = new Blob([response.data], { type: response.headers['content-type'] });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            
-            // 파일명은 Content-Disposition 헤더에서 추출하거나 클라이언트에서 지정한 형식을 사용
-            const contentDisposition = response.headers['content-disposition'];
-            let filename = `${this.selectedImageInfo.prompt}.png`;  // 기본 파일명
+                const blob = new Blob([response.data], { type: response.headers['content-type'] });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
 
-            if (contentDisposition) {
-                const match = contentDisposition.match(/filename="(.+)"/);
-                if (match && match[1]) {
-                    filename = match[1];
+                // 파일명은 Content-Disposition 헤더에서 추출하거나 클라이언트에서 지정한 형식을 사용
+                const contentDisposition = response.headers['content-disposition'];
+                let filename = `${this.selectedImageInfo.prompt}.png`;  // 기본 파일명
+
+                if (contentDisposition) {
+                    const match = contentDisposition.match(/filename="(.+)"/);
+                    if (match && match[1]) {
+                        filename = match[1];
+                    }
                 }
+
+                link.setAttribute('download', filename);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+            } catch (error) {
+                console.error("이미지 다운로드 중 오류 발생:", error);
             }
+        },
 
-            link.setAttribute('download', filename);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-        } catch (error) {
-            console.error("이미지 다운로드 중 오류 발생:", error);
+        updateMainImage(newImage) {
+            this.localSelectedImageInfo = { ...newImage };
         }
-    }
+    },
+
+    watch: {
+        // props가 변경되면 로컬 상태 변수도 업데이트
+        selectedImageInfo: {
+            immediate: true,
+            handler(newVal) {
+                this.localSelectedImageInfo = { ...newVal };
+
+            }
+        }
     },
 
     computed: {
         optionText() {
-            switch (this.selectedImageInfo.option) {
+            switch (this.localSelectedImageInfo.option) {
                 case 1: return "Art";
                 case 2: return "Drawing";
                 case 3: return "Photo";
+                case 4: return "None";
+                case 5: return "SD-Pro"
                 default: return "None";
             }
         },
-        
+
     }
 };
 </script>
   
 <style scoped>
-
 .modal {
     position: fixed;
     top: 0;
@@ -155,13 +182,15 @@ export default {
     position: relative;
 
 }
+
 .image-wrapper {
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
 }
-.image-wrapper img{
+
+.image-wrapper img {
     object-fit: cover;
     width: 400px;
     height: 400px;
@@ -170,6 +199,7 @@ export default {
     border-radius: 10px;
     display: block;
 }
+
 .close-button {
     position: absolute;
     top: 10px;
@@ -228,6 +258,14 @@ th {
     font-size: 13px;
 }
 
+.prompt-box {
+    color: white;
+}
+
+tr {
+    color: white;
+}
+
 @media (max-width: 768px) {
     .image-wrapper {
         height: auto;
@@ -238,5 +276,4 @@ th {
         height: auto;
     }
 }
-
 </style>

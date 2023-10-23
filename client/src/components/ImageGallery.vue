@@ -10,23 +10,27 @@
         </div>
         <div class="image-gallery">
             <div class="image-container" v-for="image in sortedImages" :key="image.galleryId">
-                <img :src="image.storageUrl" :alt="'Image ' + image.galleryId" @click="selectImage(image)">
 
-                <a v-if="selectedTab === 'Inspirations'">
-                    {{ truncateString(image.prompt, 18) }}
-                </a>
-                <a v-else>
-                    {{ truncateString(image.prompt, 18) }}
-                    <br>
-                    <a class="time justify-content-center">
-
-                        <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" fill="currentColor"
-                            class="bi bi-alarm-fill" viewBox="0 0 16 16">
-                            <path
-                                d="M6 .5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1H9v1.07a7.001 7.001 0 0 1 3.274 12.474l.601.602a.5.5 0 0 1-.707.708l-.746-.746A6.97 6.97 0 0 1 8 16a6.97 6.97 0 0 1-3.422-.892l-.746.746a.5.5 0 0 1-.707-.708l.602-.602A7.001 7.001 0 0 1 7 2.07V1h-.5A.5.5 0 0 1 6 .5zm2.5 5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9V5.5zM.86 5.387A2.5 2.5 0 1 1 4.387 1.86 8.035 8.035 0 0 0 .86 5.387zM11.613 1.86a2.5 2.5 0 1 1 3.527 3.527 8.035 8.035 0 0 0-3.527-3.527z" />
-                        </svg> {{ timeSince(image.createdAt) }}
+                <div class="image-box">
+                    <img :src="image.storageUrl" :alt="'Image ' + image.galleryId" @click="selectImage(image)">
+                </div>
+                <div class="text-box">
+                    <a v-if="selectedTab === 'Inspirations'">
+                        {{ truncateString(image.prompt, 18) }}
                     </a>
-                </a>
+                    <a v-else>
+                        {{ truncateString(image.prompt, 18) }}
+                        <br>
+                        <a class="time justify-content-center">
+
+                            <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" fill="currentColor"
+                                class="bi bi-alarm-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M6 .5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1H9v1.07a7.001 7.001 0 0 1 3.274 12.474l.601.602a.5.5 0 0 1-.707.708l-.746-.746A6.97 6.97 0 0 1 8 16a6.97 6.97 0 0 1-3.422-.892l-.746.746a.5.5 0 0 1-.707-.708l.602-.602A7.001 7.001 0 0 1 7 2.07V1h-.5A.5.5 0 0 1 6 .5zm2.5 5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9V5.5zM.86 5.387A2.5 2.5 0 1 1 4.387 1.86 8.035 8.035 0 0 0 .86 5.387zM11.613 1.86a2.5 2.5 0 1 1 3.527 3.527 8.035 8.035 0 0 0-3.527-3.527z" />
+                            </svg> {{ timeSince(image.createdAt) }}
+                        </a>
+                    </a>
+                </div>
             </div>
         </div>
         <ImageModal :selectedImageInfo="selectedImageInfo" @close="deselectImage" />
@@ -57,10 +61,15 @@ export default {
     },
     computed: {
         sortedImages() {
+            let sorted = [...this.images];
+
             if (this.selectedTab === 'Resent') {
-                return [...this.images].sort((a, b) => b.galleryId - a.galleryId);
+                sorted.sort((a, b) => b.galleryId - a.galleryId);
+            } else if (this.selectedTab === 'Inspirations') {
+                sorted = this.shuffleArray(sorted);
             }
-            return this.images;
+
+            return sorted;
         }
     },
     async mounted() {
@@ -69,7 +78,11 @@ export default {
     methods: {
         async loadImages() {
             try {
-                const response = await server.get('/api/v1/image/list?size=60');
+                let url = '/api/v1/image/list?size=60';
+                if (this.selectedTab === 'Resent') {
+                    url += '&sort=createdAt,desc';
+                }
+                const response = await server.get(url);
                 if (response.data.status === 200) {
 
                     this.images = response.data.result.content.map(image => {
@@ -125,7 +138,15 @@ export default {
         },
         deselectImage() {
             this.selectedImageInfo = null;
-        }
+        },
+
+        shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        },
 
     }
 }
@@ -133,19 +154,21 @@ export default {
   
 <style scoped>
 .image-gallery {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+  column-count: 4;
+  column-gap: 16px;
+  width: 100%;
 }
 
 .image-container {
-    flex: 0 0 calc(25% - 20px);
-    padding: 10px;
+  width: 100%;
+  display: inline-block;
+  margin-bottom: 10px;
 }
 
 .image-container img {
     max-width: 100%;
     border-radius: 5px;
+    border: solid 0.5px #8F94A3;
     height: auto;
 }
 
@@ -153,6 +176,7 @@ export default {
     transform: scale(0.95);
     transition: transform 0.3s ease-in-out;
 }
+
 .header {
     display: flex;
     justify-content: center;
@@ -179,6 +203,7 @@ export default {
 
 a {
     font-size: 12px;
+    font-weight: 400;
 }
 
 .time {
@@ -190,5 +215,10 @@ a {
 
 .time svg {
     margin-right: 4px;
+}
+
+.image-box,
+.text-box {
+    width: 100%;
 }
 </style>

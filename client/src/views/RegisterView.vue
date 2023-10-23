@@ -7,9 +7,9 @@
 			<div class="d-flex flex-column mt-5">
 				<div class="d-flex flex-column align-items-center justify-content-center">
 					<button class="btn d-flex align-items-center justify-content-center" style="background-color: rgb(184, 196, 196);">
-						<img src="https://github.com/Gonue/mine/assets/109960034/a4be770d-aeb3-4b83-a515-54eeeefae07c" alt="Google logo"
+						<img src="../assets/googleLogo.svg" alt="Google logo"
 							height="24" width="24" class="me-3">
-						<span class="fw-bold ho">Continue with Google</span>
+						<span class="fw-bold ho">Continue with Googledd</span>
 					</button>
 				</div>
 				<div class="d-flex align-items-center justify-content-between mt-4">

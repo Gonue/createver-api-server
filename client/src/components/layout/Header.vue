@@ -27,11 +27,11 @@
                                 <a href="/" class="nav-link text-white under-line">
                                     <h2>Home</h2>
                                 </a>
-                                <a class="nav-link text-white under-line">
-                                    <h3>Image</h3>
-                                    <router-link to="/image/create" class="custom-link">create</router-link>
-                                    <br>
-                                    <router-link to="/image/search" class="custom-link">search</router-link>
+                                <a href="/blog" class="nav-link text-white under-line">
+                                    <h3>Blog</h3>
+                                </a>
+                                <a href="/image/search" class="nav-link text-white under-line">
+                                    <h3>Search</h3>
                                 </a>
                                 <a href="/community" class="nav-link text-white under-line">
                                     <h2>Community</h2>
@@ -40,43 +40,33 @@
                         </div>
 
                         <!-- 로고 -->
-                        <a href="/" id="logo"
-                            class=" d-flex align-items-center justify-content-center mb-lg-0 link-body-emphasis text-decoration-none text-white fw-bold">
-                            <img src="../../assets/mainlogo2.png" width="130" height="40">
-                        </a>
-
+                        <div class="logo-container d-flex justify-content-center align-items-center">
+                            <a href="/" id="logo"
+                                class=" d-flex align-items-center justify-content-center mb-lg-0 link-body-emphasis text-decoration-none text-white fw-bold">
+                                <img src="../../assets/mainlogo2.png" width="130" height="40">
+                            </a>
+                        </div>
 
                         <!-- 데스크톱 메뉴 -->
-                        <ul id="con" class="nav d-none d-lg-flex ms-lg-auto mb-2 mb-md-0">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-white" id="navbarDropdown" role="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    Image
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item text-white custom-dropdown-item"
-                                            href="/image/create">Create</a></li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li><a class="dropdown-item text-white custom-dropdown-item"
-                                            href="/image/search">Search</a></li>
-                                </ul>
-                            </li>
+                        <ul id="con" class="nav d-none d-lg-flex ms-lg-auto mb-2 mb-md-0 ll">
+                            <li><a href="/pricing" class="nav-link text-white">Pro</a></li>
+                            <li><a href="/blog" class="nav-link text-white">Blog</a></li>
+                            <li><a href="/image/search" class="nav-link text-white">Search</a></li>
                             <li><a href="/" class="nav-link text-white">Music</a></li>
-                            <li><a href="/" class="nav-link text-white">FAQ</a></li>
-                            <li><a href="/community" class="nav-link text-white">Community</a></li>
+                            <li><a href="/faq" class="nav-link text-white">FAQ</a></li>
+                            <li><a href="/pricing" class="nav-link text-white">Pricing</a></li>
+                            <!-- <li><a href="/community" class="nav-link text-white">Community</a></li> -->
                         </ul>
 
                         <div class="d-flex align-items-center ml-lg-auto">
                             <div v-if="!token" class="d-lg-block">
                                 <a class="custom-btn nav-link text-white fw-bold" href="/login">Log-In</a>
                             </div>
-                            <div v-if="token" class="fw-bold mx-3 text-white">{{ nickName }}</div>
                             <div v-if="token" class="dropdown text-end">
-                                <a href="#" class="d-block link-body-emphasis text-decoration-none"
+                                <a href="#" class="d-block link-body-emphasis text-decoration-none fw-bold mx-3 text-white"
                                     data-bs-toggle="dropdown" aria-expanded="false">
                                     <img :src="profileImage" alt="profile" width="32" height="32" class="rounded-circle">
+                                    {{ nickName }}
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-dark text-small">
                                     <li><a class="dropdown-item custom-dropdown-item" href="/mypage">My Page</a></li>
@@ -163,7 +153,7 @@ body {
     width: 250px !important;
 }
 
- .under-line {
+.under-line {
     border-bottom: 1px solid #515b65;
     padding-bottom: 10px;
     margin-bottom: 10px;
@@ -182,12 +172,27 @@ body {
     background-color: #515b65;
     color: white;
 }
+
 .custom-link {
-    color: white; /* 글자색을 하얀색으로 */
-    text-decoration: none; /* 밑줄 제거 */
+    color: white;
+    /* 글자색을 하얀색으로 */
+    text-decoration: none;
+    /* 밑줄 제거 */
 }
 
-.custom-link:hover, .custom-link:focus {
-    color: white; /* 마우스 호버나 포커스 시에도 하얀색 유지 */
+.custom-link:hover,
+.custom-link:focus {
+    color: white;
+    /* 마우스 호버나 포커스 시에도 하얀색 유지 */
 }
+
+
+@media (max-width: 320px) {
+    .logo-container {
+        position: absolute;
+        left: 45%;
+        transform: translateX(-50%);
+    }
+}
+
 </style>

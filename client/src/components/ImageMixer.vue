@@ -1,5 +1,5 @@
 <template>
-    <div class="mt-5">
+    <div class="mt-5 text-center">
         <canvas ref="canvas" width="300" height="300"></canvas>
         <div>
             <button class="btn btn-success mt-2" style="width: 300px;" type="button">Buy</button>
@@ -45,6 +45,12 @@ export default {
             // 위치와 크기는 실제 머그컵 이미지에 따라 조절해야 합니다.
             ctx.drawImage(originalImg, 90, 100, 90, 90); // 예시
 
+        }
+    },
+
+    watch: {
+        originalImage() {
+            this.mixImages();
         }
     }
 };

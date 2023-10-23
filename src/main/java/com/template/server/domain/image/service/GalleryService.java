@@ -15,9 +15,13 @@ public class GalleryService {
     private final GalleryRepository galleryRepository;
 
     @Transactional(readOnly = true)
-
     public Page<GalleryDto> galleryList(Pageable pageable){
         return galleryRepository.findAll(pageable).map(GalleryDto::from);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<GalleryDto> findGalleryList(String prompt, Pageable pageable){
+        return galleryRepository.findByPromptContaining(prompt, pageable).map(GalleryDto::from);
     }
 
 }
