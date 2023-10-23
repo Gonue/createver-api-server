@@ -49,7 +49,7 @@
 
                         <!-- 데스크톱 메뉴 -->
                         <ul id="con" class="nav d-none d-lg-flex ms-lg-auto mb-2 mb-md-0 ll">
-                            <li><a href="/" class="nav-link text-white">Home</a></li>
+                            <li><a href="/pricing" class="nav-link text-white">Pro</a></li>
                             <li><a href="/blog" class="nav-link text-white">Blog</a></li>
                             <li><a href="/image/search" class="nav-link text-white">Search</a></li>
                             <li><a href="/" class="nav-link text-white">Music</a></li>

@@ -154,14 +154,15 @@ export default {
   
 <style scoped>
 .image-gallery {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+  column-count: 4;
+  column-gap: 16px;
+  width: 100%;
 }
 
 .image-container {
-    flex: 0 0 calc(25% - 20px);
-    padding: 10px;
+  width: 100%;
+  display: inline-block;
+  margin-bottom: 10px;
 }
 
 .image-container img {
