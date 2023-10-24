@@ -34,6 +34,10 @@ public class Member extends AuditingFields {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Gallery> galleries = new ArrayList<>();
 
+    @OneToOne(cascade = CascadeType.ALL, optional = true)
+    @JoinColumn(name = "plan_id")
+    private Plan plan;
+
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
 
