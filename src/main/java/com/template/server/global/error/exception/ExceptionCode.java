@@ -14,6 +14,8 @@ public enum ExceptionCode {
     S3_UPLOAD_ERROR(502, "S3 업로드 실패"),
     S3_FILE_ERROR(502,"S3 ERR"),
     GENERAL_ERROR(500, "이미지 생성 중 오류 발생"),
+    GALLERY_NOT_FOUND(404, "이미지 찾을 수 없음"),
+    ALREADY_LIKED(409, "이미 좋아요")
     ;
 
     private int status;
