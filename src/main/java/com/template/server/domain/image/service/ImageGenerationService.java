@@ -7,6 +7,7 @@ import com.template.server.domain.image.dto.response.CustomGenerationResponse;
 import com.template.server.domain.image.dto.response.ImageGenerationResponse;
 
 import com.template.server.domain.image.entity.Gallery;
+import com.template.server.domain.image.entity.ImageTag;
 import com.template.server.domain.image.repository.GalleryRepository;
 import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.repository.MemberRepository;
@@ -21,7 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -29,7 +29,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import java.util.Objects;
 
 
 @Service
@@ -40,6 +39,7 @@ public class ImageGenerationService {
     private final S3UploadService s3UploadService;
     private final GalleryRepository galleryRepository;
     private final MemberRepository memberRepository;
+    private final ImageTagService imageTagService;
 
     @Value("${openai.api-key}")
     private String apiKey;
@@ -74,6 +74,10 @@ public class ImageGenerationService {
                 throw new BusinessLogicException(ExceptionCode.GENERAL_ERROR, "OpenAI API No Response");
             }
 
+            String[] tagNames = promptRequest.getPrompt().split(" ");
+            List<ImageTag> tags = imageTagService.getOrCreateTags(tagNames);
+
+
             Member currentMember = null;
             if (email != null){
                 currentMember = memberRepository.findByEmail(email).orElse(null);
@@ -85,6 +89,7 @@ public class ImageGenerationService {
                 String s3Url = s3UploadService.upload(decodedImage, "image/png");
 
                 Gallery gallery = Gallery.create(promptRequest.getPrompt(), s3Url, promptRequest.getOption());
+                gallery.setTags(tags);
                 if (currentMember != null){
                     gallery.setMember(currentMember);
                 }
