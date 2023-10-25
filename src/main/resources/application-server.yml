@@ -52,3 +52,7 @@ openai:
 sagemaker:
   end-point: ${SAGEMAKER_END_POINT}
   api-key: ${SAGEMAKER_API_KEY}
+
+springfox:
+  documentation:
+    enabled: false
