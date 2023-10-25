@@ -11,6 +11,7 @@ public enum ExceptionCode {
     ARTICLE_NOT_FOUND(404,"게시물을 찾을 수 없음"),
     INVALID_PERMISSION(401, "권한 없음"),
     OPENAI_API_ERROR(502, "OpenAI API 호출 실패"),
+    SAGEMAKER_API_ERROR(502, "SAGEMAKER API 호출 실패"),
     S3_UPLOAD_ERROR(502, "S3 업로드 실패"),
     S3_FILE_ERROR(502,"S3 ERR"),
     GENERAL_ERROR(500, "이미지 생성 중 오류 발생"),
