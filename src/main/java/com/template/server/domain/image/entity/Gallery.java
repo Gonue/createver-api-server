@@ -13,7 +13,8 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "gallery")
+@Table(name = "gallery",
+       indexes = {@Index(name = "idx_gallery_created_at", columnList = "created_at")})
 @Entity
 public class Gallery extends AuditingFields {
 

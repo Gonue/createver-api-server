@@ -11,8 +11,8 @@ import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Setter
-@Table(name = "image_comment")
+@Table(name = "image_comment",
+        indexes = {@Index(name = "idx_image_comment_created_at", columnList = "created_at")})
 @Entity
 public class ImageComment extends AuditingFields {
 
@@ -21,14 +21,14 @@ public class ImageComment extends AuditingFields {
     @Column(name = "comment_id", updatable = false)
     private Long commentId;
 
-    @Column(name = "content", nullable = false)
+    @Setter @Column(name = "content", nullable = false)
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Setter @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gallery_id")
     private Gallery gallery;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Setter @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
