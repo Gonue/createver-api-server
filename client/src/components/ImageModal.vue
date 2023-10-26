@@ -193,7 +193,7 @@ export default {
 .image-wrapper img {
     object-fit: cover;
     width: 400px;
-    height: 400px;
+    height: auto;
     max-width: 100%;
     max-height: 100%;
     border-radius: 10px;
