@@ -18,7 +18,8 @@ public enum ExceptionCode {
     GALLERY_NOT_FOUND(404, "이미지 찾을 수 없음"),
     ALREADY_LIKED(409,"이미 좋아요"),
     IMAGE_COMMENT_NOT_FOUND(404, "해당 댓글을 찾을 수 없음"),
-    UNAUTHORIZED_ACCESS(401, "권한 없음")
+    UNAUTHORIZED_ACCESS(401, "권한 없음"),
+    ORDER_NOT_FOUND(404, "주문을 찾을 수 없음")
     ;
 
     private int status;
