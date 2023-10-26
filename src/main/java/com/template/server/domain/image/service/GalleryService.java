@@ -24,4 +24,8 @@ public class GalleryService {
         return galleryRepository.findByPromptContaining(prompt, pageable).map(GalleryDto::from);
     }
 
+    @Transactional(readOnly = true)
+    public Page<GalleryDto> getGalleriesByTagName(String tagName, Pageable pageable){
+        return galleryRepository.findByTagsName(tagName, pageable).map(GalleryDto::from);
+    }
 }

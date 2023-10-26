@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -31,6 +33,15 @@ public class Gallery extends AuditingFields {
     @Setter
     @Column(name = "image_option", nullable = false)
     private int option;
+
+
+    @ManyToMany @Setter
+    @JoinTable(
+            name = "gallery_tag",
+            joinColumns = @JoinColumn(name = "gallery_id"),
+            inverseJoinColumns = @JoinColumn(name = "image_tag_id")
+    )
+    private List<ImageTag> tags = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY) @Setter
     @JoinColumn(name = "member_id")

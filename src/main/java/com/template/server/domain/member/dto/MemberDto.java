@@ -1,6 +1,7 @@
 package com.template.server.domain.member.dto;
 
 import com.template.server.domain.member.entity.Member;
+import com.template.server.domain.member.entity.PlanType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -16,6 +17,7 @@ public class MemberDto {
     private String profileImage;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+    private PlanType planType;
 
     public static MemberDto from(Member entity){
         return new MemberDto(
@@ -25,7 +27,8 @@ public class MemberDto {
                 entity.getPassword(),
                 entity.getProfileImage(),
                 entity.getCreatedAt(),
-                entity.getModifiedAt()
+                entity.getModifiedAt(),
+                entity.getPlan() != null ? entity.getPlan().getPlanType() : null
         );
     }
 }

@@ -38,6 +38,11 @@ public class GalleryController {
         return Response.success(galleryService.findGalleryList(prompt, pageable).map(GalleryResponse::from));
     }
 
+    @GetMapping("/list/tag")
+    public Response<Page<GalleryResponse>> findGalleryListByTag(@RequestParam String tagName, Pageable pageable){
+        return Response.success(galleryService.getGalleriesByTagName(tagName, pageable).map(GalleryResponse::from));
+    }
+
     @GetMapping("/download/{galleryId}")
     public ResponseEntity<byte[]> downloadImage(@PathVariable Long galleryId) {
         byte[] imageData = s3DownloadService.downloadFileByGalleryId(galleryId);
