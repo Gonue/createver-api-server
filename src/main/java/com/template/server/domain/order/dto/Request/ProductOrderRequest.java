@@ -6,7 +6,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ProductOrderRequest {
-    private String imageUrl;
-    private Double totalPrice;
-    private Integer quantity;
+    private final String imageUrl;
+    private final Double totalPrice;
+    private final Integer quantity;
+    private final String buyerAddress;
+    private final String buyerPostcode;
+    private final String buyerName;
 }

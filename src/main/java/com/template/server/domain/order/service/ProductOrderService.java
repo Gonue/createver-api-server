@@ -3,6 +3,7 @@ package com.template.server.domain.order.service;
 import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.repository.MemberRepository;
 import com.template.server.domain.order.dto.ProductOrderDto;
+import com.template.server.domain.order.dto.Request.ProductOrderRequest;
 import com.template.server.domain.order.entity.ProductOrder;
 import com.template.server.domain.order.entity.ProductOrderStatus;
 import com.template.server.domain.order.repository.ProductOrderRepository;
@@ -14,6 +15,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Random;
+
 @Service
 @RequiredArgsConstructor
 public class ProductOrderService {
@@ -22,10 +27,24 @@ public class ProductOrderService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void createOrder(String email, String imageUrl, Double totalPrice, Integer quantity){
+    public void createOrder(String email, ProductOrderRequest request) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND, String.format("%s 을 찾을수 없음", email)));
-        ProductOrder productOrder = ProductOrder.of(member, imageUrl, ProductOrderStatus.PENDING, totalPrice, quantity);
+
+        String orderNumber = generateOrderNumber(); // 주문번호 생성 로직
+
+        ProductOrder productOrder = ProductOrder.of(
+                member,
+                request.getImageUrl(),
+                ProductOrderStatus.PENDING,
+                request.getTotalPrice(),
+                request.getQuantity(),
+                null, // 결제방법은 나중에 업데이트
+                request.getBuyerAddress(),
+                request.getBuyerPostcode(),
+                request.getBuyerName(),
+                orderNumber
+        );
         productOrderRepository.save(productOrder);
     }
 
@@ -42,5 +61,17 @@ public class ProductOrderService {
     public Page<ProductOrderDto> getOrdersByEmail(String email, Pageable pageable) {
         Page<ProductOrder> orders = productOrderRepository.findByMemberEmail(email, pageable);
         return orders.map(ProductOrderDto::from);
+    }
+
+
+
+    private String generateOrderNumber() {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String formattedNow = now.format(formatter);
+
+        Random random = new Random();
+        int randomNum = 1000 + random.nextInt(9000);
+        return String.format("ORD-%s-%04d", formattedNow, randomNum);
     }
 }

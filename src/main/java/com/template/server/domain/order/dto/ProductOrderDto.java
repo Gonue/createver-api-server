@@ -18,6 +18,11 @@ public class ProductOrderDto {
     private final ProductOrderStatus productOrderStatus;
     private final Double totalPrice;
     private final Integer quantity;
+    private final String paymentMethod;
+    private final String buyerAddress;
+    private final String buyerPostcode;
+    private final String buyerName;
+    private final String orderNumber;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
 
@@ -29,6 +34,11 @@ public class ProductOrderDto {
                 entity.getProductOrderStatus(),
                 entity.getTotalPrice(),
                 entity.getQuantity(),
+                entity.getPaymentMethod(),
+                entity.getBuyerAddress(),
+                entity.getBuyerPostcode(),
+                entity.getBuyerName(),
+                entity.getOrderNumber(),
                 entity.getCreatedAt(),
                 entity.getModifiedAt()
         );

@@ -23,7 +23,7 @@ public class ProductOrderController {
     @PostMapping
     public Response<Void> createOrder(@RequestBody ProductOrderRequest request,
                                       Authentication authentication) {
-        productOrderService.createOrder(authentication.getName(), request.getImageUrl(), request.getTotalPrice(), request.getQuantity());
+        productOrderService.createOrder(authentication.getName(), request);
         return Response.success();
     }
 
