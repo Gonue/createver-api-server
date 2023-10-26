@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Setter
 @Table(name = "image_view",
        indexes = {@Index(name = "idx_member", columnList = "member_id"),
                   @Index(name = "idx_gallery", columnList = "gallery_id"),
@@ -25,15 +24,15 @@ public class ImageView extends AuditingFields {
     @Column(name = "view_id", updatable = false)
     private Long viewId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Setter @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Setter @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gallery_id")
     private Gallery gallery;
 
-    @Column(name = "viewed_at")
+    @Setter @Column(name = "viewed_at")
     private LocalDateTime viewedAt;
 
     public static ImageView create(Member member, Gallery gallery) {

@@ -13,7 +13,6 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Setter
 @Table(name = "image_tag")
 @Entity
 public class ImageTag extends AuditingFields {
@@ -22,7 +21,7 @@ public class ImageTag extends AuditingFields {
     @Column(name = "image_tag_id", updatable = false)
     private Long tagId;
 
-    @Column(name = "name", unique = true)
+    @Setter @Column(name = "name", unique = true)
     private String name;
 
     @ManyToMany(mappedBy = "tags")

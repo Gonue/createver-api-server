@@ -14,7 +14,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
-@Table(name = "member")
+@Table(name = "member",
+       indexes = {@Index(name = "idx_email", columnList = "email")})
 @Entity
 public class Member extends AuditingFields {
 

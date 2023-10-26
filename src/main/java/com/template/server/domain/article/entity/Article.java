@@ -12,7 +12,8 @@ import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "article")
+@Table(name = "article",
+        indexes = {@Index(name = "idx_article_created_at", columnList = "created_at")})
 @Entity
 public class Article extends AuditingFields {
 
@@ -22,11 +23,11 @@ public class Article extends AuditingFields {
     private Long articleId;
 
     @Setter
-    @Column(name = "title", nullable = false, columnDefinition = "TEXT", length = 200)
+    @Column(name = "title", nullable = false, columnDefinition = "TEXT")
     private String title;
 
     @Setter
-    @Column(name = "content", nullable = false, columnDefinition = "TEXT", length = 5000)
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @ManyToOne(optional = true) @Setter
