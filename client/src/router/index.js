@@ -12,6 +12,7 @@ import BlogWriteView from "../views/BlogWriteView";
 import BlogDetailView from "../views/BlogDetailView";
 import BlogEditView from "../views/BlogEditView";
 import PricingView from "../views/PricingView"
+import CheckOutView from "../views/CheckOutView"
 
 const routes = [
   {
@@ -80,6 +81,11 @@ const routes = [
     path: "/pricing",
     name: "pricingView",
     component: PricingView,
+  },
+  {
+    path: '/checkout',
+    name: 'checkOut',
+    component: CheckOutView,
   },
   {
     path: "/:pathMatch(.*)*",

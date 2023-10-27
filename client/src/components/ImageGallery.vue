@@ -8,11 +8,12 @@
                 Resent
             </div>
         </div>
-        <div class="image-gallery">
+        <div :class="['image-gallery', { loaded: allImagesLoaded }]">
             <div class="image-container" v-for="image in sortedImages" :key="image.galleryId">
 
                 <div class="image-box">
-                    <img :src="image.storageUrl" :alt="'Image ' + image.galleryId" @click="selectImage(image)">
+                    <img :src="image.storageUrl" :alt="'Image ' + image.galleryId" @click="selectImage(image)"
+                        @load="onImageLoad">
                 </div>
                 <div class="text-box">
                     <a v-if="selectedTab === 'Inspirations'">
@@ -57,6 +58,8 @@ export default {
             selectedTab: 'Inspirations', // 선택된 탭을 나타내는 변수
             images: [], // API에서 가져올 이미지 정보를 저장할 변수
             selectedImageInfo: null,  // 선택한 이미지의 상세 정보
+            loadedImagesCount: 0,
+            allImagesLoaded: false,
         };
     },
     computed: {
@@ -76,6 +79,7 @@ export default {
         await this.loadImages();
     },
     methods: {
+        
         async loadImages() {
             try {
                 let url = '/api/v1/image/list?size=60';
@@ -148,21 +152,36 @@ export default {
             return array;
         },
 
+        onImageLoad() {
+            this.loadedImagesCount++;
+            if (this.loadedImagesCount === this.images.length) {
+                this.allImagesLoaded = true;
+            }
+        },
+
     }
 }
 </script>
   
 <style scoped>
 .image-gallery {
-  column-count: 4;
-  column-gap: 16px;
-  width: 100%;
+    column-count: 4;
+    column-gap: 16px;
+    width: 100%;
+    visibility: hidden;
+    /* 기본적으로 감춤 */
+
+}
+
+.image-gallery.loaded {
+    visibility: visible;
+    /* 모든 이미지가 로드되면 보여줌 */
 }
 
 .image-container {
-  width: 100%;
-  display: inline-block;
-  margin-bottom: 10px;
+    width: 100%;
+    display: inline-block;
+    margin-bottom: 10px;
 }
 
 .image-container img {
@@ -220,5 +239,4 @@ a {
 .image-box,
 .text-box {
     width: 100%;
-}
-</style>
+}</style>

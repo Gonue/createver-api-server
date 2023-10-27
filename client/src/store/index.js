@@ -1,6 +1,7 @@
 import { createStore } from "vuex";
 import axios from "axios";
 import router from "@/router";
+import imageModule from './imageModule';
 
 function getCookie(name) {
   const value = `; ${document.cookie}`;
@@ -25,6 +26,9 @@ const server = axios.create({
 });
 
 export default createStore({
+  modules: {
+    image: imageModule,
+  },
   state: {
     email: "",
     nickName: "",
