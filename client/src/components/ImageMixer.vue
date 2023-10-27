@@ -2,17 +2,20 @@
     <div class="mt-5 text-center">
         <canvas ref="canvas" width="300" height="300"></canvas>
         <div>
-            <button class="btn btn-success mt-2" style="width: 300px;" type="button">Buy</button>
+            <button v-if="showButton" class="btn btn-success mt-2" style="width: 300px;" type="button"
+                @click="buy">Buy</button>
         </div>
     </div>
 </template>
   
 <script>
+import { mapActions } from 'vuex';
+
 export default {
-    props: ['originalImage'],
+    props: ['originalImage', 'showButton'],
     data() {
         return {
-            mugImageUrl: require('@/assets/gw.webp')
+            mugImageUrl: require('@/assets/gw.webp'),
         };
     },
     mounted() {
@@ -20,7 +23,6 @@ export default {
     },
     methods: {
         async mixImages() {
-            
             const canvas = this.$refs.canvas;
             const ctx = canvas.getContext('2d');
 
@@ -41,11 +43,14 @@ export default {
             // 머그컵 이미지를 먼저 그립니다.
             ctx.drawImage(mugImg, 0, 0, 300, 300);
 
-            // 원래 이미지를 머그컵 이미지 위에 그립니다.
-            // 위치와 크기는 실제 머그컵 이미지에 따라 조절해야 합니다.
-            ctx.drawImage(originalImg, 90, 100, 90, 90); // 예시
+            ctx.drawImage(originalImg, 90, 100, 90, 90);
 
-        }
+        },
+        ...mapActions('image', ['updateOriginalImage']),
+        buy() {
+            this.updateOriginalImage(this.originalImage);
+            this.$router.push({ name: 'checkOut' });
+        },
     },
 
     watch: {
@@ -57,8 +62,7 @@ export default {
 </script>
   
 <style scoped>
-
-canvas{
+canvas {
     border-radius: 10px;
 }
 </style>

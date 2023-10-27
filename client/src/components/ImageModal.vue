@@ -45,7 +45,7 @@
             </div>
 
             <div>
-                <ImageMixer :originalImage="localSelectedImageInfo.storageUrl" />
+                <ImageMixer :originalImage="localSelectedImageInfo.storageUrl" :showButton="true" />
             </div>
         </div>
     </div>
