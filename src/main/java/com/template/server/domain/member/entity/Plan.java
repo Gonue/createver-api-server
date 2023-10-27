@@ -4,6 +4,7 @@ import com.template.server.global.audit.AuditingFields;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,13 +20,21 @@ public class Plan extends AuditingFields {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
+    @Setter @Enumerated(EnumType.STRING)
     @Column(name = "plan_type")
     private PlanType planType;
 
-    @Column(name = "purchase_date")
+    @Setter @Column(name = "purchase_date")
     private LocalDateTime purchaseDate;
 
-    @Column(name = "expiry_date")
+    @Setter @Column(name = "expiry_date")
     private LocalDateTime expiryDate;
+
+    public static Plan create(PlanType planType, LocalDateTime purchaseDate, LocalDateTime expiryDate) {
+        Plan plan = new Plan();
+        plan.setPlanType(planType);
+        plan.setPurchaseDate(purchaseDate);
+        plan.setExpiryDate(expiryDate);
+        return plan;
+    }
 }

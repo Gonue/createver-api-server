@@ -14,10 +14,14 @@ import com.template.server.domain.image.service.ImageTagService;
 import com.template.server.domain.image.service.S3UploadService;
 import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.repository.MemberRepository;
+import com.template.server.global.error.exception.BusinessLogicException;
+import com.template.server.global.error.exception.ExceptionCode;
+import com.template.server.global.util.RateLimiterManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +51,10 @@ public class ImageGenerationServiceTest {
     @Mock
     private ImageTagService imageTagService;
 
+
+    @Mock
+    private RateLimiterManager rateLimiterManager;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -68,6 +76,7 @@ public class ImageGenerationServiceTest {
         imageGenerationResponse.setData(Arrays.asList(imageURL, imageURL, imageURL, imageURL)); // Mocking 4 images
 
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
+        when(rateLimiterManager.allowRequest(email)).thenReturn(true);
         when(restTemplate.postForEntity(anyString(), any(), eq(ImageGenerationResponse.class)))
             .thenReturn(new ResponseEntity<>(imageGenerationResponse, HttpStatus.OK));
         when(s3UploadService.upload(any(), anyString())).thenReturn("s3Url");
@@ -82,5 +91,22 @@ public class ImageGenerationServiceTest {
         assertFalse(result.isEmpty());
         assertEquals(4, result.size());
         assertEquals("s3Url", result.get(0).getS3Url());
+    }
+
+    @Test
+    public void testMakeImages_rateLimitExceeded() {
+        // Given
+        String email = "test@test.com";
+        PromptRequest promptRequest = new PromptRequest("test", 1);
+
+        Mockito.when(rateLimiterManager.allowRequest(email)).thenReturn(false);
+
+        BusinessLogicException thrown = assertThrows(
+            BusinessLogicException.class,
+            () -> imageGenerationService.makeImages(promptRequest, email),
+            "Expected makeImages() to throw, but it didn't"
+        );
+
+        assertEquals(ExceptionCode.RATE_LIMIT_EXCEEDED, thrown.getExceptionCode());
     }
 }
