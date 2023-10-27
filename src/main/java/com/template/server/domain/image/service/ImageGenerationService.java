@@ -17,6 +17,7 @@ import com.template.server.domain.member.repository.MemberRepository;
 import com.template.server.global.config.OpenAiConfig;
 import com.template.server.global.error.exception.BusinessLogicException;
 import com.template.server.global.error.exception.ExceptionCode;
+import com.template.server.global.util.RateLimiterManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -43,6 +44,7 @@ public class ImageGenerationService {
     private final GalleryRepository galleryRepository;
     private final MemberRepository memberRepository;
     private final ImageTagService imageTagService;
+    private final RateLimiterManager rateLimiterManager;
 
     @Value("${openai.api-key}")
     private String apiKey;
@@ -53,6 +55,9 @@ public class ImageGenerationService {
     private String sageMakerEndPoint;
 
     public List<CustomGenerationResponse> makeImages(PromptRequest promptRequest, String email) {
+        if (!rateLimiterManager.allowRequest(email)) {
+            throw new BusinessLogicException(ExceptionCode.RATE_LIMIT_EXCEEDED, "Rate limit exceeded");
+        }
         try {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setContentType(MediaType.parseMediaType(OpenAiConfig.MEDIA_TYPE));
@@ -124,6 +129,16 @@ public class ImageGenerationService {
     }
 
     public List<CustomGenerationResponse> stableMakeImage(String email, StablePromptRequest promptRequest) {
+
+        Member member = memberRepository.findByEmail(email).orElseThrow(() ->
+                new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND, String.format("%s 를 찾을 수 없습니다.", email))
+        );
+
+        PlanType currentPlanType = member.getPlan().getPlanType();
+        if (currentPlanType != PlanType.PRO && currentPlanType != PlanType.ULTRA) {
+            throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED_ACCESS, "Pro 또는 Ultra 플랜 회원만 이용 가능한 기능입니다.");
+        }
+
         try {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setContentType(MediaType.parseMediaType("application/json; charset=UTF-8"));
@@ -159,14 +174,7 @@ public class ImageGenerationService {
                 throw new BusinessLogicException(ExceptionCode.GENERAL_ERROR, "SageMaker API No Response");
             }
 
-            Member member = memberRepository.findByEmail(email).orElseThrow(() ->
-                    new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND, String.format("%s 를 찾을 수 없습니다.", email))
-            );
 
-            PlanType currentPlanType = member.getPlan().getPlanType();
-            if (currentPlanType != PlanType.PRO && currentPlanType != PlanType.ULTRA) {
-                throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED_ACCESS, "Pro 또는 Ultra 플랜 회원만 이용 가능한 기능입니다.");
-            }
 
             for(ImageGenerationResponse.ImageURL imageUrl : imageGenerationResponse.getData()){
                 byte[] decodedImage = Base64.getDecoder().decode(imageUrl.getB64_json());
