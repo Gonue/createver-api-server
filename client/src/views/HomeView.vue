@@ -78,10 +78,13 @@
             <ImageModal :selectedImageInfo="selectedImageInfo" @close="deselectImage" />
 
           </div>
+
         </div>
 
-        <ImageGalleryVue></ImageGalleryVue>
+
       </div>
+      <ImageGalleryVue></ImageGalleryVue>
+
     </div>
 
   </div>
@@ -392,26 +395,25 @@ export default {
 }
 
 
-  .btn-success {
-    margin-left: 5px;
-    margin-right: 10px;
-    background-color: #2c7aa3;
-    border-color: #2c7aa3;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  }
+.btn-success {
+  margin-left: 5px;
+  margin-right: 10px;
+  background-color: #2c7aa3;
+  border-color: #2c7aa3;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
 
-  .btn-success:hover {
-    background-color: #5c33ae;
-    border-color: #6239b4;
-  }
+.btn-success:hover {
+  background-color: #5c33ae;
+  border-color: #6239b4;
+}
 
-  .btn-success:active {
-    transform: scale(0.95);
-  }
+.btn-success:active {
+  transform: scale(0.95);
+}
 
-  .btn-success:focus {
-    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
-  }
-
+.btn-success:focus {
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
+}
 </style>
