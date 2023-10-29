@@ -62,6 +62,7 @@ export default {
     flex-grow: 1;
     overflow-x: auto;
     display: flex;
+    align-items: center;
 }
 
 .image {

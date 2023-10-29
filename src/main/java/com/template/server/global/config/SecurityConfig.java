@@ -58,6 +58,8 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.PATCH, "/api/v1/article/*").hasRole("ADMIN")  // 아티클 수정
                         .antMatchers(HttpMethod.DELETE, "/api/v1/article/*").hasRole("ADMIN")  // 아티클 삭제
 
+                        .antMatchers(HttpMethod.POST, "/api/v1/image/create/stable").hasAnyRole("USER", "ADMIN")
+
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
