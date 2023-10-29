@@ -25,9 +25,21 @@ export default {
 <style>
 #app{
   background-color: #141827;
+  overflow-x: hidden;
+
 }
 
 *::-webkit-scrollbar {
-    display: none;
+    width: 8px;
 }
+
+*::-webkit-scrollbar-track {
+    background-color: #141827;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: rgb(107, 108, 117);
+    border-radius: 10px;
+}
+
 </style>
