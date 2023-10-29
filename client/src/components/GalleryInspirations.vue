@@ -2,7 +2,7 @@
     <div class="outer-container">
         <div ref="masonry" class="masonry-container">
             <GalleryCard v-for="image in images" :key="image.galleryId" :image="image" @image-loaded="handleImageLoaded"
-                @image-selected="selectImage"/>
+                @image-selected="selectImage" />
         </div>
 
         <ImageModal :selectedImageInfo="selectedImageInfo" @close="deselectImage" />
@@ -22,6 +22,8 @@ export default {
     },
     data() {
         return {
+            imagesLoadedCount: 0,
+            totalImages: 0,
             images: [],
             selectedImageInfo: null,
 
@@ -44,26 +46,33 @@ export default {
 
     methods: {
         handleImageLoaded() {
-            this.updateMasonry();
+            this.imagesLoadedCount += 1;
+            if (this.imagesLoadedCount === this.totalImages) {
+                this.updateMasonry();
+            }
         },
 
         updateMasonry() {
-            this.$nextTick(function () {
-                const msnry = new Masonry(this.$refs.masonry, {
-                    itemSelector: '.gallery-card',
-                    columnWidth: 60,
-                    gutter: 10,
-                    isFitWidth: true,
-                });
-                msnry.layout();
+            this.$nextTick(() => {
+                if (!this.msnry) {
+                    this.msnry = new Masonry(this.$refs.masonry, {
+                        itemSelector: '.gallery-card',
+                        columnWidth: 60,
+                        gutter: 10,
+                        isFitWidth: true,
+                    });
+                } else {
+                    this.msnry.layout();
+                }
             });
         },
 
         async loadImages() {
             try {
-                const response = await server.get('/api/v1/image/list?sort=createdAt,&size=60');
+                const response = await server.get('/api/v1/image/list?sort=createdAt,&size=30');
                 if (response.data.status === 200) {
 
+                    this.totalImages = response.data.result.content.length;
                     this.images = response.data.result.content.map(image => {
                         if (image.storageUrl && !image.s3Url) {
                             image.s3Url = image.storageUrl;
@@ -90,10 +99,8 @@ export default {
     text-align: center;
 }
 
-.masonry-container{
+.masonry-container {
     margin: 0 auto;
     text-align: left;
 }
-
-
 </style>
