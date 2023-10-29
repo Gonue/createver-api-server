@@ -1,10 +1,11 @@
 <template>
     <div class="outer-container">
-        <div ref="masonry" class="masonry-container">
-            <GalleryCard v-for="image in images" :key="image.galleryId" :image="image" @image-loaded="handleImageLoaded"
+        <div v-if="images.length === 0" class="loading-text">
+            <img src="../assets/loding.gif">
+        </div>        <div v-else ref="masonry" class="masonry-container">
+            <GalleryCard v-for="image in images" :key="image.galleryId" :image="image" @image-loaded="updateMasonry"
                 @image-selected="selectImage" :showTime="true" />
         </div>
-
         <ImageModal :selectedImageInfo="selectedImageInfo" @close="deselectImage" />
     </div>
 </template>
@@ -22,36 +23,20 @@ export default {
     },
     data() {
         return {
-            imagesLoadedCount: 0,
-            totalImages: 0,
             images: [],
             selectedImageInfo: null,
-
         };
     },
-
-
+    async created() {
+        await this.loadImages();
+    },
     mounted() {
         window.addEventListener('resize', this.updateMasonry);
     },
     beforeUnmount() {
         window.removeEventListener('resize', this.updateMasonry);
     },
-
-
-    async created() {
-        await this.loadImages();
-    },
-
-
     methods: {
-        handleImageLoaded() {
-            this.imagesLoadedCount += 1;
-            if (this.imagesLoadedCount === this.totalImages) {
-                this.updateMasonry();
-            }
-        },
-
         updateMasonry() {
             this.$nextTick(() => {
                 if (!this.msnry) {
@@ -66,13 +51,10 @@ export default {
                 }
             });
         },
-
         async loadImages() {
             try {
                 const response = await server.get('/api/v1/image/list?sort=createdAt,desc&size=60');
                 if (response.data.status === 200) {
-
-                    this.totalImages = response.data.result.content.length;
                     this.images = response.data.result.content.map(image => {
                         if (image.storageUrl && !image.s3Url) {
                             image.s3Url = image.storageUrl;
