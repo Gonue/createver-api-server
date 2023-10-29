@@ -15,18 +15,22 @@
                         </div>
                     </div>
                 </div>
-                <div class="image-box mt-5">
-                    <div v-if="results.length">
-                        <a v-for="item in results" :key="item.galleryId">
-                            <img :src="item.storageUrl" alt="Searched Image" @click="selectImage(item)" />
-                        </a>
+                <div class="outer-container">
+                    <div class="image-box mt-5" ref="image-box">
+                        <div v-if="results.length">
+                            <a v-for="item in results" :key="item.galleryId">
+                                <img :src="item.storageUrl" alt="Searched Image" @click="selectImage(item)"
+                                    @load="onImageLoad" />
+                            </a>
+                        </div>
+                        <div v-else>
+                            <a v-for="item in defaultImages" :key="item.galleryId">
+                                <img :src="item.storageUrl" alt="Searched Image" @click="selectImage(item)"
+                                    @load="onImageLoad" />
+                            </a>
+                        </div>
+                        <ImageModal :selectedImageInfo="selectedImageInfo" @close="deselectImage" />
                     </div>
-                    <div v-else>
-                        <a v-for="item in defaultImages" :key="item.galleryId">
-                            <img :src="item.storageUrl" alt="Default Image" @click="selectImage(item)" class="col-8" />
-                        </a>
-                    </div>
-                    <ImageModal :selectedImageInfo="selectedImageInfo" @close="deselectImage" />
                 </div>
             </div>
         </div>
@@ -37,6 +41,8 @@
 import axios from 'axios';
 import ExplanationMainVue from '@/components/ExplanationMain.vue';
 import ImageModal from '@/components/ImageModal.vue';
+import Masonry from 'masonry-layout';
+
 
 const server = axios.create({
     baseURL: process.env.SERVER_URL,
@@ -53,10 +59,15 @@ export default {
             results: [],
             defaultImages: [],
             selectedImageInfo: null,
+            msnry: null,
+            imagesLoaded: 0,
         };
     },
     async mounted() {
+
         await this.loadDefaultImages();
+        this.updateMasonry();
+
     },
     methods: {
 
@@ -84,7 +95,7 @@ export default {
         },
         async loadDefaultImages() {
             try {
-                const response = await server.get('/api/v1/image/list?size=60');
+                const response = await server.get('/api/v1/image/list?sort=createdAt,desc&size=30');
                 if (response.data.status === 200) {
                     this.defaultImages = response.data.result.content;
                     this.shuffleArray(this.defaultImages);
@@ -99,6 +110,35 @@ export default {
         deselectImage() {
             this.selectedImageInfo = null;
         },
+
+        onImageLoad() {
+            this.imagesLoaded += 1;
+            const totalImages = this.results.length > 0 ? this.results.length : this.defaultImages.length;
+            if (this.imagesLoaded >= totalImages) {
+                this.updateMasonry();
+            }
+        },
+        updateMasonry() {
+            this.$nextTick(() => {
+                if (this.msnry) {
+                    this.msnry.destroy();
+                }
+                const msnry = new Masonry(this.$refs['image-box'], {
+                    itemSelector: 'a',
+                    columnWidth: 256,
+                    gutter: 10,
+                    isFitWidth: true,
+                    percentPosition: true,
+                });
+                msnry.layout();
+            });
+        },
+    },
+
+
+    watch: {
+        results: 'updateMasonry',
+        defaultImages: 'updateMasonry',
     },
 };
 </script>
@@ -112,24 +152,15 @@ export default {
     padding: 0;
 }
 
-.image-box img {
-    width: 250px;
-    margin: 10px;
-    border-radius: 15px;
+.outer-container {
+    display: flex;
+    justify-content: center;
 }
 
-@media (max-width: 768px) {
-    .image-box {
-        display: flex;
-        flex-wrap: wrap;
-    }
-
-    .image-box img {
-        width: calc(50% - 50px);
-        /* 20px는 양쪽 마진을 고려한 값 */
-        margin: 10px;
-    }
-
+img {
+    max-width: 256px;
+    max-height: auto;
+    margin-bottom: 10px;
 }
 
 .form-control {
@@ -191,4 +222,5 @@ export default {
 .btn-success:focus {
     box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
 }
+
 </style>
