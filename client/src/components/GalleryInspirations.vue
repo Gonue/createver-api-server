@@ -62,6 +62,7 @@ export default {
                         }
                         return image;
                     });
+                    this.images.sort(() => Math.random() - 0.5);
                 }
             } catch (error) {
                 console.error("API 호출 중 오류 발생:", error);
