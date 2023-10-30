@@ -11,6 +11,7 @@ import com.template.server.global.error.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -26,9 +27,13 @@ public class S3DownloadService {
     private final AmazonS3 amazonS3;
     private final GalleryRepository galleryRepository;
 
+    @Transactional
     public byte[] downloadFileByGalleryId(Long galleryId) {
-        Gallery gallery = galleryRepository.findById(galleryId)
+        Gallery gallery = galleryRepository.findByGalleryIdForUpdate(galleryId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.S3_FILE_ERROR, "해당 galleryId가 존재하지 않습니다."));
+
+        gallery.increaseDownloadCount();
+        galleryRepository.save(gallery);
 
         String key = extractKeyFromStorageUrl(gallery.getStorageUrl());
 

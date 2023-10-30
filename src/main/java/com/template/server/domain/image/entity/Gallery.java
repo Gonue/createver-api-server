@@ -48,6 +48,13 @@ public class Gallery extends AuditingFields {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Column(name = "download_count")
+    private int downloadCount = 0;
+
+    public void increaseDownloadCount() {
+        this.downloadCount += 1;
+    }
+
     public static Gallery create(String prompt, String url, int option) {
         Gallery gallery = new Gallery();
         gallery.setPrompt(prompt);

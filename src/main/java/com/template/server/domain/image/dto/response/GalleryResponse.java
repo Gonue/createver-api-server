@@ -15,6 +15,11 @@ public class GalleryResponse {
     private final String storageUrl;
     private final int option;
     private final LocalDateTime createdAt;
+    private final Long commentCount;
+    private final Long likeCount;
+    private final int downloadCount;
+
+
 
 
     public static GalleryResponse from(GalleryDto dto){
@@ -23,7 +28,10 @@ public class GalleryResponse {
                 dto.getPrompt(),
                 dto.getStorageUrl(),
                 dto.getOption(),
-                dto.getCreatedAt()
+                dto.getCreatedAt(),
+                dto.getCommentCount(),
+                dto.getCommentCount(),
+                dto.getDownloadCount()
         );
     }
 }
