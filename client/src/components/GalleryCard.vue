@@ -12,9 +12,9 @@
                     <h3>{{ image.prompt }}</h3>
 
                     <div class="icon-box">
-                        <button class="custom-btn-bottom"> <i class="bi bi-hand-thumbs-up me-1"></i> --</button>
-                        <button class="custom-btn-bottom"> <i class="bi bi-chat me-1"></i> --</button>
-                        <button class="custom-btn-bottom"> <i class="bi bi-download me-1"></i> --</button>
+                        <button class="custom-btn-bottom"> <i class="bi bi-hand-thumbs-up me-1"></i> {{ image.likeCount }}</button>
+                        <button class="custom-btn-bottom"> <i class="bi bi-chat me-1"></i> {{ image.commentCount }}</button>
+                        <button class="custom-btn-bottom"> <i class="bi bi-download me-1"></i> {{ image.downloadCount }}</button>
                     </div>
                 </div>
             </div>
