@@ -47,7 +47,6 @@ export default createStore({
       if (decodedPayload && decodedPayload.roles) {
         state.roles = decodedPayload.roles;
       }
-      console.log("Roles after login: ", state.roles);
     },
     updateProfileInfo(state, payload) {
       if (payload.nickName) state.nickName = payload.nickName;
@@ -114,8 +113,6 @@ export default createStore({
       });
 
       router.push("/");
-
-      console.log("commit : ", userInfo.result.email);
     },
 
     logout({ commit }) {
