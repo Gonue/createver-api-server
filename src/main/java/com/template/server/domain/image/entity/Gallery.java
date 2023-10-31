@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "gallery",
-       indexes = {@Index(name = "idx_gallery_created_at", columnList = "created_at")})
+        indexes = {@Index(name = "idx_gallery_created_at", columnList = "created_at")})
 @Entity
 public class Gallery extends AuditingFields {
 
@@ -36,7 +36,8 @@ public class Gallery extends AuditingFields {
     private int option;
 
 
-    @ManyToMany @Setter
+    @ManyToMany
+    @Setter
     @JoinTable(
             name = "gallery_tag",
             joinColumns = @JoinColumn(name = "gallery_id"),
@@ -44,15 +45,23 @@ public class Gallery extends AuditingFields {
     )
     private List<ImageTag> tags = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY) @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Setter
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(name = "download_count")
+    @Column(name = "download_count", columnDefinition = "int default 0")
     private int downloadCount = 0;
+
+    @Column(name = "like_count", columnDefinition = "int default 0")
+    private int likeCount = 0;
 
     public void increaseDownloadCount() {
         this.downloadCount += 1;
+    }
+
+    public void increaseLikeCount() {
+        this.likeCount += 1;
     }
 
     public static Gallery create(String prompt, String url, int option) {

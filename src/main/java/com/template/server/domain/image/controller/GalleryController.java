@@ -45,7 +45,7 @@ public class GalleryController {
 
     @GetMapping("/listWithCommentCountAndLikeCount")
     public Response<Page<GalleryResponse>> galleryListWithCommentCountAndLikeCount(Pageable pageable){
-        return Response.success(galleryService.galleryListWithCommentAndLikeCount(pageable).map(GalleryResponse::from));
+        return Response.success(galleryService.galleryListWithComment(pageable).map(GalleryResponse::from));
     }
 
     @GetMapping("/download/{galleryId}")

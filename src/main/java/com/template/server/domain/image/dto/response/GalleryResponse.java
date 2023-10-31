@@ -16,11 +16,8 @@ public class GalleryResponse {
     private final int option;
     private final LocalDateTime createdAt;
     private final Long commentCount;
-    private final Long likeCount;
+    private final int likeCount;
     private final int downloadCount;
-
-
-
 
     public static GalleryResponse from(GalleryDto dto){
         return new GalleryResponse(
@@ -30,7 +27,7 @@ public class GalleryResponse {
                 dto.getOption(),
                 dto.getCreatedAt(),
                 dto.getCommentCount(),
-                dto.getCommentCount(),
+                dto.getLikeCount(),
                 dto.getDownloadCount()
         );
     }

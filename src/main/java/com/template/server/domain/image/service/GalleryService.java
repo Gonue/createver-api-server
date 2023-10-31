@@ -35,14 +35,13 @@ public class GalleryService {
     }
 
     @Transactional(readOnly = true)
-    public Page<GalleryDto> galleryListWithCommentAndLikeCount(Pageable pageable){
-        Page<Object[]> results = galleryRepository.findAllWithCommentAndLikeCount(pageable);
+    public Page<GalleryDto> galleryListWithComment(Pageable pageable){
+        Page<Object[]> results = galleryRepository.findAllWithComment(pageable);
         List<GalleryDto> dtos = results.getContent().stream()
             .map(result -> {
                 Gallery gallery = (Gallery) result[0];
                 Long commentCount = (Long) result[1];
-                Long likeCount = (Long) result[2];
-                return GalleryDto.from(gallery, commentCount, likeCount);
+                return GalleryDto.from(gallery, commentCount);
             })
             .collect(Collectors.toList());
 

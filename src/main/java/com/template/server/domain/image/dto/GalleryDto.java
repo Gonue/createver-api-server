@@ -16,7 +16,7 @@ public class GalleryDto {
     private final int option;
     private final LocalDateTime createdAt;
     private final Long commentCount;
-    private final Long likeCount;
+    private final int likeCount;
     private final int downloadCount;
 
 
@@ -28,12 +28,12 @@ public class GalleryDto {
                 entity.getOption(),
                 entity.getCreatedAt(),
                 null,
-                null,
+                entity.getLikeCount(),
                 entity.getDownloadCount()
         );
     }
 
-    public static GalleryDto from(Gallery entity, Long commentCount, Long likeCount) {
+    public static GalleryDto from(Gallery entity, Long commentCount) {
         return new GalleryDto(
                 entity.getGalleryId(),
                 entity.getPrompt(),
@@ -41,7 +41,7 @@ public class GalleryDto {
                 entity.getOption(),
                 entity.getCreatedAt(),
                 commentCount,
-                likeCount,
+                entity.getLikeCount(),
                 entity.getDownloadCount()
         );
     }

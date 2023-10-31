@@ -23,10 +23,9 @@ public interface GalleryRepository extends JpaRepository<Gallery, Long> {
     @Query("SELECT g FROM Gallery g WHERE g.galleryId = :galleryId")
     Optional<Gallery> findByGalleryIdForUpdate(Long galleryId);
 
-    @Query("SELECT g, COUNT(c), COUNT(l) FROM Gallery g " +
+    @Query("SELECT g, COUNT(c) FROM Gallery g " +
            "LEFT JOIN ImageComment c ON c.gallery = g " +
-           "LEFT JOIN ImageLike l ON l.gallery = g " +
            "GROUP BY g")
-    Page<Object[]> findAllWithCommentAndLikeCount(Pageable pageable);
+    Page<Object[]> findAllWithComment(Pageable pageable);
 }
 
