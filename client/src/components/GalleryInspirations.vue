@@ -54,7 +54,7 @@ export default {
         },
         async loadImages() {
             try {
-                const response = await server.get('/api/v1/image/list?sort=createdAt,&size=60');
+                const response = await server.get('/api/v1/image/listWithCommentCountAndLikeCount?sort=createdAt&size=60');
                 if (response.data.status === 200) {
                     this.images = response.data.result.content.map(image => {
                         if (image.storageUrl && !image.s3Url) {
