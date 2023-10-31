@@ -1,5 +1,5 @@
 <template>
-    <div class="mt-5 text-center">
+    <div class="mt-3 mb-3 text-center">
         <canvas ref="canvas" width="300" height="300"></canvas>
         <div>
             <button v-if="showButton" class="btn btn-success mt-2" style="width: 300px;" type="button"

@@ -2,7 +2,8 @@
     <div class="outer-container">
         <div v-if="images.length === 0" class="loading-text">
             <img src="../assets/loding.gif">
-        </div>        <div v-else ref="masonry" class="masonry-container">
+        </div>
+        <div v-else ref="masonry" class="masonry-container">
             <GalleryCard v-for="image in images" :key="image.galleryId" :image="image" @image-loaded="updateMasonry"
                 @image-selected="selectImage" :showTime="true" />
         </div>
@@ -53,7 +54,7 @@ export default {
         },
         async loadImages() {
             try {
-                const response = await server.get('/api/v1/image/list?sort=createdAt,desc&size=60');
+                const response = await server.get('/api/v1/image/listWithCommentCountAndLikeCount?sort=createdAt,desc&size=60');
                 if (response.data.status === 200) {
                     this.images = response.data.result.content.map(image => {
                         if (image.storageUrl && !image.s3Url) {

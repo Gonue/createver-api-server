@@ -43,6 +43,11 @@ public class GalleryController {
         return Response.success(galleryService.getGalleriesByTagName(tagName, pageable).map(GalleryResponse::from));
     }
 
+    @GetMapping("/listWithCommentCountAndLikeCount")
+    public Response<Page<GalleryResponse>> galleryListWithCommentCountAndLikeCount(Pageable pageable){
+        return Response.success(galleryService.galleryListWithComment(pageable).map(GalleryResponse::from));
+    }
+
     @GetMapping("/download/{galleryId}")
     public ResponseEntity<byte[]> downloadImage(@PathVariable Long galleryId) {
         byte[] imageData = s3DownloadService.downloadFileByGalleryId(galleryId);

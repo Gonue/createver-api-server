@@ -8,8 +8,8 @@
             </div>
 
             <div class="d-flex justify-content-end mt-4">
-                <!-- <button class="btn btn-success mx-1" type="button">Download</button> -->
-                <button class="btn btn-success mx-1 mb-3" type="button" @click="downloadImage">Download</button>
+                <ImageLikeComponent :localSelectedImageInfo="localSelectedImageInfo" />
+                <button class="cus-btn mx-1 mb-3" type="button" @click="downloadImage">Download</button>
             </div>
 
             <div>
@@ -35,14 +35,19 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td> - </td>
+                            <td>{{ imageSize || '-' }}</td>
                             <td>Upscaled</td>
                             <td>{{ optionText }}</td>
-                            <td> - </td>
+                            <td>{{ aspectRatio || '-' }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+
+            <div>
+                <ImageCommentComponent :localSelectedImageInfo="localSelectedImageInfo" />
+            </div>
+
 
             <div>
                 <ImageMixer :originalImage="localSelectedImageInfo.storageUrl" :showButton="true" />
@@ -55,6 +60,9 @@
 import axios from 'axios';
 import ImageMixer from './ImageMixer.vue';
 import ImageSearchComponentVue from './ImageSearchComponent.vue';
+import ImageCommentComponent from './ImageCommentComponent.vue';
+import ImageLikeComponent from './ImageLikeComponent.vue';
+
 
 const server = axios.create({
     baseURL: process.env.SERVER_URL,
@@ -64,12 +72,16 @@ export default {
     data() {
         return {
             localSelectedImageInfo: null, // 로컬 상태 변수
+            imageSize: null,
+            aspectRatio: null
         };
     },
 
     components: {
         ImageMixer,
-        ImageSearchComponentVue
+        ImageSearchComponentVue,
+        ImageCommentComponent,
+        ImageLikeComponent
     },
     props: ['selectedImageInfo'],
     mounted() {
@@ -123,6 +135,34 @@ export default {
 
         updateMainImage(newImage) {
             this.localSelectedImageInfo = { ...newImage };
+        },
+
+        calculateImageSize() {
+            function gcd(a, b) {
+                if (b === 0) {
+                    return a;
+                }
+                return gcd(b, a % b);
+            }
+
+            const img = new Image();
+            img.src = this.localSelectedImageInfo.storageUrl;
+
+            img.onload = () => {
+                const width = img.width;
+                const height = img.height;
+                this.imageSize = `${width} x ${height}`;
+
+                const divisor = gcd(width, height);
+                const aspectWidth = width / divisor;
+                const aspectHeight = height / divisor;
+
+                this.aspectRatio = `${aspectWidth}:${aspectHeight}`;
+            };
+
+            img.onerror = () => {
+                console.error("이미지 로딩 실패");
+            };
         }
     },
 
@@ -132,7 +172,9 @@ export default {
             immediate: true,
             handler(newVal) {
                 this.localSelectedImageInfo = { ...newVal };
-
+                if (newVal) {
+                    this.calculateImageSize();
+                }
             }
         }
     },
@@ -275,5 +317,14 @@ tr {
         max-width: 100%;
         height: auto;
     }
+}
+.cus-btn {
+    text-align: center;
+    padding: 12px 16px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    background-color: rgba(37, 120, 198, 0.639);
+    color: rgb(232, 238, 244);
+    margin-bottom: 10px;
 }
 </style>

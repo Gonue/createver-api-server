@@ -33,6 +33,7 @@ public class ImageLikeService {
         }
 
         ImageLike imageLike = ImageLike.create(member, gallery);
+        gallery.increaseLikeCount();
         imageLikeRepository.save(imageLike);
     }
 
