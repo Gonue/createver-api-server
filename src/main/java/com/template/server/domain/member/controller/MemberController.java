@@ -2,7 +2,6 @@ package com.template.server.domain.member.controller;
 
 import com.template.server.domain.image.dto.GalleryDto;
 import com.template.server.domain.image.dto.response.GalleryResponse;
-import com.template.server.domain.image.entity.Gallery;
 import com.template.server.domain.member.dto.MemberDto;
 import com.template.server.domain.member.dto.request.MemberJoinRequest;
 import com.template.server.domain.member.dto.request.MemberUpdateRequest;
@@ -10,13 +9,13 @@ import com.template.server.domain.member.dto.response.MemberJoinResponse;
 import com.template.server.domain.member.dto.response.MemberResponse;
 import com.template.server.domain.member.service.MemberService;
 import com.template.server.global.error.response.Response;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController

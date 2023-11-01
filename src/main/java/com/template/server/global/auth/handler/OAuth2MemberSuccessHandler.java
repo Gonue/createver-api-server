@@ -1,9 +1,11 @@
 package com.template.server.global.auth.handler;
 
-import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.service.MemberService;
 import com.template.server.global.auth.jwt.JwtTokenizer;
 import com.template.server.global.auth.utils.CustomAuthorityUtils;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -14,9 +16,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Date;

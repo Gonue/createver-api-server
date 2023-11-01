@@ -2,10 +2,10 @@ package com.template.server.global.error.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.template.server.global.error.response.ErrorResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ErrorResponder {

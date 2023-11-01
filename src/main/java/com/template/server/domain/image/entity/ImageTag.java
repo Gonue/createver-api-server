@@ -2,12 +2,12 @@ package com.template.server.domain.image.entity;
 
 
 import com.template.server.global.audit.AuditingFields;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +16,7 @@ import java.util.List;
 @Table(name = "image_tag")
 @Entity
 public class ImageTag extends AuditingFields {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "image_tag_id", updatable = false)

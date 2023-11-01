@@ -2,12 +2,12 @@ package com.template.server.domain.image.entity;
 
 import com.template.server.domain.member.entity.Member;
 import com.template.server.global.audit.AuditingFields;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 

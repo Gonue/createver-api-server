@@ -3,12 +3,12 @@ package com.template.server.domain.article.entity;
 
 import com.template.server.domain.member.entity.Member;
 import com.template.server.global.audit.AuditingFields;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

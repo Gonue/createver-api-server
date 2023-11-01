@@ -2,11 +2,10 @@ package com.template.server.domain.member.dto.request;
 
 import com.template.server.global.validator.PasswordMatches;
 import com.template.server.global.validator.ValidPassword;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 @AllArgsConstructor
 @Getter

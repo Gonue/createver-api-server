@@ -1,9 +1,9 @@
 package com.template.server.global.validator;
 
 import com.template.server.domain.member.dto.request.MemberJoinRequest;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, MemberJoinRequest> {
 

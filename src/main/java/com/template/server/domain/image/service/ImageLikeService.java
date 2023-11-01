@@ -8,10 +8,10 @@ import com.template.server.domain.image.repository.ImageLikeRepository;
 import com.template.server.domain.member.repository.MemberRepository;
 import com.template.server.global.error.exception.BusinessLogicException;
 import com.template.server.global.error.exception.ExceptionCode;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
