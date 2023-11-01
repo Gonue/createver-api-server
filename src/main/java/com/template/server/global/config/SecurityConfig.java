@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeRequests(authorize -> authorize
+                        .antMatchers("/swagger-ui/**", "/v2/api-docs", "/webjars/**").permitAll()
                         .antMatchers("/", "/index.html", "/static/**", "/image/**").permitAll()
                         .antMatchers("/oauth2/authorization/**").permitAll()
                         .antMatchers("/login/oauth2/code/*").permitAll()
