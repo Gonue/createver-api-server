@@ -28,8 +28,11 @@ export default {
             immediate: true,
             async handler(newVal) {
                 if (newVal) {
-                    await this.fetchLikeStatus(newVal);
-                    await this.fetchLikeCount(newVal);
+                    await this.fetchLikeCount(newVal);  // 로그인하지 않은 사용자도 호출 가능
+
+                    if (this.$store.state.token) { // 로그인한 사용자만 fetchLikeStatus 호출
+                        await this.fetchLikeStatus(newVal);
+                    }
                 }
             }
         }
@@ -82,7 +85,6 @@ export default {
 </script>
 
 <style scoped>
-
 .cus-btn {
     text-align: center;
     padding: 12px 16px;
