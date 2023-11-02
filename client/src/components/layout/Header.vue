@@ -33,8 +33,8 @@
                                 <a href="/image/search" class="nav-link text-white under-line">
                                     <h3>Search</h3>
                                 </a>
-                                <a href="/community" class="nav-link text-white under-line">
-                                    <h2>Community</h2>
+                                <a href="/pricing" class="nav-link text-white under-line">
+                                    <h2>Pricing</h2>
                                 </a>
                             </div>
                         </div>
@@ -49,10 +49,10 @@
 
                         <!-- 데스크톱 메뉴 -->
                         <ul id="con" class="nav d-none d-lg-flex ms-lg-auto mb-2 mb-md-0 ll">
-                            <li><a href="/pricing" class="nav-link text-white">Pro</a></li>
                             <li><a href="/blog" class="nav-link text-white">Blog</a></li>
                             <li><a href="/image/search" class="nav-link text-white">Search</a></li>
                             <li><a href="/" class="nav-link text-white">Music</a></li>
+                            <li><a href="/pricing" class="nav-link text-white">Pro</a></li>
                             <li><a href="/faq" class="nav-link text-white">FAQ</a></li>
                             <li><a href="/pricing" class="nav-link text-white">Pricing</a></li>
                             <!-- <li><a href="/community" class="nav-link text-white">Community</a></li> -->
@@ -60,7 +60,7 @@
 
                         <div class="d-flex align-items-center ml-lg-auto">
                             <div v-if="!token" class="d-lg-block">
-                                <a class="custom-btn nav-link text-white fw-bold" href="/login">Log-In</a>
+                                <a class="custom-btn nav-link text-white" href="/login">Log-In</a>
                             </div>
                             <div v-if="token" class="dropdown text-end">
                                 <a href="#" class="d-block link-body-emphasis text-decoration-none fw-bold mx-3 text-white"
@@ -120,9 +120,6 @@ export default {
 </script>
 
 <style scoped>
-body {
-    font-family: 'Courier New', Courier, monospace;
-}
 
 .text-bg {
     background-color: #141827;
@@ -133,10 +130,11 @@ body {
 }
 
 .custom-btn {
-    background-color: #46774fb3;
+    background-color: #25262b;
     color: white;
-    padding: 10px;
+    padding: 8px 16px;
     border-radius: 7px;
+    border: 1px solid #373A40;
     text-decoration: none;
     transition: background-color 0.3s ease;
 }

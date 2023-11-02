@@ -1,10 +1,10 @@
 <template>
     <div>
         <div>
-            <button class="cus-btn mx-1 mb-3" type="button" v-if="hasLiked" @click="likeImage">
+            <button class="cus-btn mx-1" type="button" v-if="hasLiked" @click="likeImage">
                 <i class="bi bi-hand-thumbs-up-fill"></i> {{ likeCount }}
             </button>
-            <button class="cus-btn mx-1 mb-3" type="button" v-else @click="likeImage">
+            <button class="cus-btn mx-1" type="button" v-else @click="likeImage">
                 <i class="bi bi-hand-thumbs-up"></i> {{ likeCount }}
             </button>
         </div>
@@ -87,11 +87,10 @@ export default {
 <style scoped>
 .cus-btn {
     text-align: center;
-    padding: 12px 16px;
+    padding: 5px 10px;
     border: 1px solid transparent;
     border-radius: 5px;
     background-color: rgba(37, 120, 198, 0.639);
     color: rgb(232, 238, 244);
-    margin-bottom: 10px;
 }
 </style>
