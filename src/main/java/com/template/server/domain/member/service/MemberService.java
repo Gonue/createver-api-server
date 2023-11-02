@@ -93,7 +93,7 @@ public class MemberService {
     }
     private void defaultImageSet(Member member){
          if (member.getProfileImage() == null || member.getProfileImage().isEmpty()){
-             member.setProfileImage("https://github.com/Gonue/mine/assets/109960034/c095e470-f43b-4bcf-934d-d567d78605bb");
+             member.setProfileImage("https://d2xbqs28wc0ywi.cloudfront.net/default.png");
          }
      }
     private void setRoles(Member member, String email){
