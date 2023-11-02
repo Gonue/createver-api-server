@@ -1,5 +1,6 @@
 package com.template.server.domain.image.dto.response;
 
+import com.template.server.global.util.CloudFrontUrlUtils;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -15,4 +16,8 @@ public class CustomGenerationResponse {
     private String s3Url;
     private int option;
     private LocalDateTime createdAt;
+
+    public String getS3Url() {
+        return CloudFrontUrlUtils.convertToCloudFrontUrl(this.s3Url);
+    }
 }
