@@ -1,6 +1,7 @@
 package com.template.server.domain.image.dto;
 
 import com.template.server.domain.image.entity.Gallery;
+import com.template.server.global.util.CloudFrontUrlUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -21,10 +22,11 @@ public class GalleryDto {
 
 
     public static GalleryDto from(Gallery entity) {
+        String cloudFrontUrl = CloudFrontUrlUtils.convertToCloudFrontUrl(entity.getStorageUrl());
         return new GalleryDto(
                 entity.getGalleryId(),
                 entity.getPrompt(),
-                entity.getStorageUrl(),
+                cloudFrontUrl,
                 entity.getOption(),
                 entity.getCreatedAt(),
                 null,
@@ -34,10 +36,11 @@ public class GalleryDto {
     }
 
     public static GalleryDto from(Gallery entity, Long commentCount) {
+        String cloudFrontUrl = CloudFrontUrlUtils.convertToCloudFrontUrl(entity.getStorageUrl());
         return new GalleryDto(
                 entity.getGalleryId(),
                 entity.getPrompt(),
-                entity.getStorageUrl(),
+                cloudFrontUrl,
                 entity.getOption(),
                 entity.getCreatedAt(),
                 commentCount,

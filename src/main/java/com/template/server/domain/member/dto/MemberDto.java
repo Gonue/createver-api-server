@@ -2,6 +2,7 @@ package com.template.server.domain.member.dto;
 
 import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.entity.PlanType;
+import com.template.server.global.util.CloudFrontUrlUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -20,12 +21,13 @@ public class MemberDto {
     private PlanType planType;
 
     public static MemberDto from(Member entity){
+        String cloudFrontProfileImageUrl = CloudFrontUrlUtils.convertToCloudFrontUrl(entity.getProfileImage());
         return new MemberDto(
                 entity.getMemberId(),
                 entity.getEmail(),
                 entity.getNickName(),
                 entity.getPassword(),
-                entity.getProfileImage(),
+                cloudFrontProfileImageUrl,
                 entity.getCreatedAt(),
                 entity.getModifiedAt(),
                 entity.getPlan() != null ? entity.getPlan().getPlanType() : null
