@@ -6,13 +6,19 @@
       <div class="col-10 col-md-8 col-lg-6 text-center justify-content-center">
         <div class="row justify-content-center">
           <div class="col-8 d-flex align-items-center justify-content-center gw">
-            <input class="form-control col-8" placeholder="What do you want to generate?"
-              style="background-color: #3a3d47; color: #fff;" v-model="inputText" @keydown.enter.prevent="drawImage">
+
+            <div class="input-group col-8">
+              <input type="text" class="form-control" placeholder="What do you want to generate?"
+                style="background-color: #3a3d47; color: #fff;" v-model="inputText" @keydown.enter.prevent="drawImage">
+                <p class="btn-clear" type="button" v-if="inputText" @click="clearInput"><i class="bi bi-trash3"></i></p>
+            </div>
+
             <button class="col-4 btn btn-success fw-bold gw align-items-center" @click="drawImage">
               <span>Draw</span>
             </button>
 
           </div>
+
           <div v-if="errorMessage" class="text-danger">
             {{ errorMessage }}
           </div>
@@ -59,7 +65,7 @@
           </div>
         </transition>
 
-        <div class="col-lg-12 col-md-8 col-sm-12 mt-5">
+        <div class="col-lg-12 col-md-8 col-sm-12 mt-3">
 
           <div class="loading-container" v-if="isLoading">
             <!-- <div class="loading-container"> -->
@@ -69,7 +75,7 @@
             </div>
           </div>
 
-          <div v-if="isLoading || results.length" class="image-box">
+          <div v-if="isLoading || results.length" class="image-box mb-2">
 
             <div v-for="item in results" :key="item.galleryId">
               <img :src="item.storageUrl" alt="Generated Image" @click="selectImage(item)" />
@@ -83,6 +89,7 @@
 
 
       </div>
+      <ImageTagComponent @tagSelected="handleTagSelected"></ImageTagComponent>
       <ImageGalleryVue></ImageGalleryVue>
 
     </div>
@@ -95,12 +102,14 @@ import server from '@/axios-config';
 import ImageGalleryVue from '@/components/ImageGallery.vue';
 import ExplanationMainVue from '@/components/ExplanationMain.vue';
 import ImageModal from '@/components/ImageModal.vue';
+import ImageTagComponent from '@/components/ImageTagComponent.vue';
 
 export default {
   components: {
     ImageGalleryVue,
     ExplanationMainVue,
-    ImageModal
+    ImageModal,
+    ImageTagComponent
   },
   data() {
     return {
@@ -175,9 +184,15 @@ export default {
     },
     deselectImage() {
       this.selectedImageInfo = null;
-    }
+    },
 
+    handleTagSelected(tagName) {
+      this.inputText = this.inputText ? this.inputText + ' ' + tagName : tagName;
+    },
 
+    clearInput() {
+      this.inputText = '';  // inputText를 초기화
+    },
   },
 };
 </script>
@@ -191,16 +206,6 @@ export default {
   height: auto;
   min-height: 100vh;
   padding: 0;
-}
-
-/* 텍스트에어리어와 버튼 스타일 */
-.input-group .ar {
-  border: 1px solid #ccc;
-  border-radius: 4px 0 0 4px;
-}
-
-.input-group .btn {
-  border-radius: 0 4px 4px 0;
 }
 
 .custom-img {
@@ -265,12 +270,6 @@ export default {
     width: 100%;
   }
 
-  .form-control {
-    flex: 1;
-    width: 100% !important;
-    /* 너비를 100%로 조절 */
-    margin-right: 14px !important;
-  }
 }
 
 .button-container {
@@ -359,28 +358,17 @@ export default {
   height: auto;
 }
 
-.form-control {
-  margin-right: 5px;
-  margin-left: 10px;
-  /* 버튼 왼쪽에 마진 추가 */
-}
-
-.btn-success {
-  margin-left: 5px;
-  /* 버튼 왼쪽에 마진 추가 */
-  margin-right: 10px;
-}
 
 .form-control {
   border: 2px solid #ccc;
-  /* 테두리 설정 */
   background-color: rgb(34 40 57);
   color: white;
+  z-index: 1;
+  border-radius: 7px !important;
 }
 
 .form-control::placeholder {
-  color: white;
-  /* 하얀색으로 설정 */
+  color: #8F94A3;
 }
 
 .form-control:focus {
@@ -389,14 +377,12 @@ export default {
   /* 포커스 상태에서 box-shadow 제거 */
   border: 2px solid #ccc;
   /* 테두리 설정 */
-
   -webkit-text-fill-color: white;
   /* 웹킷 브라우저에서 텍스트 색상 고정 */
 }
 
-
 .btn-success {
-  margin-left: 5px;
+  margin-left: 10px;
   margin-right: 10px;
   background-color: #2c7aa3;
   border-color: #2c7aa3;
@@ -416,4 +402,18 @@ export default {
 .btn-success:focus {
   box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
 }
+
+.btn-clear {
+  position: absolute;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100 !important;
+}
+
+
 </style>
