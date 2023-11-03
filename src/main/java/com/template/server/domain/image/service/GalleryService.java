@@ -1,6 +1,7 @@
 package com.template.server.domain.image.service;
 
 import com.template.server.domain.image.dto.GalleryDto;
+import com.template.server.domain.image.dto.response.GalleryRecommendationResponse;
 import com.template.server.domain.image.entity.Gallery;
 import com.template.server.domain.image.repository.GalleryRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,4 +48,16 @@ public class GalleryService {
 
         return new PageImpl<>(dtos, pageable, results.getTotalElements());
     }
+
+    @Transactional(readOnly = true)
+    public Page<GalleryRecommendationResponse> galleryRecommendationList(Pageable pageable){
+        Page<Gallery> galleries = galleryRepository.findAll(pageable);
+
+        List<GalleryRecommendationResponse> recommendationResponses = galleries.getContent().stream()
+                .map(gallery -> GalleryRecommendationResponse.from(GalleryDto.from(gallery))).sorted((a, b) -> Double.compare(b.getScore(), a.getScore())).collect(Collectors.toList());
+
+        // 추천 점수가 높은 순으로 정렬
+        return new PageImpl<>(recommendationResponses, pageable, galleries.getTotalElements());
+    }
+
 }

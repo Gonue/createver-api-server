@@ -1,5 +1,6 @@
 package com.template.server.domain.image.controller;
 
+import com.template.server.domain.image.dto.response.GalleryRecommendationResponse;
 import com.template.server.domain.image.dto.response.GalleryResponse;
 import com.template.server.domain.image.service.GalleryService;
 import com.template.server.domain.image.service.S3DownloadService;
@@ -46,6 +47,11 @@ public class GalleryController {
     @GetMapping("/listWithCommentCountAndLikeCount")
     public Response<Page<GalleryResponse>> galleryListWithCommentCountAndLikeCount(Pageable pageable){
         return Response.success(galleryService.galleryListWithComment(pageable).map(GalleryResponse::from));
+    }
+
+    @GetMapping("/list/recommendations")
+    public Response<Page<GalleryRecommendationResponse>> getGalleryRecommendations(Pageable pageable){
+        return Response.success(galleryService.galleryRecommendationList(pageable));
     }
 
     @GetMapping("/download/{galleryId}")
