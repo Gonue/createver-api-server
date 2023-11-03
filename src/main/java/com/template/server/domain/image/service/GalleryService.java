@@ -51,13 +51,19 @@ public class GalleryService {
 
     @Transactional(readOnly = true)
     public Page<GalleryRecommendationResponse> galleryRecommendationList(Pageable pageable){
-        Page<Gallery> galleries = galleryRepository.findAll(pageable);
+        Page<Object[]> results = galleryRepository.findAllWithComment(pageable);
 
-        List<GalleryRecommendationResponse> recommendationResponses = galleries.getContent().stream()
-                .map(gallery -> GalleryRecommendationResponse.from(GalleryDto.from(gallery))).sorted((a, b) -> Double.compare(b.getScore(), a.getScore())).collect(Collectors.toList());
+        List<GalleryRecommendationResponse> recommendationResponses = results.getContent().stream()
+                .map(result -> {
+                    Gallery gallery = (Gallery) result[0];
+                    Long commentCount = (Long) result[1];
+                    return GalleryRecommendationResponse.from(GalleryDto.from(gallery, commentCount));
+                })
+                .sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
+                .collect(Collectors.toList());
 
         // 추천 점수가 높은 순으로 정렬
-        return new PageImpl<>(recommendationResponses, pageable, galleries.getTotalElements());
+        return new PageImpl<>(recommendationResponses, pageable, results.getTotalElements());
     }
 
 }
