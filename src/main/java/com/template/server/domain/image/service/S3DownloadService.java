@@ -44,7 +44,7 @@ public class S3DownloadService {
         try {
             URI uri = new URI(storageUrl);
             String path = uri.getPath();
-            return path.substring(path.lastIndexOf('/') + 1);
+            return path.substring(1);
         } catch (URISyntaxException e) {
             throw new BusinessLogicException(ExceptionCode.S3_FILE_ERROR, "잘못된 URL 형식입니다.");
         }

@@ -93,7 +93,7 @@ public class MemberService {
     }
     private void defaultImageSet(Member member){
          if (member.getProfileImage() == null || member.getProfileImage().isEmpty()){
-             member.setProfileImage("https://d2xbqs28wc0ywi.cloudfront.net/default.png");
+             member.setProfileImage("https://d2xbqs28wc0ywi.cloudfront.net/images/65fc23b3-e151-47cc-9c9b-1af57381e6fa_ham1.png");
          }
      }
     private void setRoles(Member member, String email){
