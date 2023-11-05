@@ -1,11 +1,9 @@
 package com.template.server.global.auth.handler;
 
-import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.service.MemberService;
 import com.template.server.global.auth.jwt.JwtTokenizer;
 import com.template.server.global.auth.utils.CustomAuthorityUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -27,12 +25,6 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-
-    @Value("${custom.oauth.redirect.scheme}")
-    private String scheme;
-
-    @Value("${custom.oauth.redirect.host}")
-    private String host;
 
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils authorityUtils;
@@ -57,6 +49,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         String accessToken = delegateAccessToken(email, authorities);
         String refreshToken = delegateRefreshToken(email);
         String uri = createURI(accessToken, refreshToken).toString();
+        System.out.println("Redirecting to: " + uri.toString());
         getRedirectStrategy().sendRedirect(request, response, uri);
     }
 
@@ -90,8 +83,8 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
         return UriComponentsBuilder
                 .newInstance()
-                .scheme(scheme)
-                .host(host)
+                .scheme("https")
+                .host("createver.site")
                 .path("/user-oauth")
                 .queryParams(queryParams)
                 .build()
