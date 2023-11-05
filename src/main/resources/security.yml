@@ -6,7 +6,7 @@ spring:
         google:
           client-id: ${GOOGLE_CLIENT_ID}
           client-secret: ${GOOGLE_CLIENT_SECRET}
-          redirect-uri: "https://api.createver.site/oauth2/authorization/google"
+          redirect-uri: https://api.createver.site/login/oauth2/code/google
           scope: profile, email
 
 mail:
@@ -17,9 +17,3 @@ jwt:
   key: ${JWT_SECRET_KEY}
   access-token-expiration-minutes: 720
   refresh-token-expiration-minutes: 1440
-
-custom:
-  oauth:
-    redirect:
-      host: createver.site
-      scheme: https
