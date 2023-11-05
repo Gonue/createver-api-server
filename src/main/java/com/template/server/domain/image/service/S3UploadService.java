@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -21,7 +22,9 @@ public class S3UploadService {
     private final AmazonS3 amazonS3;
 
     public String upload(MultipartFile multipartFile) throws IOException {
-        String s3FileName = UUID.randomUUID() + "_" + multipartFile.getOriginalFilename();
+        String originalFileName = multipartFile.getOriginalFilename();
+        String fileNameWithoutExt = Objects.requireNonNull(originalFileName).substring(0, originalFileName.lastIndexOf('.'));
+        String s3FileName = "images/" + UUID.randomUUID() + "_" + fileNameWithoutExt + ".png";
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(multipartFile.getInputStream().available());
@@ -34,7 +37,7 @@ public class S3UploadService {
     }
 
     public String upload(byte[] imageData, String contentType) {
-        String s3FileName = UUID.randomUUID().toString() + ".png";  // 파일명은 랜덤 UUID로 생성
+        String s3FileName = "images/" + UUID.randomUUID().toString() + ".png";
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(imageData.length);
