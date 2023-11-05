@@ -7,9 +7,9 @@
                 <img :src="localSelectedImageInfo.storageUrl" />
             </div>
 
-            <div class="d-flex justify-content-end mt-4">
+            <div class="d-flex justify-content-end mt-2">
                 <ImageLikeComponent :localSelectedImageInfo="localSelectedImageInfo" />
-                <button class="cus-btn mx-1 mb-3" type="button" @click="downloadImage">Download</button>
+                <button class="cus-btn mx-1 mb-2" type="button" @click="downloadImage">Download</button>
             </div>
 
             <div>
@@ -320,11 +320,10 @@ tr {
 }
 .cus-btn {
     text-align: center;
-    padding: 12px 16px;
+    padding: 5px 10px;
     border: 1px solid transparent;
     border-radius: 5px;
     background-color: rgba(37, 120, 198, 0.639);
     color: rgb(232, 238, 244);
-    margin-bottom: 10px;
 }
 </style>
