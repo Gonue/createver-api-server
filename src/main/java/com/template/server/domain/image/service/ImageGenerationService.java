@@ -67,6 +67,7 @@ public class ImageGenerationService {
 
             ImageGenerationRequest imageGenerationRequest = ImageGenerationRequest.builder()
                     .prompt(modifiedPrompt)
+                    .model(OpenAiConfig.MODEL)
                     .n(OpenAiConfig.IMAGE_COUNT)
                     .size(OpenAiConfig.IMAGE_SIZE)
                     .response_format(OpenAiConfig.RESPONSE_FORMAT)

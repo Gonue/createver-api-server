@@ -11,8 +11,8 @@ import java.io.Serializable;
 public class ImageGenerationRequest implements Serializable {
 
     private String prompt;
+    private String model;
     private int n;
     private String size;
     private String response_format;
-
 }
