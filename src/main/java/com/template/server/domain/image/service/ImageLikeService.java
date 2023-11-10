@@ -47,6 +47,8 @@ public class ImageLikeService {
     }
 
     public Long countLikesForGallery(Long galleryId) {
-        return imageLikeRepository.countByGalleryGalleryId(galleryId);
+        Gallery gallery = galleryRepository.findById(galleryId)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.GALLERY_NOT_FOUND));
+        return (long)gallery.getLikeCount();
     }
 }
