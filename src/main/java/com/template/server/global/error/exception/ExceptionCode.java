@@ -20,7 +20,8 @@ public enum ExceptionCode {
     IMAGE_COMMENT_NOT_FOUND(404, "해당 댓글을 찾을 수 없음"),
     UNAUTHORIZED_ACCESS(401, "권한 없음"),
     ORDER_NOT_FOUND(404, "주문을 찾을 수 없음"),
-    RATE_LIMIT_EXCEEDED(429, "Rate limit exceeded")
+    RATE_LIMIT_EXCEEDED(429, "Rate limit exceeded"),
+    ALREADY_REPORTED(409, "이미 신고한 내용")
     ;
 
     private int status;
