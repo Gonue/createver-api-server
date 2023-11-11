@@ -19,7 +19,8 @@ public class GalleryDto {
     private final Long commentCount;
     private final int likeCount;
     private final int downloadCount;
-
+    private final int reportCount;
+    private final boolean isBlinded;
 
     public static GalleryDto from(Gallery entity) {
         String cloudFrontUrl = CloudFrontUrlUtils.convertToCloudFrontUrl(entity.getStorageUrl());
@@ -31,7 +32,9 @@ public class GalleryDto {
                 entity.getCreatedAt(),
                 null,
                 entity.getLikeCount(),
-                entity.getDownloadCount()
+                entity.getDownloadCount(),
+                entity.getReportCount(),
+                entity.isBlinded()
         );
     }
 
@@ -45,7 +48,9 @@ public class GalleryDto {
                 entity.getCreatedAt(),
                 commentCount,
                 entity.getLikeCount(),
-                entity.getDownloadCount()
+                entity.getDownloadCount(),
+                entity.getReportCount(),
+                entity.isBlinded()
         );
     }
 }

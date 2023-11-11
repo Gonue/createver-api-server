@@ -1,6 +1,7 @@
 package com.template.server.domain.image.controller;
 
 
+import com.template.server.domain.image.dto.request.ImageReportRequest;
 import com.template.server.domain.image.service.ImageReportService;
 import com.template.server.global.error.response.Response;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +17,9 @@ public class ImageReportController {
 
     @PostMapping("/report/{galleryId}")
     public Response<Void> addReport(@PathVariable Long galleryId,
-                                    @RequestBody String content,
+                                    @RequestBody ImageReportRequest request,
                                     Authentication authentication) {
-        imageReportService.addReport(galleryId, authentication.getName(), content);
+        imageReportService.addReport(galleryId, authentication.getName(), request.getContent());
         return Response.success();
     }
 
@@ -33,5 +34,12 @@ public class ImageReportController {
                                                    Authentication authentication) {
         boolean hasReported = imageReportService.hasUserReported(galleryId, authentication.getName());
         return Response.success(200, hasReported);
+    }
+
+    @PatchMapping("/gallery/{galleryId}/blind")
+    public Response<Void> updateGalleryBlindStatus(@PathVariable Long galleryId,
+                                                   @RequestParam boolean isBlinded) {
+        imageReportService.updateGalleryBlindStatus(galleryId, isBlinded);
+        return Response.success();
     }
 }

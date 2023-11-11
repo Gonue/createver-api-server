@@ -33,6 +33,7 @@ public class ImageReportService {
         }
 
         ImageReport imageReport = ImageReport.create(member, gallery, content);
+        gallery.increaseReportCount();
         imageReportRepository.save(imageReport);
     }
 
@@ -46,6 +47,17 @@ public class ImageReportService {
     }
 
     public Long countReportsForGallery(Long galleryId) {
-        return imageReportRepository.countByGalleryGalleryId(galleryId);
+        Gallery gallery = galleryRepository.findById(galleryId)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.GALLERY_NOT_FOUND));
+        return (long)gallery.getReportCount();
+    }
+
+    @Transactional
+    public void updateGalleryBlindStatus(Long galleryId, boolean isBlinded) {
+        Gallery gallery = galleryRepository.findById(galleryId)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.GALLERY_NOT_FOUND));
+
+        gallery.setBlinded(isBlinded);
+        galleryRepository.save(gallery);
     }
 }

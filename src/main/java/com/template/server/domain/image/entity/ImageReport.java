@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-@Table(name = "report")
+@Table(name = "image_report")
 public class ImageReport extends AuditingFields {
 
     @Id
