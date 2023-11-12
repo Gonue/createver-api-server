@@ -39,6 +39,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageGenerationService {
 
+    private boolean isLargeSizeNext = true;
+
     private final RestTemplate restTemplate;
     private final S3UploadService s3UploadService;
     private final GalleryRepository galleryRepository;
@@ -54,6 +56,16 @@ public class ImageGenerationService {
     @Value(("${sagemaker.end-point}"))
     private String sageMakerEndPoint;
 
+    private String getNextImageSize() {
+        if (isLargeSizeNext) {
+            isLargeSizeNext = false;
+            return "1024x1792";
+        } else {
+            isLargeSizeNext = true;
+            return "1024x1024";
+        }
+    }
+
     public List<CustomGenerationResponse> makeImages(PromptRequest promptRequest, String email) {
         if (!rateLimiterManager.allowRequest(email)) {
             throw new BusinessLogicException(ExceptionCode.RATE_LIMIT_EXCEEDED, "Rate limit exceeded");
@@ -65,11 +77,13 @@ public class ImageGenerationService {
 
             String modifiedPrompt = modifyPromptBasedOnOption(promptRequest.getPrompt(), promptRequest.getOption());
 
+            String imageSize = getNextImageSize();
+
             ImageGenerationRequest imageGenerationRequest = ImageGenerationRequest.builder()
                     .prompt(modifiedPrompt)
                     .model(OpenAiConfig.MODEL)
                     .n(OpenAiConfig.IMAGE_COUNT)
-                    .size(OpenAiConfig.IMAGE_SIZE)
+                    .size(imageSize)
                     .response_format(OpenAiConfig.RESPONSE_FORMAT)
                     .build();
 
