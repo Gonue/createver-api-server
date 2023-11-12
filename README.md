@@ -55,13 +55,13 @@ AI-based creation site
 
 ### ERD
 
-<img src="https://github.com/Gonue/mine/assets/109960034/97ca3091-659c-4586-b116-b57712bf1cb0">
+<img src="https://github.com/Gonue/mine/assets/109960034/2d2c4883-296c-457f-b382-4f8d22b298c9">
 
 ---
 
 ### Architecture
 
-<img src="https://github.com/Gonue/mine/assets/109960034/ca5f8721-5c0c-4f48-907a-13e30ef7c43a">
+<img src="https://github.com/Gonue/mine/assets/109960034/cc16534f-cf1e-42b9-9309-b582866422bb">
 
 ---
 
