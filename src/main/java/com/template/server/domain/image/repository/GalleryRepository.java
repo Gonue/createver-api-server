@@ -27,5 +27,11 @@ public interface GalleryRepository extends JpaRepository<Gallery, Long> {
            "LEFT JOIN ImageComment c ON c.gallery = g " +
            "GROUP BY g")
     Page<Object[]> findAllWithComment(Pageable pageable);
+
+    @Query("SELECT g, COUNT(c) FROM Gallery g " +
+           "LEFT JOIN ImageComment c ON c.gallery = g " +
+           "GROUP BY g " +
+           "ORDER BY g.likeCount DESC")
+    Page<Object[]> findAllWithCommentSortedByLikeCount(Pageable pageable);
 }
 

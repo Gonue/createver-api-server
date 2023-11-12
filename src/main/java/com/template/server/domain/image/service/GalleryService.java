@@ -62,8 +62,23 @@ public class GalleryService {
                 .sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
                 .collect(Collectors.toList());
 
-        // 추천 점수가 높은 순으로 정렬
         return new PageImpl<>(recommendationResponses, pageable, results.getTotalElements());
     }
+
+    @Transactional(readOnly = true)
+    public Page<GalleryDto> galleryListSortedByLikeCountAndComments(Pageable pageable){
+        Page<Object[]> results = galleryRepository.findAllWithCommentSortedByLikeCount(pageable);
+
+        List<GalleryDto> recommendationResponses = results.getContent().stream()
+            .map(result -> {
+                Gallery gallery = (Gallery) result[0];
+                Long commentCount = (Long) result[1];
+                return GalleryDto.from(gallery, commentCount);
+            })
+            .collect(Collectors.toList());
+
+        return new PageImpl<>(recommendationResponses, pageable, results.getTotalElements());
+    }
+
 
 }
