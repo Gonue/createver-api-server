@@ -18,6 +18,8 @@ public class GalleryResponse {
     private final Long commentCount;
     private final int likeCount;
     private final int downloadCount;
+    private final int reportCount;
+    private final boolean isBlinded;
 
     public static GalleryResponse from(GalleryDto dto){
         return new GalleryResponse(
@@ -28,7 +30,9 @@ public class GalleryResponse {
                 dto.getCreatedAt(),
                 dto.getCommentCount(),
                 dto.getLikeCount(),
-                dto.getDownloadCount()
+                dto.getDownloadCount(),
+                dto.getReportCount(),
+                dto.isBlinded()
         );
     }
 }

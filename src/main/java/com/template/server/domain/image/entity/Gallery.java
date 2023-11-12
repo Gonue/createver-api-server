@@ -56,12 +56,25 @@ public class Gallery extends AuditingFields {
     @Column(name = "like_count", columnDefinition = "int default 0")
     private int likeCount = 0;
 
+    @Column(name = "report_count", columnDefinition = "int default 0")
+    private int reportCount = 0;
+
+    @Setter @Column(name = "is_blinded", columnDefinition = "boolean default false")
+    private boolean isBlinded = false;
+
     public void increaseDownloadCount() {
         this.downloadCount += 1;
     }
 
     public void increaseLikeCount() {
         this.likeCount += 1;
+    }
+
+    public void increaseReportCount() {
+        this.reportCount += 1;
+        if (this.reportCount > 5) {
+            setBlinded(true);
+        }
     }
 
     public static Gallery create(String prompt, String url, int option) {

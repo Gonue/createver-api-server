@@ -60,6 +60,8 @@ public class SecurityConfig {
 
                         .antMatchers(HttpMethod.POST, "/api/v1/image/create/stable").hasAnyRole("USER", "ADMIN")
 
+                        .antMatchers(HttpMethod.PATCH, "/api/v1/image/gallery/*/blind").hasRole("ADMIN")
+
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
