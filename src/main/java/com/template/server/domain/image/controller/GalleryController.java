@@ -49,9 +49,14 @@ public class GalleryController {
         return Response.success(galleryService.galleryListWithComment(pageable).map(GalleryResponse::from));
     }
 
-    @GetMapping("/list/recommendations")
+    @GetMapping("/list/recommendations2")
     public Response<Page<GalleryRecommendationResponse>> getGalleryRecommendations(Pageable pageable){
         return Response.success(galleryService.galleryRecommendationList(pageable));
+    }
+
+    @GetMapping("/list/recommendations")
+    public Response<Page<GalleryResponse>> galleryListSortedByLikeCountAndComments(Pageable pageable){
+        return Response.success(galleryService.galleryListSortedByLikeCountAndComments(pageable).map(GalleryResponse::from));
     }
 
     @GetMapping("/download/{galleryId}")
