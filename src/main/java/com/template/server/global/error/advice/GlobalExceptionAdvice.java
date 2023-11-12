@@ -88,6 +88,13 @@ public class GlobalExceptionAdvice {
         return response;
     }
 
+    @ExceptionHandler(NullPointerException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleNullPointerException(NullPointerException e) {
+        log.error("Null Pointer Exception: {}", e.getMessage());
+        return ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "Null Pointer Exception occurred");
+    }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleException(Exception e) {

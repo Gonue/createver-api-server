@@ -19,6 +19,8 @@ public class GalleryRecommendationResponse {
     private final int likeCount;
     private final int downloadCount;
     private final double score;
+    private final int reportCount;
+    private final boolean isBlinded;
 
     public static GalleryRecommendationResponse from(GalleryDto dto){
         long commentCount = dto.getCommentCount() == null ? 0 : dto.getCommentCount();
@@ -32,7 +34,9 @@ public class GalleryRecommendationResponse {
                 commentCount,
                 dto.getLikeCount(),
                 dto.getDownloadCount(),
-                score
+                score,
+                dto.getReportCount(),
+                dto.isBlinded()
         );
     }
 }
