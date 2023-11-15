@@ -39,6 +39,15 @@ public class GalleryController {
         return Response.success(galleryService.findGalleryList(prompt, pageable).map(GalleryResponse::from));
     }
 
+    @GetMapping("/list/search2")
+    public Response<Page<GalleryResponse>> findGalleryList(
+            @RequestParam String prompt,
+            @RequestParam(required = false) List<Integer> options,
+            Pageable pageable) {
+        return Response.success(galleryService.findGalleryListByOptionsAndPrompt(options, prompt, pageable)
+                                             .map(GalleryResponse::from));
+    }
+
     @GetMapping("/list/tag")
     public Response<Page<GalleryResponse>> findGalleryListByTag(@RequestParam String tagName, Pageable pageable){
         return Response.success(galleryService.getGalleriesByTagName(tagName, pageable).map(GalleryResponse::from));

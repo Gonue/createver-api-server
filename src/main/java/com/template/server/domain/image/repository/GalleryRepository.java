@@ -4,6 +4,7 @@ import com.template.server.domain.image.entity.Gallery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -12,7 +13,7 @@ import javax.persistence.LockModeType;
 import java.util.Optional;
 
 @Repository
-public interface GalleryRepository extends JpaRepository<Gallery, Long> {
+public interface GalleryRepository extends JpaRepository<Gallery, Long>, JpaSpecificationExecutor<Gallery> {
     Page<Gallery> findByMemberEmail(String email, Pageable pageable);
 
     Page<Gallery> findByPromptContaining(String prompt, Pageable pageable);
