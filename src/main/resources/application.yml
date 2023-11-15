@@ -55,3 +55,7 @@ openai:
 sagemaker:
   end-point: ${SAGEMAKER_END_POINT}
   api-key: ${SAGEMAKER_API_KEY}
+
+naver:
+  client-id: ${NAVER_CLIENT_ID}
+  client-secret: ${NAVER_CLIENT_SECRET}

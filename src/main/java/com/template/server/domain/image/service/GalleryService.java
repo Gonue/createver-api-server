@@ -4,10 +4,12 @@ import com.template.server.domain.image.dto.GalleryDto;
 import com.template.server.domain.image.dto.response.GalleryRecommendationResponse;
 import com.template.server.domain.image.entity.Gallery;
 import com.template.server.domain.image.repository.GalleryRepository;
+import com.template.server.domain.image.repository.GallerySpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,12 @@ public class GalleryService {
     @Transactional(readOnly = true)
     public Page<GalleryDto> findGalleryList(String prompt, Pageable pageable){
         return galleryRepository.findByPromptContaining(prompt, pageable).map(GalleryDto::from);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<GalleryDto> findGalleryListByOptionsAndPrompt(List<Integer> options, String prompt, Pageable pageable) {
+        Specification<Gallery> spec = GallerySpecification.hasOptionsAndPrompt(options, prompt);
+        return galleryRepository.findAll(spec, pageable).map(GalleryDto::from);
     }
 
     @Transactional(readOnly = true)
