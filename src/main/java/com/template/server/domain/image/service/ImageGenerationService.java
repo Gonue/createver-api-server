@@ -17,7 +17,9 @@ import com.template.server.domain.member.repository.MemberRepository;
 import com.template.server.global.config.OpenAiConfig;
 import com.template.server.global.error.exception.BusinessLogicException;
 import com.template.server.global.error.exception.ExceptionCode;
+import com.template.server.global.util.LanguageDiscriminationUtils;
 import com.template.server.global.util.RateLimiterManager;
+import com.template.server.global.util.Translate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -47,6 +49,7 @@ public class ImageGenerationService {
     private final MemberRepository memberRepository;
     private final ImageTagService imageTagService;
     private final RateLimiterManager rateLimiterManager;
+    private final Translate translate;
 
     @Value("${openai.api-key}")
     private String apiKey;
@@ -75,7 +78,15 @@ public class ImageGenerationService {
             httpHeaders.setContentType(MediaType.parseMediaType(OpenAiConfig.MEDIA_TYPE));
             httpHeaders.add(OpenAiConfig.AUTHORIZATION, OpenAiConfig.BEARER + apiKey);
 
-            String modifiedPrompt = modifyPromptBasedOnOption(promptRequest.getPrompt(), promptRequest.getOption());
+
+            String originalPrompt = promptRequest.getPrompt();
+            String translatedPrompt = originalPrompt;
+
+            if (LanguageDiscriminationUtils.isKorean(originalPrompt)) {
+                 translatedPrompt = translate.translate(originalPrompt, "ko", "en");
+             }
+
+            String modifiedPrompt = modifyPromptBasedOnOption(translatedPrompt, promptRequest.getOption());
 
             String imageSize = getNextImageSize();
 
@@ -159,11 +170,18 @@ public class ImageGenerationService {
             httpHeaders.setContentType(MediaType.parseMediaType("application/json; charset=UTF-8"));
             httpHeaders.add("Authorization", "BEARER" + sageMakerKey);
 
+            String originalPrompt = promptRequest.getPrompt();
+            String translatedPrompt = originalPrompt;
+
+            if (LanguageDiscriminationUtils.isKorean(originalPrompt)) {
+                translatedPrompt = translate.translate(originalPrompt, "ko", "en");
+            }
+
             StableGenerationRequest stableGenerationRequest = StableGenerationRequest.builder()
                     .checkPoint(promptRequest.getCheckPoint())
                     .textInversion(promptRequest.getTextInversion())
                     .lora(promptRequest.getLora())
-                    .prompt(promptRequest.getPrompt())
+                    .prompt(translatedPrompt)
                     .width(promptRequest.getWidth())
                     .height(promptRequest.getHeight())
                     .num_images_per_prompt(promptRequest.getNum_images_per_prompt())
@@ -188,8 +206,6 @@ public class ImageGenerationService {
             if (imageGenerationResponse == null || imageGenerationResponse.getData() == null) {
                 throw new BusinessLogicException(ExceptionCode.GENERAL_ERROR, "SageMaker API No Response");
             }
-
-
 
             for(ImageGenerationResponse.ImageURL imageUrl : imageGenerationResponse.getData()){
                 byte[] decodedImage = Base64.getDecoder().decode(imageUrl.getB64_json());
