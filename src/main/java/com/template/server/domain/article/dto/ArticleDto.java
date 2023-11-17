@@ -2,7 +2,6 @@ package com.template.server.domain.article.dto;
 
 import com.template.server.domain.article.entity.Article;
 import com.template.server.domain.member.dto.MemberDto;
-import com.template.server.global.util.CloudFrontUrlUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
