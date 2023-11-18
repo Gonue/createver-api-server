@@ -56,4 +56,8 @@ public class Member extends AuditingFields {
         }
     }
 
+    public void memberPlanUpdate(Plan plan){
+        this.plan = plan;
+    }
+
 }
