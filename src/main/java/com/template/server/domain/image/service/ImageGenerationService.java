@@ -83,8 +83,8 @@ public class ImageGenerationService {
             String translatedPrompt = originalPrompt;
 
             if (LanguageDiscriminationUtils.isKorean(originalPrompt)) {
-                 translatedPrompt = translate.translate(originalPrompt, "ko", "en");
-             }
+                translatedPrompt = translate.translate(originalPrompt, "ko", "en");
+            }
 
             String modifiedPrompt = modifyPromptBasedOnOption(translatedPrompt, promptRequest.getOption());
 
@@ -127,12 +127,17 @@ public class ImageGenerationService {
                 byte[] decodedImage = Base64.getDecoder().decode(imageUrl.getB64_json());
                 String s3Url = s3UploadService.upload(decodedImage, "image/png");
 
-                Gallery gallery = Gallery.create(promptRequest.getPrompt(), s3Url, promptRequest.getOption());
-                gallery.setTags(tags);
+                Gallery.GalleryBuilder galleryBuilder = Gallery.builder()
+                        .prompt(promptRequest.getPrompt())
+                        .storageUrl(s3Url)
+                        .option(promptRequest.getOption())
+                        .tags(tags);
                 if (currentMember != null) {
-                    gallery.setMember(currentMember);
+                    galleryBuilder.member(currentMember);
                 }
-                Gallery savedGallery = galleryRepository.save(gallery);
+
+                Gallery savedGallery = galleryRepository.save(galleryBuilder.build());
+
                 CustomGenerationResponse customGenerationResponse = CustomGenerationResponse.builder()
                         .galleryId(savedGallery.getGalleryId())
                         .prompt(savedGallery.getPrompt())
@@ -207,12 +212,17 @@ public class ImageGenerationService {
                 throw new BusinessLogicException(ExceptionCode.GENERAL_ERROR, "SageMaker API No Response");
             }
 
-            for(ImageGenerationResponse.ImageURL imageUrl : imageGenerationResponse.getData()){
+            for (ImageGenerationResponse.ImageURL imageUrl : imageGenerationResponse.getData()) {
                 byte[] decodedImage = Base64.getDecoder().decode(imageUrl.getB64_json());
                 String s3Url = s3UploadService.upload(decodedImage, "image/png");
 
-                Gallery gallery = Gallery.create(promptRequest.getPrompt(), s3Url, promptRequest.getOption());
-                gallery.setMember(member);
+
+                Gallery gallery = Gallery.builder()
+                        .prompt(promptRequest.getPrompt())
+                        .storageUrl(s3Url)
+                        .option(promptRequest.getOption())
+                        .member(member).build();
+
                 Gallery savedGallery = galleryRepository.save(gallery);
                 CustomGenerationResponse customGenerationResponse = CustomGenerationResponse.builder()
                         .galleryId(savedGallery.getGalleryId())

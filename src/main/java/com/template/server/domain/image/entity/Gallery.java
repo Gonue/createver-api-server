@@ -2,10 +2,7 @@ package com.template.server.domain.image.entity;
 
 import com.template.server.domain.member.entity.Member;
 import com.template.server.global.audit.AuditingFields;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -23,21 +20,16 @@ public class Gallery extends AuditingFields {
     @Column(name = "gallery_id", updatable = false)
     private Long galleryId;
 
-    @Setter
     @Column(name = "prompt", nullable = false, columnDefinition = "TEXT")
     private String prompt;
 
-    @Setter
     @Column(name = "storage_url", nullable = false, columnDefinition = "TEXT")
     private String storageUrl;
 
-    @Setter
     @Column(name = "image_option", nullable = false)
     private int option;
 
-
     @ManyToMany
-    @Setter
     @JoinTable(
             name = "gallery_tag",
             joinColumns = @JoinColumn(name = "gallery_id"),
@@ -46,7 +38,6 @@ public class Gallery extends AuditingFields {
     private List<ImageTag> tags = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Setter
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -59,8 +50,21 @@ public class Gallery extends AuditingFields {
     @Column(name = "report_count", columnDefinition = "int default 0")
     private int reportCount = 0;
 
-    @Setter @Column(name = "is_blinded", columnDefinition = "boolean default false")
+    @Column(name = "is_blinded", columnDefinition = "boolean default false")
     private boolean isBlinded = false;
+
+    @Builder
+    public Gallery(String prompt, String storageUrl, int option, List<ImageTag> tags, Member member) {
+        this.prompt = prompt;
+        this.storageUrl = storageUrl;
+        this.option = option;
+        this.tags = tags != null ? tags : new ArrayList<>();
+        this.member = member;
+    }
+
+    public void updateBlindStatus(boolean isBlinded) {
+        this.isBlinded = isBlinded;
+    }
 
     public void increaseDownloadCount() {
         this.downloadCount += 1;
@@ -73,15 +77,8 @@ public class Gallery extends AuditingFields {
     public void increaseReportCount() {
         this.reportCount += 1;
         if (this.reportCount > 5) {
-            setBlinded(true);
+            this.isBlinded = true;
         }
     }
 
-    public static Gallery create(String prompt, String url, int option) {
-        Gallery gallery = new Gallery();
-        gallery.setPrompt(prompt);
-        gallery.setStorageUrl(url);
-        gallery.setOption(option);
-        return gallery;
-    }
 }

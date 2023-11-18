@@ -161,8 +161,16 @@ class MemberServiceTest {
         String email = "test@test.com";
         Pageable pageable = PageRequest.of(0, 10);
         List<Gallery> galleryList = Arrays.asList(
-                Gallery.create("prompt1", "url1", 1),
-                Gallery.create("prompt2", "url2", 2)
+                Gallery.builder()
+                        .prompt("prompt1")
+                        .storageUrl("url1")
+                        .option(1)
+                        .build(),
+                Gallery.builder()
+                        .prompt("prompt2")
+                        .storageUrl("url2")
+                        .option(2)
+                        .build()
         );
         Page<Gallery> galleryPage = new PageImpl<>(galleryList, pageable, galleryList.size());
 
