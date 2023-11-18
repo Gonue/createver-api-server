@@ -25,7 +25,9 @@ public class ImageTagService {
         for (String tagName : tagNames) {
             ImageTag tag = imageTagRepository.findByName(tagName)
                     .orElseGet(() -> {
-                        ImageTag newTag = ImageTag.create(tagName);
+                        ImageTag newTag = ImageTag.builder()
+                                .name(tagName)
+                                .build();
                         return imageTagRepository.save(newTag);
                     });
             tags.add(tag);

@@ -31,9 +31,12 @@ class ImageTagServiceTest {
     public void testGetOrCreateTags() {
         // Given
         String[] tagNames = {"tag1", "tag2"};
-        ImageTag tag1 = ImageTag.create("tag1");
-        ImageTag tag2 = ImageTag.create("tag2");
-
+        ImageTag tag1 = ImageTag.builder()
+                .name("tag1")
+                .build();
+        ImageTag tag2 = ImageTag.builder()
+                .name("tag2")
+                .build();
         when(imageTagRepository.findByName("tag1")).thenReturn(Optional.of(tag1));
         when(imageTagRepository.findByName("tag2")).thenReturn(Optional.empty());
         when(imageTagRepository.save(any(ImageTag.class))).thenReturn(tag2);

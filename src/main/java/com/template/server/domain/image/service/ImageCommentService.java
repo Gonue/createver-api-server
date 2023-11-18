@@ -30,7 +30,11 @@ public class ImageCommentService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
-        ImageComment comment = ImageComment.create(content, gallery, member);
+        ImageComment comment = ImageComment.builder()
+                .content(content)
+                .gallery(gallery)
+                .member(member)
+                .build();
         imageCommentRepository.save(comment);
     }
 
@@ -45,7 +49,7 @@ public class ImageCommentService {
             throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED_ACCESS);
         }
 
-        imageComment.setContent(content);
+        imageComment.updateContent(content);
         return ImageCommentDto.from(imageCommentRepository.save(imageComment));
     }
 

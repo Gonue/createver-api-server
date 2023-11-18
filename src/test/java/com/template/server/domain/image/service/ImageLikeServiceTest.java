@@ -41,8 +41,15 @@ public class ImageLikeServiceTest {
         // Given
         Long galleryId = 1L;
         String email = "test@test.com";
-        Member member = Member.of(email, "nickname", "password");
-        Gallery gallery = Gallery.create("prompt", "s3Url", 1);
+        Member member = Member.builder()
+                .nickName("nickname")
+                .password("password")
+                .build();
+        Gallery gallery = Gallery.builder()
+                .prompt("prompt")
+                .storageUrl("url")
+                .option(1)
+                .build();
 
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
         when(galleryRepository.findById(galleryId)).thenReturn(Optional.of(gallery));
@@ -60,8 +67,15 @@ public class ImageLikeServiceTest {
         // Given
         Long galleryId = 1L;
         String email = "test@test.com";
-        Member member = Member.of(email, "nickname", "password");
-        Gallery gallery = Gallery.create("prompt", "s3Url", 1);
+        Member member = Member.builder()
+                .nickName("nickname")
+                .password("password")
+                .build();
+        Gallery gallery = Gallery.builder()
+                .prompt("prompt")
+                .storageUrl("url")
+                .option(1)
+                .build();
 
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
         when(galleryRepository.findById(galleryId)).thenReturn(Optional.of(gallery));

@@ -2,10 +2,7 @@ package com.template.server.domain.image.entity;
 
 import com.template.server.domain.member.entity.Member;
 import com.template.server.global.audit.AuditingFields;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -24,22 +21,21 @@ public class ImageView extends AuditingFields {
     @Column(name = "view_id", updatable = false)
     private Long viewId;
 
-    @Setter @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Setter @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gallery_id")
     private Gallery gallery;
 
-    @Setter @Column(name = "viewed_at")
+    @Column(name = "viewed_at")
     private LocalDateTime viewedAt;
 
-    public static ImageView create(Member member, Gallery gallery) {
-        ImageView imageView = new ImageView();
-        imageView.setMember(member);
-        imageView.setGallery(gallery);
-        imageView.setViewedAt(LocalDateTime.now());
-        return imageView;
+    @Builder
+    public ImageView(Member member, Gallery gallery, LocalDateTime viewedAt) {
+        this.member = member;
+        this.gallery = gallery;
+        this.viewedAt = viewedAt;
     }
 }
