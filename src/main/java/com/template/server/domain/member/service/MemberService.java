@@ -16,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,33 +27,41 @@ public class MemberService {
     private final CustomAuthorityUtils customAuthorityUtils;
     private final GalleryRepository galleryRepository;
 
-    //회원가입
+
+    public static final String DEFAULT_IMAGE = "https://d2xbqs28wc0ywi.cloudfront.net/images/65fc23b3-e151-47cc-9c9b-1af57381e6fa_ham1.png";
+
     @Transactional
     public MemberDto join(String email, String password, String nickName) {
         memberRepository.findByEmail(email).ifPresent(it -> {
             throw new BusinessLogicException(ExceptionCode.DUPLICATED_EMAIL, String.format("%s 는 이미 존재하는 이메일입니다.", email));
         });
-        Member savedMember = memberRepository.save(Member.of(email, nickName, passwordEncoder.encode(password)));
-        defaultImageSet(savedMember);
-        setRoles(savedMember, email);
+        Member savedMember = memberRepository.save(Member.builder()
+                .email(email)
+                .nickName(nickName)
+                .password(passwordEncoder.encode(password))
+                .profileImage(DEFAULT_IMAGE)
+                .roles(customAuthorityUtils.createRoles(email))
+                .build());
         return MemberDto.from(savedMember);
     }
 
     //Oauth
     public void oauthJoin(String email, String nickName) {
-        Member savedMember = memberRepository.findByEmail(email)
-                                             .orElseGet(() -> {
-                                                 String password = UUID.randomUUID().toString();
-                                                 return memberRepository.save(Member.of(email, nickName, passwordEncoder.encode(password)));
-                                             });
-        defaultImageSet(savedMember);
-        setRoles(savedMember, email);
-        memberRepository.save(savedMember);
-        MemberDto.from(savedMember);
+        memberRepository.findByEmail(email).orElseGet(() -> {
+            String password = UUID.randomUUID().toString();
+            return memberRepository.save(Member.builder()
+                    .email(email)
+                    .nickName(nickName)
+                    .password(passwordEncoder.encode(password))
+                    .profileImage(DEFAULT_IMAGE)
+                    .roles(customAuthorityUtils.createRoles(email))
+                    .build());
+        });
     }
 
 
     //회원 조회
+    @Transactional(readOnly = true)
     public MemberDto getMemberInfo(String email) {
         Member member = memberOrException(email);
         return MemberDto.from(member);
@@ -64,12 +71,7 @@ public class MemberService {
     @Transactional
     public MemberDto update(String email, Optional<String> nickName, Optional<String> profileImage) {
         Member member = memberOrException(email);
-        if (profileImage.isPresent() && !profileImage.get().isEmpty()) {
-            member.setProfileImage(profileImage.get());
-        }
-        if (nickName.isPresent() && !nickName.get().isEmpty()) {
-            member.setNickName(nickName.get());
-        }
+        member.updateMemberInfo(nickName.orElse(null), profileImage.orElse(null));
         return MemberDto.from(memberRepository.save(member));
     }
 
@@ -81,7 +83,8 @@ public class MemberService {
     }
 
     //사용자가 생성한 이미지 목록
-    public Page<GalleryDto> getMyGalleries(String email, Pageable pageable){
+    @Transactional(readOnly = true)
+    public Page<GalleryDto> getMyGalleries(String email, Pageable pageable) {
         Page<Gallery> galleryPage = galleryRepository.findByMemberEmail(email, pageable);
         return galleryPage.map(GalleryDto::from);
     }
@@ -91,14 +94,4 @@ public class MemberService {
         return memberRepository.findByEmail(email).orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND, String.format("%s 를 찾을 수 없습니다.", email)));
     }
-    private void defaultImageSet(Member member){
-         if (member.getProfileImage() == null || member.getProfileImage().isEmpty()){
-             member.setProfileImage("https://d2xbqs28wc0ywi.cloudfront.net/images/65fc23b3-e151-47cc-9c9b-1af57381e6fa_ham1.png");
-         }
-     }
-    private void setRoles(Member member, String email){
-        List<String> roles = customAuthorityUtils.createRoles(email);
-        member.setRoles(roles);
-    }
-
 }

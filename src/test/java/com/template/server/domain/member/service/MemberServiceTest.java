@@ -21,7 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -56,7 +55,12 @@ class MemberServiceTest {
         String nickName = "nickName";
         String encodedPassword = "encodedPassword";
 
-        Member member = Member.of(email, nickName, encodedPassword);
+        Member member = Member.builder()
+                .email(email)
+                .nickName(nickName)
+                .password(encodedPassword)
+                .profileImage(MemberService.DEFAULT_IMAGE)
+                .build();
 
         // When
         when(memberRepository.findByEmail(email)).thenReturn(Optional.empty());
@@ -76,13 +80,16 @@ class MemberServiceTest {
         // Given
         String email = "test@test.com";
         String nickName = "nickName";
-        String randomPassword = UUID.randomUUID().toString();
         String encodedPassword = "encodedPassword";
 
         // When
         when(memberRepository.findByEmail(email)).thenReturn(Optional.empty());
         when(passwordEncoder.encode(any(String.class))).thenReturn(encodedPassword);
-        when(memberRepository.save(any(Member.class))).thenReturn(Member.of(email, nickName, encodedPassword));
+        when(memberRepository.save(any(Member.class))).thenReturn(Member.builder()
+                .email(email)
+                .nickName(nickName)
+                .password(encodedPassword)
+                .build());
 
         // Then
         assertDoesNotThrow(() -> memberService.oauthJoin(email, nickName));
@@ -92,7 +99,15 @@ class MemberServiceTest {
     void testGetMemberInfo() {
         // Given
         String email = "test@test.com";
-        Member member = Member.of(email, "nickName", "encodedPassword");
+        String nickName = "nickName";
+        String encodedPassword = "encodedPassword";
+
+        Member member = Member.builder()
+                .email(email)
+                .nickName(nickName)
+                .password(encodedPassword)
+                .profileImage("url")
+                .build();
 
         // When
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
@@ -108,7 +123,11 @@ class MemberServiceTest {
         String email = "test@test.com";
         Optional<String> nickName = Optional.of("newNickName");
         Optional<String> profileImage = Optional.of("newProfileImage");
-        Member member = Member.of(email, "oldNickName", "encodedPassword");
+        Member member = Member.builder()
+                .email(email)
+                .nickName("oldNickName")
+                .password("encodedPassword")
+                .build();
 
         // When
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
@@ -123,7 +142,11 @@ class MemberServiceTest {
     void testDelete() {
         // Given
         String email = "test@test.com";
-        Member member = Member.of(email, "nickName", "encodedPassword");
+        String encodedPassword = "encodedPassword";
+        Member member = Member.builder()
+                .email(email)
+                .password(encodedPassword)
+                .build();
 
         // When
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));

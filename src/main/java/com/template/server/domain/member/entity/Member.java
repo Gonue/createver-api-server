@@ -2,10 +2,7 @@ package com.template.server.domain.member.entity;
 
 import com.template.server.domain.image.entity.Gallery;
 import com.template.server.global.audit.AuditingFields;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -13,7 +10,6 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Setter
 @Table(name = "member",
        indexes = {@Index(name = "idx_email", columnList = "email")})
 @Entity
@@ -42,11 +38,22 @@ public class Member extends AuditingFields {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
 
-    public static Member of(String email, String nickName, String encodedPwd){
-        Member entity = new Member();
-        entity.setEmail(email);
-        entity.setNickName(nickName);
-        entity.setPassword(encodedPwd);
-        return entity;
+    @Builder
+    public Member(String email, String nickName, String password, String profileImage, List<String> roles) {
+        this.email = email;
+        this.nickName = nickName;
+        this.password = password;
+        this.profileImage = profileImage;
+        this.roles = roles;
     }
+
+    public void updateMemberInfo(String nickName, String profileImage) {
+        if (nickName != null && !nickName.isEmpty()) {
+            this.nickName = nickName;
+        }
+        if (profileImage != null && !profileImage.isEmpty()) {
+            this.profileImage = profileImage;
+        }
+    }
+
 }
