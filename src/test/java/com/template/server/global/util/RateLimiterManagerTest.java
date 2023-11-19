@@ -4,6 +4,7 @@ import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.entity.Plan;
 import com.template.server.domain.member.entity.PlanType;
 import com.template.server.domain.member.repository.MemberRepository;
+import com.template.server.global.util.ratelimit.RateLimiterManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

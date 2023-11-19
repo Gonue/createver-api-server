@@ -87,19 +87,4 @@ public class ImageLikeServiceTest {
         // Then
         assertTrue(result);
     }
-
-    @Test
-    public void testCountLikesForGallery() {
-        // Given
-        Long galleryId = 1L;
-        Long expectedCount = 5L;
-
-        when(imageLikeRepository.countByGalleryGalleryId(galleryId)).thenReturn(expectedCount);
-
-        // When
-        Long result = imageLikeService.countLikesForGallery(galleryId);
-
-        // Then
-        assertEquals(expectedCount, result);
-    }
 }

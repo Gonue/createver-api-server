@@ -1,4 +1,4 @@
-package com.template.server.global.util;
+package com.template.server.global.util.translate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

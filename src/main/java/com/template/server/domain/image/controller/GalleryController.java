@@ -3,8 +3,8 @@ package com.template.server.domain.image.controller;
 import com.template.server.domain.image.dto.response.GalleryRecommendationResponse;
 import com.template.server.domain.image.dto.response.GalleryResponse;
 import com.template.server.domain.image.service.GalleryService;
-import com.template.server.domain.image.service.S3DownloadService;
 import com.template.server.global.error.response.Response;
+import com.template.server.global.util.aws.service.S3DownloadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +12,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;

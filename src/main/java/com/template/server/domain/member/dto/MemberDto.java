@@ -2,7 +2,7 @@ package com.template.server.domain.member.dto;
 
 import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.entity.PlanType;
-import com.template.server.global.util.CloudFrontUrlUtils;
+import com.template.server.global.util.aws.CloudFrontUrlUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ImageReportRepository extends JpaRepository<ImageReport, Long> {
-    Long countByGalleryGalleryId(Long galleryId);
     boolean existsByMemberAndGallery(Member member, Gallery gallery);
 
 }

@@ -22,7 +22,7 @@ public class ImageGenerationController {
     private final ImageGenerationService imageGenerationService;
 
     @PostMapping
-    public Response<List<CustomGenerationResponse>> InputRequest(@RequestBody PromptRequest request, Authentication authentication){
+    public Response<List<CustomGenerationResponse>> inputRequest(@RequestBody PromptRequest request, Authentication authentication){
         String email = null;
         if (authentication != null){
             email = authentication.getName();

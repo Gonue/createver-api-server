@@ -1,4 +1,4 @@
-package com.template.server.domain.image.service;
+package com.template.server.global.util.aws.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GetObjectRequest;

@@ -1,7 +1,6 @@
 package com.template.server.domain.image.controller;
 
 import com.template.server.domain.image.dto.ImageTagDto;
-import com.template.server.domain.image.entity.ImageTag;
 import com.template.server.domain.image.service.ImageTagService;
 import com.template.server.global.error.response.Response;
 import lombok.RequiredArgsConstructor;

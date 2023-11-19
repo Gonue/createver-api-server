@@ -1,7 +1,7 @@
 package com.template.server.domain.image.dto;
 
 import com.template.server.domain.image.entity.Gallery;
-import com.template.server.global.util.CloudFrontUrlUtils;
+import com.template.server.global.util.aws.CloudFrontUrlUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
