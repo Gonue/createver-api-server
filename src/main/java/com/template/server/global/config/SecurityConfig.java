@@ -39,19 +39,21 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
-                        .accessDeniedHandler(new MemberAccessDeniedHandler()));
+                        .accessDeniedHandler(new MemberAccessDeniedHandler())
+                );
         http.apply(new CustomFilterConfigurer());
+
         http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/index.html", "/static/**", "/image/**").permitAll()
                         .requestMatchers("/oauth2/authorization/**").permitAll()
                         .requestMatchers("/login/oauth2/code/*").permitAll()
                         .requestMatchers("/api/v1/member/join", "/api/v1/member/login").permitAll()
                         .requestMatchers("/api/v1/member/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/image/upload").hasAnyRole("USER", "ADMIN")
 
-                        .requestMatchers(HttpMethod.POST, "/api/v1/article").hasRole("ADMIN") //아티클 생성
-                        .requestMatchers(HttpMethod.PATCH, "/api/v1/article/*").hasRole("ADMIN") //아티클 수정
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/article/*").hasRole("ADMIN") //아티클 삭제
+                        .requestMatchers(HttpMethod.POST, "/api/v1/image/upload/**").hasAnyRole("USER", "ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/api/v1/article").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/article/*").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/article/*").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.POST, "/api/v1/image/create/stable").hasAnyRole("USER", "ADMIN")
 
@@ -61,6 +63,7 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(new OAuth2MemberSuccessHandler(jwtTokenizer, authorityUtils, memberService)));
+
 
         return http.build();
     }
