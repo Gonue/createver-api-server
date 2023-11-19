@@ -23,4 +23,11 @@ public class S3UploadController {
        String url = s3UploadService.upload(multipartFile);
        return Response.success(200,url);
    }
+
+   @PostMapping("/upload/cdn")
+   public Response<String> uploadAndReturnCloudFrontUrl(@RequestParam("images") MultipartFile multipartFile) throws IOException {
+       String url = s3UploadService.uploadAndReturnCloudFrontUrl(multipartFile);
+       return Response.success(200,url);
+   }
+   
 }

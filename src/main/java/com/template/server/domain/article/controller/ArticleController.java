@@ -22,7 +22,7 @@ public class ArticleController {
     //Create Article
     @PostMapping
     public Response<Void> createArticle(@RequestBody ArticleCreateRequest request, Authentication authentication){
-        articleService.createArticle(request.getTitle(), request.getContent(), authentication.getName());
+        articleService.createArticle(request.getTitle(), request.getContent(), authentication.getName(), request.getThumbnailUrl());
         return Response.success(201, null);
     }
 
@@ -44,7 +44,7 @@ public class ArticleController {
     public Response<ArticleResponse> updateArticle(@PathVariable Long articleId,
                                                    @RequestBody ArticleUpdateRequest request,
                                                    Authentication authentication){
-        ArticleDto articleDto = articleService.updateArticle(request.getTitle(), request.getContent(), authentication.getName(), articleId);
+        ArticleDto articleDto = articleService.updateArticle(request.getTitle(), request.getContent(), authentication.getName(), articleId, request.getThumbnailUrl());
         return Response.success(200, ArticleResponse.from(articleDto));
     }
 

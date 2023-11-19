@@ -7,8 +7,6 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-import static com.template.server.global.util.CloudFrontUrlUtils.convertImgUrlsInHtmlContent;
-
 @Getter
 @AllArgsConstructor
 public class ArticleDto {
@@ -16,16 +14,17 @@ public class ArticleDto {
     private final String title;
     private final String content;
     private final MemberDto member;
+    private final String thumbnailUrl;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
 
     public static ArticleDto from(Article entity){
-        String convertedContent = convertImgUrlsInHtmlContent(entity.getContent());
         return new ArticleDto(
                 entity.getArticleId(),
                 entity.getTitle(),
-                convertedContent,
+                entity.getContent(),
                 MemberDto.from(entity.getMember()),
+                entity.getThumbnailUrl(),
                 entity.getCreatedAt(),
                 entity.getModifiedAt()
         );
