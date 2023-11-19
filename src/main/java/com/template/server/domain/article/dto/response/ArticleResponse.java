@@ -14,6 +14,7 @@ public class ArticleResponse {
     private final Long articleId;
     private final String title;
     private final String content;
+    private final String thumbnailUrl;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
     private final MemberResponse member;
@@ -23,6 +24,7 @@ public class ArticleResponse {
                 dto.getArticleId(),
                 dto.getTitle(),
                 dto.getContent(),
+                dto.getThumbnailUrl(),
                 dto.getCreatedAt(),
                 dto.getModifiedAt(),
                 MemberResponse.from(dto.getMember())

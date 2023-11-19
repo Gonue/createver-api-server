@@ -2,12 +2,9 @@ package com.template.server.domain.image.entity;
 
 import com.template.server.domain.member.entity.Member;
 import com.template.server.global.audit.AuditingFields;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -21,20 +18,17 @@ public class ImageLike extends AuditingFields {
     @Column(name = "like_id", updatable = false)
     private Long likeId;
 
-    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gallery_id")
     private Gallery gallery;
 
-    public static ImageLike create(Member member, Gallery gallery) {
-        ImageLike imageLike = new ImageLike();
-        imageLike.setMember(member);
-        imageLike.setGallery(gallery);
-        return imageLike;
+    @Builder
+    public ImageLike(Member member, Gallery gallery) {
+        this.member = member;
+        this.gallery = gallery;
     }
 }

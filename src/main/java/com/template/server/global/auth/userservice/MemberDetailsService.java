@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @Component
 public class MemberDetailsService implements UserDetailsService {
@@ -25,31 +24,34 @@ public class MemberDetailsService implements UserDetailsService {
         this.authorityUtils = authorityUtils;
     }
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Member> optionalMember = memberRepository.findByEmail(username);
-        Member findMember = optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        Member findMember = memberRepository.findByEmail(username)
+                             .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
         return new MemberDetails(findMember);
     }
 
-    private final class MemberDetails extends Member implements UserDetails {
+    private final class MemberDetails implements UserDetails {
+        private final Member member;
+
         MemberDetails(Member member) {
-            setMemberId(member.getMemberId());
-            setEmail(member.getEmail());
-            setPassword(member.getPassword());
-            setRoles(member.getRoles());
+            this.member = member;
         }
 
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
-            return authorityUtils.createAuthorities(this.getRoles());
+            return authorityUtils.createAuthorities(this.member.getRoles());
+        }
+
+        @Override
+        public String getPassword() {
+            return member.getPassword();
         }
 
         @Override
         public String getUsername() {
-            return getEmail();
+            return member.getEmail();
         }
 
         @Override

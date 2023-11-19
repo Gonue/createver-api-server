@@ -25,9 +25,15 @@ public class ArticleService {
 
     //Create Article
     @Transactional
-    public void createArticle(String title, String content, String email){
+    public void createArticle(String title, String content, String email, String thumbnailUrl){
         Member member = findMemberByEmail(email);
-        articleRepository.save(Article.of(title,  content, member));
+        Article article = Article.builder()
+                .title(title)
+                .content(content)
+                .member(member)
+                .thumbnailUrl(thumbnailUrl)
+                .build();
+        articleRepository.save(article);
     }
 
     //Single Article
@@ -45,12 +51,13 @@ public class ArticleService {
 
     //Update Article
     @Transactional
-    public ArticleDto updateArticle(String title, String content, String email, Long articleId){
+    public ArticleDto updateArticle(String title, String content, String email, Long articleId, String thumbnailUrl) {
         Member member = findMemberByEmail(email);
         Article article = findArticle(articleId);
         checkArticleMember(article, member, email, articleId);
-        article.setTitle(title);
-        article.setContent(content);
+
+        article.updateArticle(title, content, thumbnailUrl);
+
         return ArticleDto.from(articleRepository.save(article));
     }
 

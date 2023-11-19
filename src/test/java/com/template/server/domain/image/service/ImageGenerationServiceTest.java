@@ -9,9 +9,6 @@ import com.template.server.domain.image.dto.response.ImageGenerationResponse;
 import com.template.server.domain.image.entity.Gallery;
 import com.template.server.domain.image.entity.ImageTag;
 import com.template.server.domain.image.repository.GalleryRepository;
-import com.template.server.domain.image.service.ImageGenerationService;
-import com.template.server.domain.image.service.ImageTagService;
-import com.template.server.domain.image.service.S3UploadService;
 import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.repository.MemberRepository;
 import com.template.server.global.error.exception.BusinessLogicException;
@@ -66,9 +63,19 @@ public class ImageGenerationServiceTest {
         String email = "test@test.com";
         PromptRequest promptRequest = new PromptRequest("test", 1);
 
-        Member member = Member.of(email, "nickname", "password");
-        Gallery gallery = Gallery.create("prompt", "s3Url", 1);
-        ImageTag imageTag = ImageTag.create("tag");
+        Member member = Member.builder()
+                .email(email)
+                .nickName("nick")
+                .password("password").build();
+
+        Gallery gallery = Gallery.builder()
+                .prompt("prompt")
+                .storageUrl("s3Url")
+                .option(1).build();
+
+        ImageTag imageTag = ImageTag.builder()
+                .name("tag")
+                .build();
 
         ImageGenerationResponse.ImageURL imageURL = new ImageGenerationResponse.ImageURL();
         imageURL.setB64_json("someBase64EncodedString");
@@ -78,7 +85,7 @@ public class ImageGenerationServiceTest {
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
         when(rateLimiterManager.allowRequest(email)).thenReturn(true);
         when(restTemplate.postForEntity(anyString(), any(), eq(ImageGenerationResponse.class)))
-            .thenReturn(new ResponseEntity<>(imageGenerationResponse, HttpStatus.OK));
+                .thenReturn(new ResponseEntity<>(imageGenerationResponse, HttpStatus.OK));
         when(s3UploadService.upload(any(), anyString())).thenReturn("s3Url");
         when(galleryRepository.save(any(Gallery.class))).thenReturn(gallery);
         when(imageTagService.getOrCreateTags(any())).thenReturn(Arrays.asList(imageTag));
@@ -102,9 +109,9 @@ public class ImageGenerationServiceTest {
         Mockito.when(rateLimiterManager.allowRequest(email)).thenReturn(false);
 
         BusinessLogicException thrown = assertThrows(
-            BusinessLogicException.class,
-            () -> imageGenerationService.makeImages(promptRequest, email),
-            "Expected makeImages() to throw, but it didn't"
+                BusinessLogicException.class,
+                () -> imageGenerationService.makeImages(promptRequest, email),
+                "Expected makeImages() to throw, but it didn't"
         );
 
         assertEquals(ExceptionCode.RATE_LIMIT_EXCEEDED, thrown.getExceptionCode());

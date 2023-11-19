@@ -11,7 +11,7 @@ import com.template.server.global.error.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +32,12 @@ public class ImageReportService {
             throw new BusinessLogicException(ExceptionCode.ALREADY_REPORTED);
         }
 
-        ImageReport imageReport = ImageReport.create(member, gallery, content);
+        ImageReport imageReport = ImageReport.
+                builder()
+                .member(member)
+                .gallery(gallery)
+                .content(content)
+                .build();
         gallery.increaseReportCount();
         imageReportRepository.save(imageReport);
     }
@@ -49,7 +54,7 @@ public class ImageReportService {
     public Long countReportsForGallery(Long galleryId) {
         Gallery gallery = galleryRepository.findById(galleryId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.GALLERY_NOT_FOUND));
-        return (long)gallery.getReportCount();
+        return (long) gallery.getReportCount();
     }
 
     @Transactional
@@ -57,7 +62,7 @@ public class ImageReportService {
         Gallery gallery = galleryRepository.findById(galleryId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.GALLERY_NOT_FOUND));
 
-        gallery.setBlinded(isBlinded);
+        gallery.updateBlindStatus(isBlinded);
         galleryRepository.save(gallery);
     }
 }

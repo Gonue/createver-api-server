@@ -13,6 +13,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
@@ -30,42 +31,40 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .headers().frameOptions().sameOrigin()
-                .and()
-                .cors().configurationSource(corsConfigurationSource)
-                .and()
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .formLogin().disable()
-                .httpBasic().disable()
-                .exceptionHandling()
-                .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
-                .accessDeniedHandler(new MemberAccessDeniedHandler())
-                .and()
-                .apply(new CustomFilterConfigurer())
-                .and()
-                .authorizeRequests(authorize -> authorize
-                        .antMatchers("/", "/index.html", "/static/**", "/image/**").permitAll()
-                        .antMatchers("/oauth2/authorization/**").permitAll()
-                        .antMatchers("/login/oauth2/code/*").permitAll()
-                        .antMatchers("/api/v1/member/join", "/api/v1/member/login").permitAll()
-                        .antMatchers("/api/v1/member/**").hasAnyRole("USER", "ADMIN")
+                .headers(header -> header.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
+                        .accessDeniedHandler(new MemberAccessDeniedHandler())
+                );
+        http.apply(new CustomFilterConfigurer());
 
-                        .antMatchers(HttpMethod.POST, "/api/v1/image/upload").hasAnyRole("USER", "ADMIN")
+        http.authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/oauth2/authorization/**").permitAll()
+                        .requestMatchers("/login/oauth2/code/*").permitAll()
+                        .requestMatchers("/api/v1/member/join", "/api/v1/member/login").permitAll()
+                        .requestMatchers("/api/v1/member/**").hasAnyRole("USER", "ADMIN")
 
-                        .antMatchers(HttpMethod.POST, "/api/v1/article").hasRole("ADMIN")  // 아티클 생성
-                        .antMatchers(HttpMethod.PATCH, "/api/v1/article/*").hasRole("ADMIN")  // 아티클 수정
-                        .antMatchers(HttpMethod.DELETE, "/api/v1/article/*").hasRole("ADMIN")  // 아티클 삭제
+                        .requestMatchers(HttpMethod.POST, "/api/v1/image/upload/**").hasAnyRole("USER", "ADMIN")
 
-                        .antMatchers(HttpMethod.POST, "/api/v1/image/create/stable").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/article").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/article/*").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/article/*").hasRole("ADMIN")
 
-                        .antMatchers(HttpMethod.PATCH, "/api/v1/image/gallery/*/blind").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/image/create/stable").hasAnyRole("USER", "ADMIN")
+
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/image/gallery/*/blind").hasRole("ADMIN")
 
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(new OAuth2MemberSuccessHandler(jwtTokenizer, authorityUtils, memberService)));
+
+
         return http.build();
     }
 

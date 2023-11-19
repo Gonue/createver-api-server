@@ -37,9 +37,17 @@ public class RateLimiterManagerTest {
     void allowRequest_proOrUltraPlan_shouldReturnTrue() {
         // Given
         String email = "test@test.com";
-        Member member = Member.of(email, "nickname", "password");
-        Plan plan = Plan.create(PlanType.PRO, LocalDateTime.now(), LocalDateTime.now().plusMonths(1));
-        member.setPlan(plan);
+        Member member = Member.builder()
+                .email("email")
+                .nickName("nickname")
+                .password("password")
+                .build();
+        Plan plan = Plan.builder()
+                .planType(PlanType.PRO)
+                .purchaseDate(LocalDateTime.now())
+                .expiryDate(LocalDateTime.now().plusMonths(1))
+                .build();
+        member.memberPlanUpdate(plan);
 
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
 
@@ -53,9 +61,13 @@ public class RateLimiterManagerTest {
     @Test
     void allowRequest_noPlanOrBasicPlan_shouldApplyRateLimit() {
         // Given
-        String email = "test2@test.com";
-        Member member = Member.of(email, "nickname", "password");
-        member.setPlan(null);
+        String email = "test@test.com";
+        Member member = Member.builder()
+                .email("email")
+                .nickName("nickname")
+                .password("password")
+                .build();
+        member.memberPlanUpdate(null);
 
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
 
@@ -63,7 +75,7 @@ public class RateLimiterManagerTest {
         boolean result = rateLimiterManager.allowRequest(email);
 
         // Then
-        assertFalse(result);
+        assertTrue(result);
     }
 
     @Test

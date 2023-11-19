@@ -85,7 +85,7 @@ class ImageCommentServiceTest {
         imageCommentService.updateComment(email, imageCommentId, content);
 
         // Then
-        verify(imageComment, times(1)).setContent(content);
+        verify(imageComment, times(1)).updateContent(content);
         verify(imageCommentRepository, times(1)).save(any(ImageComment.class));
     }
 
@@ -116,8 +116,19 @@ class ImageCommentServiceTest {
         Long galleryId = 1L;
         Pageable pageable = mock(Pageable.class);
 
-        ImageComment comment1 = ImageComment.create("comment1", mock(Gallery.class), mock(Member.class));
-        ImageComment comment2 = ImageComment.create("comment2", mock(Gallery.class), mock(Member.class));
+        Gallery mockGallery = mock(Gallery.class);
+        Member mockMember = mock(Member.class);
+
+        ImageComment comment1 = ImageComment.builder()
+                                            .content("comment1")
+                                            .gallery(mockGallery)
+                                            .member(mockMember)
+                                            .build();
+        ImageComment comment2 = ImageComment.builder()
+                                            .content("comment2")
+                                            .gallery(mockGallery)
+                                            .member(mockMember)
+                                            .build();
         Page<ImageComment> commentPage = new PageImpl<>(Arrays.asList(comment1, comment2));
 
         when(imageCommentRepository.findByGallery_GalleryId(galleryId, pageable)).thenReturn(commentPage);

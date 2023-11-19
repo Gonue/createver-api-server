@@ -1,12 +1,15 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.7.12'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.springframework.boot' version '3.1.5'
+    id 'io.spring.dependency-management' version '1.1.3'
 }
 
 group = 'com.template'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+
+java {
+    sourceCompatibility = '17'
+}
 
 configurations {
     compileOnly {
@@ -32,10 +35,9 @@ dependencies {
 
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.470'
 
-    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
 
     implementation 'org.jsoup:jsoup:1.15.4'
-
 
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
    	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'

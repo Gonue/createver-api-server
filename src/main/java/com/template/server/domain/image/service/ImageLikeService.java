@@ -11,7 +11,7 @@ import com.template.server.global.error.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +32,10 @@ public class ImageLikeService {
             throw new BusinessLogicException(ExceptionCode.ALREADY_LIKED);
         }
 
-        ImageLike imageLike = ImageLike.create(member, gallery);
+        ImageLike imageLike = ImageLike.builder()
+                .member(member)
+                .gallery(gallery)
+                .build();
         gallery.increaseLikeCount();
         imageLikeRepository.save(imageLike);
     }
@@ -49,6 +52,6 @@ public class ImageLikeService {
     public Long countLikesForGallery(Long galleryId) {
         Gallery gallery = galleryRepository.findById(galleryId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.GALLERY_NOT_FOUND));
-        return (long)gallery.getLikeCount();
+        return (long) gallery.getLikeCount();
     }
 }

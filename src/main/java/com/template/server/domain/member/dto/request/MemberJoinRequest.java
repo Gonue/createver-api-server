@@ -5,8 +5,8 @@ import com.template.server.global.validator.ValidPassword;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 @AllArgsConstructor
 @Getter

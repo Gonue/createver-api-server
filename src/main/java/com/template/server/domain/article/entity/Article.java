@@ -4,11 +4,11 @@ package com.template.server.domain.article.entity;
 import com.template.server.domain.member.entity.Member;
 import com.template.server.global.audit.AuditingFields;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -22,23 +22,30 @@ public class Article extends AuditingFields {
     @Column(name = "article_id", updatable = false)
     private Long articleId;
 
-    @Setter
     @Column(name = "title", nullable = false, columnDefinition = "TEXT")
     private String title;
 
-    @Setter
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @ManyToOne(optional = true) @Setter
+    @Column(name = "thumbnail_url", columnDefinition = "TEXT")
+    private String thumbnailUrl;
+
+    @ManyToOne(optional = true)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public static Article of(String title, String content, Member member){
-        Article article = new Article();
-        article.setTitle(title);
-        article.setContent(content);
-        article.setMember(member);
-        return article;
+    @Builder
+    public Article(String title, String content, Member member, String thumbnailUrl) {
+        this.title = title;
+        this.content = content;
+        this.member = member;
+        this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public void updateArticle(String title, String content, String thumbnailUrl) {
+        this.title = title;
+        this.content = content;
+        this.thumbnailUrl = thumbnailUrl;
     }
 }

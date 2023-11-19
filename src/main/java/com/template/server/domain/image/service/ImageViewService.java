@@ -11,7 +11,8 @@ import com.template.server.global.error.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
+
 import java.util.List;
 
 @Service
@@ -30,7 +31,10 @@ public class ImageViewService {
         Gallery gallery = galleryRepository.findById(galleryId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.GALLERY_NOT_FOUND));
 
-        ImageView imageView = ImageView.create(member, gallery);
+        ImageView imageView = ImageView.builder()
+                .member(member)
+                .gallery(gallery)
+                .build();
         imageViewRepository.save(imageView);
     }
 
