@@ -175,7 +175,7 @@ class MemberServiceTest {
         Page<Gallery> galleryPage = new PageImpl<>(galleryList, pageable, galleryList.size());
 
         // When
-        when(galleryRepository.findByMemberEmail(email, pageable)).thenReturn(galleryPage);
+        when(galleryRepository.findGalleryByMemberEmail(email, pageable)).thenReturn(galleryPage);
 
         // Then
         Page<GalleryDto> result = memberService.getMyGalleries(email, pageable);

@@ -6,7 +6,7 @@ import static org.mockito.Mockito.*;
 import com.template.server.domain.image.entity.Gallery;
 import com.template.server.domain.image.entity.ImageLike;
 import com.template.server.domain.image.repository.gallery.GalleryRepository;
-import com.template.server.domain.image.repository.ImageLikeRepository;
+import com.template.server.domain.image.repository.like.ImageLikeRepository;
 import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;

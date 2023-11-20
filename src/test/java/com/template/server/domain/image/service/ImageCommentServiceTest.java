@@ -4,7 +4,7 @@ import com.template.server.domain.image.dto.ImageCommentDto;
 import com.template.server.domain.image.entity.Gallery;
 import com.template.server.domain.image.entity.ImageComment;
 import com.template.server.domain.image.repository.gallery.GalleryRepository;
-import com.template.server.domain.image.repository.ImageCommentRepository;
+import com.template.server.domain.image.repository.comment.ImageCommentRepository;
 import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;

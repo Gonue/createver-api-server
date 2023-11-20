@@ -33,78 +33,6 @@ class GalleryServiceTest {
     }
 
     @Test
-    void testGalleryList() {
-        // Given
-        Pageable pageable = PageRequest.of(0, 10);
-
-        List<Gallery> galleryEntityList = Arrays.asList(
-                        Gallery.builder()
-                                .prompt("prompt1")
-                                .storageUrl("url1")
-                                .option(1)
-                                .build(),
-                        Gallery.builder()
-                                .prompt("prompt2")
-                                .storageUrl("url2")
-                                .option(2)
-                                .build()
-                );
-        Page<Gallery> galleryEntityPage = new PageImpl<>(galleryEntityList, pageable, galleryEntityList.size());
-
-        // When
-        when(galleryRepository.findAll(pageable)).thenReturn(galleryEntityPage);
-
-        // Then
-        Page<GalleryDto> result = galleryService.galleryList(pageable);
-        assertEquals(galleryEntityList.size(), result.getContent().size());
-
-        for (int i = 0; i < galleryEntityList.size(); i++) {
-            Gallery entity = galleryEntityList.get(i);
-            GalleryDto dto = result.getContent().get(i);
-
-            assertEquals(entity.getPrompt(), dto.getPrompt());
-            assertEquals(entity.getStorageUrl(), dto.getStorageUrl());
-            assertEquals(entity.getOption(), dto.getOption());
-        }
-    }
-
-    @Test
-    void testFindGalleryList() {
-        // Given
-        String prompt = "prompt";
-        Pageable pageable = PageRequest.of(0, 10);
-        List<Gallery> galleryEntityList = Arrays.asList(
-                Gallery.builder()
-                        .prompt("prompt1")
-                        .storageUrl("url1")
-                        .option(1)
-                        .build(),
-                Gallery.builder()
-                        .prompt("prompt2")
-                        .storageUrl("url2")
-                        .option(2)
-                        .build()
-        );
-        Page<Gallery> galleryEntityPage = new PageImpl<>(galleryEntityList, pageable, galleryEntityList.size());
-
-        // When
-        when(galleryRepository.findByPromptContaining(prompt, pageable)).thenReturn(galleryEntityPage);
-
-        // Then
-        Page<GalleryDto> result = galleryService.findGalleryList(prompt, pageable);
-        assertEquals(galleryEntityList.size(), result.getContent().size());
-
-        for (int i = 0; i < galleryEntityList.size(); i++) {
-            Gallery entity = galleryEntityList.get(i);
-            GalleryDto dto = result.getContent().get(i);
-
-            assertEquals(entity.getPrompt(), dto.getPrompt());
-            assertEquals(entity.getStorageUrl(), dto.getStorageUrl());
-            assertEquals(entity.getOption(), dto.getOption());
-        }
-    }
-
-    @Test
     void testGetGalleriesByTagName() {
         // Given
         String tagName = "tag";
@@ -124,7 +52,7 @@ class GalleryServiceTest {
         Page<Gallery> galleryEntityPage = new PageImpl<>(galleryEntityList, pageable, galleryEntityList.size());
 
         // When
-        when(galleryRepository.findByTagsName(tagName, pageable)).thenReturn(galleryEntityPage);
+        when(galleryRepository.findGalleryByTagsName(tagName, pageable)).thenReturn(galleryEntityPage);
 
         // Then
         Page<GalleryDto> result = galleryService.getGalleriesByTagName(tagName, pageable);
