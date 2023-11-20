@@ -29,7 +29,7 @@ public class S3DownloadService {
 
     @Transactional
     public byte[] downloadFileByGalleryId(Long galleryId) {
-        Gallery gallery = galleryRepository.findByGalleryIdForUpdate(galleryId)
+        Gallery gallery = galleryRepository.findGalleryByIdForUpdate(galleryId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.S3_FILE_ERROR, "해당 galleryId가 존재하지 않습니다."));
 
         gallery.increaseDownloadCount();

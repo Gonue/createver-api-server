@@ -27,38 +27,23 @@ public class GalleryController {
     private final S3DownloadService s3DownloadService;
 
 
-    @GetMapping("/list")
-    public Response<Page<GalleryResponse>> galleryList(Pageable pageable){
-        return Response.success(galleryService.galleryList(pageable).map(GalleryResponse::from));
+    @GetMapping("/list/gallery")
+    public Response<Page<GalleryResponse>> galleryListWithCommentCountAndLikeCount(Pageable pageable){
+        return Response.success(galleryService.galleryListWithComment(pageable).map(GalleryResponse::from));
     }
 
     @GetMapping("/list/search")
-    public Response<Page<GalleryResponse>> findGalleryList(@RequestParam String prompt, Pageable pageable){
-        return Response.success(galleryService.findGalleryList(prompt, pageable).map(GalleryResponse::from));
-    }
-
-    @GetMapping("/list/search2")
     public Response<Page<GalleryResponse>> findGalleryList(
             @RequestParam String prompt,
-            @RequestParam(required = false) List<Integer> options,
+            @RequestParam(required = false)
+            List<Integer> options,
             Pageable pageable) {
-        return Response.success(galleryService.findGalleryListByOptionsAndPrompt(options, prompt, pageable)
-                                             .map(GalleryResponse::from));
+        return Response.success(galleryService.findGalleryListByOptionsAndPrompt(options, prompt, pageable).map(GalleryResponse::from));
     }
 
     @GetMapping("/list/tag")
     public Response<Page<GalleryResponse>> findGalleryListByTag(@RequestParam String tagName, Pageable pageable){
         return Response.success(galleryService.getGalleriesByTagName(tagName, pageable).map(GalleryResponse::from));
-    }
-
-    @GetMapping("/listWithCommentCountAndLikeCount")
-    public Response<Page<GalleryResponse>> galleryListWithCommentCountAndLikeCount(Pageable pageable){
-        return Response.success(galleryService.galleryListWithComment(pageable).map(GalleryResponse::from));
-    }
-
-    @GetMapping("/list/recommendations")
-    public Response<Page<GalleryResponse>> galleryListSortedByLikeCountAndComments(Pageable pageable){
-        return Response.success(galleryService.galleryListSortedByLikeCountAndComments(pageable).map(GalleryResponse::from));
     }
 
     @GetMapping("/download/{galleryId}")

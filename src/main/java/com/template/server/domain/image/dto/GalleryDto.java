@@ -37,20 +37,4 @@ public class GalleryDto {
                 entity.isBlinded()
         );
     }
-
-    public static GalleryDto from(Gallery entity, Long commentCount) {
-        String cloudFrontUrl = CloudFrontUrlUtils.convertToCloudFrontUrl(entity.getStorageUrl());
-        return new GalleryDto(
-                entity.getGalleryId(),
-                entity.getPrompt(),
-                cloudFrontUrl,
-                entity.getOption(),
-                entity.getCreatedAt(),
-                commentCount,
-                entity.getLikeCount(),
-                entity.getDownloadCount(),
-                entity.getReportCount(),
-                entity.isBlinded()
-        );
-    }
 }
