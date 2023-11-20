@@ -1,9 +1,8 @@
 package com.template.server.domain.image.service;
 
 import com.template.server.domain.image.dto.GalleryDto;
-import com.template.server.domain.image.dto.response.GalleryRecommendationResponse;
 import com.template.server.domain.image.entity.Gallery;
-import com.template.server.domain.image.repository.GalleryRepository;
+import com.template.server.domain.image.repository.gallery.GalleryRepository;
 import com.template.server.domain.image.repository.GallerySpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -55,22 +54,6 @@ public class GalleryService {
             .collect(Collectors.toList());
 
         return new PageImpl<>(dtos, pageable, results.getTotalElements());
-    }
-
-    @Transactional(readOnly = true)
-    public Page<GalleryRecommendationResponse> galleryRecommendationList(Pageable pageable){
-        Page<Object[]> results = galleryRepository.findAllWithComment(pageable);
-
-        List<GalleryRecommendationResponse> recommendationResponses = results.getContent().stream()
-                .map(result -> {
-                    Gallery gallery = (Gallery) result[0];
-                    Long commentCount = (Long) result[1];
-                    return GalleryRecommendationResponse.from(GalleryDto.from(gallery, commentCount));
-                })
-                .sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(recommendationResponses, pageable, results.getTotalElements());
     }
 
     @Transactional(readOnly = true)

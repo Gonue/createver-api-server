@@ -10,7 +10,7 @@ import com.template.server.domain.image.dto.response.ImageGenerationResponse;
 import com.template.server.domain.image.dto.response.pro.StablePromptRequest;
 import com.template.server.domain.image.entity.Gallery;
 import com.template.server.domain.image.entity.ImageTag;
-import com.template.server.domain.image.repository.GalleryRepository;
+import com.template.server.domain.image.repository.gallery.GalleryRepository;
 import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.entity.PlanType;
 import com.template.server.domain.member.repository.MemberRepository;

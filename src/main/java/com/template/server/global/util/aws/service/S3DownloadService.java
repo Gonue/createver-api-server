@@ -5,7 +5,7 @@ import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.util.IOUtils;
 import com.template.server.domain.image.entity.Gallery;
-import com.template.server.domain.image.repository.GalleryRepository;
+import com.template.server.domain.image.repository.gallery.GalleryRepository;
 import com.template.server.global.error.exception.BusinessLogicException;
 import com.template.server.global.error.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
