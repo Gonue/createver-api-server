@@ -39,7 +39,7 @@ public class ImageViewService {
     }
 
     public Long countViewsForGallery(Long galleryId) {
-        return imageViewRepository.countByGalleryGalleryId(galleryId);
+        return imageViewRepository.countByGalleryId(galleryId);
     }
 
     public List<ImageView> getViewHistory(String email) {

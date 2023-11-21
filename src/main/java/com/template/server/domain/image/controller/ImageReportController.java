@@ -36,7 +36,7 @@ public class ImageReportController {
         return Response.success(200, hasReported);
     }
 
-    @PatchMapping("/gallery/{galleryId}/blind")
+    @PatchMapping("/admin/gallery/{galleryId}/blind")
     public Response<Void> updateGalleryBlindStatus(@PathVariable Long galleryId,
                                                    @RequestParam boolean isBlinded) {
         imageReportService.updateGalleryBlindStatus(galleryId, isBlinded);
