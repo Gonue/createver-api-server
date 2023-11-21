@@ -9,19 +9,26 @@ import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class ImageCommentServiceTest {
 
     @InjectMocks
@@ -29,27 +36,47 @@ class ImageCommentServiceTest {
 
     @Mock
     private ImageCommentRepository imageCommentRepository;
-
     @Mock
     private GalleryRepository galleryRepository;
-
     @Mock
     private MemberRepository memberRepository;
 
+    private Gallery gallery;
+    private Member member;
+    private ImageComment imageComment;
+    private ImageCommentDto imageCommentDto;
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        member = Member.builder()
+                .email("test@example.com")
+                .nickName("TestUser")
+                .password("password")
+                .profileImage("url")
+                .roles(List.of("ROLE_USER"))
+                .build();
+
+        gallery = Gallery.builder()
+                .prompt("Test Gallery Prompt")
+                .storageUrl("url")
+                .option(1)
+                .tags(new ArrayList<>())
+                .member(member)
+                .build();
+
+        imageComment = ImageComment.builder()
+                .content("Test Content")
+                .gallery(gallery)
+                .member(member)
+                .build();
     }
 
     @Test
-    void testCreateComment() {
+    void createCommentTest() {
         // Given
         Long galleryId = 1L;
-        String content = "Nice image!";
-        String email = "test@test.com";
-
-        Gallery gallery = mock(Gallery.class);
-        Member member = mock(Member.class);
+        String email = "test@example.com";
+        String content = "Test Comment";
 
         when(galleryRepository.findById(galleryId)).thenReturn(Optional.of(gallery));
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
@@ -58,85 +85,69 @@ class ImageCommentServiceTest {
         imageCommentService.createComment(galleryId, content, email);
 
         // Then
-        verify(imageCommentRepository, times(1)).save(any(ImageComment.class));
+        verify(galleryRepository).findById(galleryId);
+        verify(memberRepository).findByEmail(email);
+        verify(imageCommentRepository).save(any(ImageComment.class));
     }
 
     @Test
-    void testUpdateComment() {
+    void updateCommentTest() {
         // Given
-        String email = "test@test.com";
         Long imageCommentId = 1L;
-        String content = "Updated comment";
-
-        Member member = mock(Member.class);
-        ImageComment imageComment = mock(ImageComment.class);
-        Gallery gallery = mock(Gallery.class);
+        String email = "test@example.com";
+        String updatedContent = "Updated Comment";
 
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
         when(imageCommentRepository.findById(imageCommentId)).thenReturn(Optional.of(imageComment));
-        when(imageComment.getMember()).thenReturn(member);
-        when(imageComment.getGallery()).thenReturn(gallery);
-        when(gallery.getGalleryId()).thenReturn(1L);
-
-        when(imageComment.getCommentId()).thenReturn(1L);
-        when(imageCommentRepository.save(any(ImageComment.class))).thenReturn(imageComment);
+        when(imageCommentRepository.save(any(ImageComment.class))).thenAnswer(invocation -> {
+            ImageComment savedComment = invocation.getArgument(0);
+            ReflectionTestUtils.setField(savedComment, "commentId", imageCommentId);
+            return savedComment;
+        });
 
         // When
-        imageCommentService.updateComment(email, imageCommentId, content);
+        ImageCommentDto updatedComment = imageCommentService.updateComment(email, imageCommentId, updatedContent);
 
         // Then
-        verify(imageComment, times(1)).updateContent(content);
-        verify(imageCommentRepository, times(1)).save(any(ImageComment.class));
+        assertNotNull(updatedComment);
+        assertEquals(updatedContent, updatedComment.getContent());
+        verify(memberRepository).findByEmail(email);
+        verify(imageCommentRepository).findById(imageCommentId);
+        verify(imageCommentRepository).save(any(ImageComment.class));
     }
 
-
     @Test
-    void testDeleteComment() {
+    void deleteCommentTest() {
         // Given
-        Long commentId = 1L;
-        String email = "test@test.com";
-
-        Member member = mock(Member.class);
-        ImageComment comment = mock(ImageComment.class);
+        Long imageCommentId = 1L;
+        String email = "test@example.com";
 
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
-        when(imageCommentRepository.findById(commentId)).thenReturn(Optional.of(comment));
-        when(comment.getMember()).thenReturn(member);
+        when(imageCommentRepository.findById(imageCommentId)).thenReturn(Optional.of(imageComment));
 
         // When
-        imageCommentService.deleteComment(email, commentId);
+        imageCommentService.deleteComment(email, imageCommentId);
 
         // Then
-        verify(imageCommentRepository, times(1)).delete(comment);
+        verify(memberRepository).findByEmail(email);
+        verify(imageCommentRepository).findById(imageCommentId);
+        verify(imageCommentRepository).delete(any(ImageComment.class));
     }
 
     @Test
-    void testGetAllCommentsByGalleryId() {
+    void getAllCommentsByGalleryIdTest() {
         // Given
         Long galleryId = 1L;
-        Pageable pageable = mock(Pageable.class);
-
-        Gallery mockGallery = mock(Gallery.class);
-        Member mockMember = mock(Member.class);
-
-        ImageComment comment1 = ImageComment.builder()
-                                            .content("comment1")
-                                            .gallery(mockGallery)
-                                            .member(mockMember)
-                                            .build();
-        ImageComment comment2 = ImageComment.builder()
-                                            .content("comment2")
-                                            .gallery(mockGallery)
-                                            .member(mockMember)
-                                            .build();
-        Page<ImageComment> commentPage = new PageImpl<>(Arrays.asList(comment1, comment2));
-
-        when(imageCommentRepository.findByGallery_GalleryId(galleryId, pageable)).thenReturn(commentPage);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<ImageComment> page = new PageImpl<>(Arrays.asList(imageComment));
+        when(imageCommentRepository.findByGalleryId(galleryId, pageable)).thenReturn(page);
 
         // When
         Page<ImageCommentDto> result = imageCommentService.getAllCommentsByGalleryId(galleryId, pageable);
 
         // Then
-        assertEquals(2, result.getContent().size());
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        verify(imageCommentRepository).findByGalleryId(galleryId, pageable);
     }
 }

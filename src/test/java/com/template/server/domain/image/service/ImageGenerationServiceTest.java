@@ -15,12 +15,12 @@ import com.template.server.global.error.exception.BusinessLogicException;
 import com.template.server.global.error.exception.ExceptionCode;
 import com.template.server.global.util.aws.service.S3UploadService;
 import com.template.server.global.util.ratelimit.RateLimiterManager;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -29,7 +29,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class ImageGenerationServiceTest {
+
+@ExtendWith(MockitoExtension.class)
+class ImageGenerationServiceTest {
 
     @InjectMocks
     private ImageGenerationService imageGenerationService;
@@ -53,13 +55,9 @@ public class ImageGenerationServiceTest {
     @Mock
     private RateLimiterManager rateLimiterManager;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
-    public void testMakeImages() {
+    void testMakeImages() {
         // Given
         String email = "test@test.com";
         PromptRequest promptRequest = new PromptRequest("test", 1);
@@ -102,7 +100,7 @@ public class ImageGenerationServiceTest {
     }
 
     @Test
-    public void testMakeImages_rateLimitExceeded() {
+    void testMakeImages_rateLimitExceeded() {
         // Given
         String email = "test@test.com";
         PromptRequest promptRequest = new PromptRequest("test", 1);
