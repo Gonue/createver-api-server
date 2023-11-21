@@ -2,7 +2,7 @@ package com.template.server.domain.member.service;
 
 import com.template.server.domain.image.dto.GalleryDto;
 import com.template.server.domain.image.entity.Gallery;
-import com.template.server.domain.image.repository.GalleryRepository;
+import com.template.server.domain.image.repository.gallery.GalleryRepository;
 import com.template.server.domain.member.dto.MemberDto;
 import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.repository.MemberRepository;
@@ -85,7 +85,7 @@ public class MemberService {
     //사용자가 생성한 이미지 목록
     @Transactional(readOnly = true)
     public Page<GalleryDto> getMyGalleries(String email, Pageable pageable) {
-        Page<Gallery> galleryPage = galleryRepository.findByMemberEmail(email, pageable);
+        Page<Gallery> galleryPage = galleryRepository.findGalleryByMemberEmail(email, pageable);
         return galleryPage.map(GalleryDto::from);
     }
 

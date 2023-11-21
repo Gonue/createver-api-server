@@ -1,6 +1,7 @@
 package com.template.server.domain.image.dto.response;
 
 import com.template.server.domain.image.dto.GalleryDto;
+import com.template.server.global.util.aws.CloudFrontUrlUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -22,10 +23,11 @@ public class GalleryResponse {
     private final boolean isBlinded;
 
     public static GalleryResponse from(GalleryDto dto){
+        String cloudFrontUrl = CloudFrontUrlUtils.convertToCloudFrontUrl(dto.getStorageUrl());
         return new GalleryResponse(
                 dto.getGalleryId(),
                 dto.getPrompt(),
-                dto.getStorageUrl(),
+                cloudFrontUrl,
                 dto.getOption(),
                 dto.getCreatedAt(),
                 dto.getCommentCount(),

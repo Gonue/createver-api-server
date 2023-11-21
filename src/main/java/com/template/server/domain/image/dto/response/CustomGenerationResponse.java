@@ -1,6 +1,6 @@
 package com.template.server.domain.image.dto.response;
 
-import com.template.server.global.util.CloudFrontUrlUtils;
+import com.template.server.global.util.aws.CloudFrontUrlUtils;
 import lombok.*;
 
 import java.time.LocalDateTime;

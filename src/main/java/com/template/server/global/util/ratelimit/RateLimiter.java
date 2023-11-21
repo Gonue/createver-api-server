@@ -1,4 +1,4 @@
-package com.template.server.global.util;
+package com.template.server.global.util.ratelimit;
 
 public class RateLimiter {
     private final int maxTokens;

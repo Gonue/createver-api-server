@@ -3,8 +3,8 @@ package com.template.server.domain.image.service;
 import com.template.server.domain.image.dto.ImageCommentDto;
 import com.template.server.domain.image.entity.Gallery;
 import com.template.server.domain.image.entity.ImageComment;
-import com.template.server.domain.image.repository.GalleryRepository;
-import com.template.server.domain.image.repository.ImageCommentRepository;
+import com.template.server.domain.image.repository.gallery.GalleryRepository;
+import com.template.server.domain.image.repository.comment.ImageCommentRepository;
 import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.repository.MemberRepository;
 import com.template.server.global.error.exception.BusinessLogicException;
@@ -69,7 +69,7 @@ public class ImageCommentService {
 
     @Transactional(readOnly = true)
     public Page<ImageCommentDto> getAllCommentsByGalleryId(Long galleryId, Pageable pageable) {
-        return imageCommentRepository.findByGallery_GalleryId(galleryId, pageable)
+        return imageCommentRepository.findByGalleryId(galleryId, pageable)
                 .map(ImageCommentDto::from);
     }
 }

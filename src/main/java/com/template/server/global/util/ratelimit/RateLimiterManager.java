@@ -1,4 +1,4 @@
-package com.template.server.global.util;
+package com.template.server.global.util.ratelimit;
 
 import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.entity.PlanType;

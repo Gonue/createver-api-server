@@ -20,7 +20,7 @@ public class ArticleController {
     private final ArticleService articleService;
 
     //Create Article
-    @PostMapping
+    @PostMapping("/admin")
     public Response<Void> createArticle(@RequestBody ArticleCreateRequest request, Authentication authentication){
         articleService.createArticle(request.getTitle(), request.getContent(), authentication.getName(), request.getThumbnailUrl());
         return Response.success(201, null);
@@ -40,7 +40,7 @@ public class ArticleController {
     }
 
     //Update Article
-    @PatchMapping("/{articleId}")
+    @PatchMapping("/admin/{articleId}")
     public Response<ArticleResponse> updateArticle(@PathVariable Long articleId,
                                                    @RequestBody ArticleUpdateRequest request,
                                                    Authentication authentication){
@@ -49,7 +49,7 @@ public class ArticleController {
     }
 
     //Delete Article
-    @DeleteMapping("/{articleId}")
+    @DeleteMapping("/admin/{articleId}")
     public Response<Void> deleteArticle(@PathVariable Long articleId, Authentication authentication){
         articleService.deleteArticle(authentication.getName(), articleId);
         return Response.success();

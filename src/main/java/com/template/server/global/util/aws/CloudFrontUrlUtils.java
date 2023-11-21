@@ -1,4 +1,4 @@
-package com.template.server.global.util;
+package com.template.server.global.util.aws;
 
 public class CloudFrontUrlUtils {
     public static String convertToCloudFrontUrl(String s3Url) {

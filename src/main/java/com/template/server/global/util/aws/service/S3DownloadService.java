@@ -1,11 +1,11 @@
-package com.template.server.domain.image.service;
+package com.template.server.global.util.aws.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.util.IOUtils;
 import com.template.server.domain.image.entity.Gallery;
-import com.template.server.domain.image.repository.GalleryRepository;
+import com.template.server.domain.image.repository.gallery.GalleryRepository;
 import com.template.server.global.error.exception.BusinessLogicException;
 import com.template.server.global.error.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class S3DownloadService {
 
     @Transactional
     public byte[] downloadFileByGalleryId(Long galleryId) {
-        Gallery gallery = galleryRepository.findByGalleryIdForUpdate(galleryId)
+        Gallery gallery = galleryRepository.findGalleryByIdForUpdate(galleryId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.S3_FILE_ERROR, "해당 galleryId가 존재하지 않습니다."));
 
         gallery.increaseDownloadCount();

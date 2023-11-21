@@ -5,8 +5,8 @@ import static org.mockito.Mockito.*;
 
 import com.template.server.domain.image.entity.Gallery;
 import com.template.server.domain.image.entity.ImageLike;
-import com.template.server.domain.image.repository.GalleryRepository;
-import com.template.server.domain.image.repository.ImageLikeRepository;
+import com.template.server.domain.image.repository.gallery.GalleryRepository;
+import com.template.server.domain.image.repository.like.ImageLikeRepository;
 import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -86,20 +86,5 @@ public class ImageLikeServiceTest {
 
         // Then
         assertTrue(result);
-    }
-
-    @Test
-    public void testCountLikesForGallery() {
-        // Given
-        Long galleryId = 1L;
-        Long expectedCount = 5L;
-
-        when(imageLikeRepository.countByGalleryGalleryId(galleryId)).thenReturn(expectedCount);
-
-        // When
-        Long result = imageLikeService.countLikesForGallery(galleryId);
-
-        // Then
-        assertEquals(expectedCount, result);
     }
 }

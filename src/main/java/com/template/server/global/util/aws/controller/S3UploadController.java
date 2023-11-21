@@ -1,6 +1,6 @@
-package com.template.server.domain.image.controller;
+package com.template.server.global.util.aws.controller;
 
-import com.template.server.domain.image.service.S3UploadService;
+import com.template.server.global.util.aws.service.S3UploadService;
 import com.template.server.global.error.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

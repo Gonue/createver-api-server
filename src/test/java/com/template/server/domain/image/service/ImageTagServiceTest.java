@@ -1,7 +1,7 @@
 package com.template.server.domain.image.service;
 
 import com.template.server.domain.image.entity.ImageTag;
-import com.template.server.domain.image.repository.ImageTagRepository;
+import com.template.server.domain.image.repository.tag.ImageTagRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

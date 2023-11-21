@@ -2,8 +2,8 @@ package com.template.server.domain.image.service;
 
 import com.template.server.domain.image.entity.Gallery;
 import com.template.server.domain.image.entity.ImageReport;
-import com.template.server.domain.image.repository.GalleryRepository;
-import com.template.server.domain.image.repository.ImageReportRepository;
+import com.template.server.domain.image.repository.gallery.GalleryRepository;
+import com.template.server.domain.image.repository.report.ImageReportRepository;
 import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.repository.MemberRepository;
 import com.template.server.global.error.exception.BusinessLogicException;

@@ -2,7 +2,7 @@ package com.template.server.domain.member.service;
 
 import com.template.server.domain.image.dto.GalleryDto;
 import com.template.server.domain.image.entity.Gallery;
-import com.template.server.domain.image.repository.GalleryRepository;
+import com.template.server.domain.image.repository.gallery.GalleryRepository;
 import com.template.server.domain.member.dto.MemberDto;
 import com.template.server.domain.member.entity.Member;
 import com.template.server.domain.member.repository.MemberRepository;
@@ -175,7 +175,7 @@ class MemberServiceTest {
         Page<Gallery> galleryPage = new PageImpl<>(galleryList, pageable, galleryList.size());
 
         // When
-        when(galleryRepository.findByMemberEmail(email, pageable)).thenReturn(galleryPage);
+        when(galleryRepository.findGalleryByMemberEmail(email, pageable)).thenReturn(galleryPage);
 
         // Then
         Page<GalleryDto> result = memberService.getMyGalleries(email, pageable);

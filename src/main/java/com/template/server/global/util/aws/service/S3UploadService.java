@@ -1,8 +1,8 @@
-package com.template.server.domain.image.service;
+package com.template.server.global.util.aws.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.template.server.global.util.CloudFrontUrlUtils;
+import com.template.server.global.util.aws.CloudFrontUrlUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

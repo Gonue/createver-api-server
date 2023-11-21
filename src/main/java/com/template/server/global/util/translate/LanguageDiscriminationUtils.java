@@ -1,4 +1,4 @@
-package com.template.server.global.util;
+package com.template.server.global.util.translate;
 
 public class LanguageDiscriminationUtils {
 

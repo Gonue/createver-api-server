@@ -1,7 +1,7 @@
 package com.template.server.domain.image.dto;
 
 import com.template.server.domain.image.entity.Gallery;
-import com.template.server.global.util.CloudFrontUrlUtils;
+import com.template.server.global.util.aws.CloudFrontUrlUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -31,22 +31,6 @@ public class GalleryDto {
                 entity.getOption(),
                 entity.getCreatedAt(),
                 null,
-                entity.getLikeCount(),
-                entity.getDownloadCount(),
-                entity.getReportCount(),
-                entity.isBlinded()
-        );
-    }
-
-    public static GalleryDto from(Gallery entity, Long commentCount) {
-        String cloudFrontUrl = CloudFrontUrlUtils.convertToCloudFrontUrl(entity.getStorageUrl());
-        return new GalleryDto(
-                entity.getGalleryId(),
-                entity.getPrompt(),
-                cloudFrontUrl,
-                entity.getOption(),
-                entity.getCreatedAt(),
-                commentCount,
                 entity.getLikeCount(),
                 entity.getDownloadCount(),
                 entity.getReportCount(),
