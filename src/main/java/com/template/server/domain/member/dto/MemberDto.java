@@ -5,11 +5,13 @@ import com.template.server.domain.member.entity.PlanType;
 import com.template.server.global.util.aws.CloudFrontUrlUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class MemberDto {
     private Long memberId;
     private String email;

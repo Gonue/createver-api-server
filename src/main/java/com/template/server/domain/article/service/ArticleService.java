@@ -9,10 +9,12 @@ import com.template.server.global.error.exception.BusinessLogicException;
 import com.template.server.global.error.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -21,6 +23,7 @@ public class ArticleService {
 
     private final MemberRepository memberRepository;
     private final ArticleRepository articleRepository;
+    private final ArticleCacheService articleCacheService;
 
 
     //Create Article
@@ -34,6 +37,7 @@ public class ArticleService {
                 .thumbnailUrl(thumbnailUrl)
                 .build();
         articleRepository.save(article);
+        articleCacheService.evictAllArticlesCache();
     }
 
     //Single Article
@@ -45,8 +49,10 @@ public class ArticleService {
 
     //List Article
     @Transactional(readOnly = true)
-    public Page<ArticleDto> articleList(Pageable pageable){
-        return articleRepository.findAll(pageable).map(ArticleDto::from);
+    public Page<ArticleDto> articleList(Pageable pageable) {
+        List<ArticleDto> articles = articleCacheService.getArticles(pageable);
+        long total = articleCacheService.getTotalArticleCount();
+        return new PageImpl<>(articles, pageable, total);
     }
 
     //Update Article
@@ -55,18 +61,20 @@ public class ArticleService {
         Member member = findMemberByEmail(email);
         Article article = findArticle(articleId);
         checkArticleMember(article, member, email, articleId);
-
         article.updateArticle(title, content, thumbnailUrl);
-
-        return ArticleDto.from(articleRepository.save(article));
+        ArticleDto updatedArticle = ArticleDto.from(articleRepository.save(article));
+        articleCacheService.evictAllArticlesCache();
+        return updatedArticle;
     }
 
     //Delete Article
+    @Transactional
     public void deleteArticle(String email, Long articleId){
         Member member = findMemberByEmail(email);
         Article article = findArticle(articleId);
         checkArticleMember(article, member, email, articleId);
         articleRepository.delete(article);
+        articleCacheService.evictAllArticlesCache();
     }
 
     //Member Verification

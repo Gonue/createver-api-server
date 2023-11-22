@@ -10,6 +10,9 @@ import com.template.server.global.auth.utils.CustomAuthorityUtils;
 import com.template.server.global.error.exception.BusinessLogicException;
 import com.template.server.global.error.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -59,9 +62,9 @@ public class MemberService {
         });
     }
 
-
     //회원 조회
     @Transactional(readOnly = true)
+    @Cacheable(value = "MemberCacheStore", key = "#email", cacheManager = "cacheManager", unless = "#result == null")
     public MemberDto getMemberInfo(String email) {
         Member member = memberOrException(email);
         return MemberDto.from(member);
@@ -69,14 +72,17 @@ public class MemberService {
 
     //프로필, 닉네임 변경
     @Transactional
+    @CachePut(value = "MemberCacheStore", key = "#email", cacheManager = "cacheManager")
     public MemberDto update(String email, Optional<String> nickName, Optional<String> profileImage) {
         Member member = memberOrException(email);
         member.updateMemberInfo(nickName.orElse(null), profileImage.orElse(null));
         return MemberDto.from(memberRepository.save(member));
     }
 
-    @Transactional
+
     //회원 탈퇴
+    @Transactional
+    @CacheEvict(value = "MemberCacheStore", key = "#email", cacheManager = "cacheManager")
     public void delete(String email) {
         Member member = memberOrException(email);
         memberRepository.delete(member);

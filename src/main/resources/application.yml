@@ -11,6 +11,11 @@ spring:
     username: ${LOCAL_DB_USERNAME}
     password: ${LOCAL_DB_PASSWORD}
 
+  data:
+    redis:
+      host: ${LOCAL_REDIS_URL}
+      port: ${LOCAL_REDIS_PORT}
+
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -39,6 +44,7 @@ logging:
     org:
       springframework:
         web: trace
+        cache: trace
     org.springframework.web.servlet: trace
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 

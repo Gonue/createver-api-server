@@ -4,19 +4,21 @@ import com.template.server.domain.article.entity.Article;
 import com.template.server.domain.member.dto.MemberDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class ArticleDto {
-    private final Long articleId;
-    private final String title;
-    private final String content;
-    private final MemberDto member;
-    private final String thumbnailUrl;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime modifiedAt;
+@NoArgsConstructor
+public class ArticleDto  {
+    private Long articleId;
+    private String title;
+    private String content;
+    private MemberDto member;
+    private String thumbnailUrl;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 
     public static ArticleDto from(Article entity){
         return new ArticleDto(
