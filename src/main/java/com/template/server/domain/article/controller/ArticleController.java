@@ -35,8 +35,9 @@ public class ArticleController {
 
     //List Article
     @GetMapping
-    public Response<Page<ArticleResponse>> articleList(Pageable pageable){
-        return Response.success(articleService.articleList(pageable).map(ArticleResponse::from));
+    public Response<Page<ArticleResponse>> articleList(Pageable pageable) {
+        Page<ArticleDto> page = articleService.articleList(pageable);
+        return Response.success(page.map(ArticleResponse::from));
     }
 
     //Update Article

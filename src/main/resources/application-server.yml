@@ -11,6 +11,11 @@ spring:
     username: ${SERVER_DB_USERNAME}
     password: ${SERVER_DB_PASSWORD}
 
+  data:
+    redis:
+      host: ${SERVER_REDIS_URL}
+      port: ${SERVER_REDIS_PORT}
+
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -31,7 +36,7 @@ logging:
     org:
       springframework:
         web: info
-    org.springframework.web.servlet: warn
+    org.springframework.web.servlet: info
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 
 cloud:
