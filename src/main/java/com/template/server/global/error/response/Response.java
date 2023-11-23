@@ -23,4 +23,8 @@ public class Response<T> {
     public static <T> Response<Page<T>> success(Page<T> result) {
         return new Response<>(200, "SUCCESS", result);
     }
+
+    public static <T> Response<T> failure(int status, T result) {
+        return new Response<>(status, "Fail", result);
+    }
 }

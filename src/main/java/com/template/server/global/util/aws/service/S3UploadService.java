@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -22,10 +21,13 @@ public class S3UploadService {
 
     private final AmazonS3 amazonS3;
 
+
+    private String generateShortUuid() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString().substring(0, 16);
+    }
     public String upload(MultipartFile multipartFile) throws IOException {
-        String originalFileName = multipartFile.getOriginalFilename();
-        String fileNameWithoutExt = Objects.requireNonNull(originalFileName).substring(0, originalFileName.lastIndexOf('.'));
-        String s3FileName = "images/" + UUID.randomUUID() + "_" + fileNameWithoutExt + ".png";
+        String s3FileName = "images/" + generateShortUuid() + ".png";
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(multipartFile.getInputStream().available());
@@ -38,7 +40,7 @@ public class S3UploadService {
     }
 
     public String upload(byte[] imageData, String contentType) {
-        String s3FileName = "images/" + UUID.randomUUID().toString() + ".png";
+        String s3FileName = "images/" + generateShortUuid() + ".png";
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(imageData.length);
@@ -53,9 +55,7 @@ public class S3UploadService {
     }
 
     public String uploadAndReturnCloudFrontUrl(MultipartFile multipartFile) throws IOException {
-        String originalFileName = multipartFile.getOriginalFilename();
-        String fileNameWithoutExt = Objects.requireNonNull(originalFileName).substring(0, originalFileName.lastIndexOf('.'));
-        String s3FileName = "images/" + UUID.randomUUID() + "_" + fileNameWithoutExt + ".png";
+        String s3FileName = "images/" + generateShortUuid() + ".png";
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(multipartFile.getInputStream().available());
