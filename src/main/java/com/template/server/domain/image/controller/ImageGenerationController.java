@@ -36,5 +36,11 @@ public class ImageGenerationController {
         List<CustomGenerationResponse> customGenerationResponses = imageGenerationService.stableMakeImage(authentication.getName(), request);
         return Response.success(200, customGenerationResponses);
     }
+
+    @PostMapping("/simple")
+    public Response<List<String>> simpleImageGeneration(@RequestBody PromptRequest request) {
+        List<String> s3Urls = imageGenerationService.simpleImageMake(request.getPrompt());
+        return Response.success(200, s3Urls);
+    }
 }
 

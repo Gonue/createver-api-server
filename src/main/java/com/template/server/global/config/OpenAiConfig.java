@@ -11,4 +11,6 @@ public class OpenAiConfig {
     public static final int IMAGE_COUNT = 1;
     public static final String RESPONSE_FORMAT = "b64_json";
     public static final String MODEL = "dall-e-3";
+    public static final String MODEL2 = "dall-e-2";
+
 }

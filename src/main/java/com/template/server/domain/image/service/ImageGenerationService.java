@@ -246,6 +246,58 @@ public class ImageGenerationService {
         }
     }
 
+    public List<String> simpleImageMake(String prompt) {
+        try {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentType(MediaType.parseMediaType(OpenAiConfig.MEDIA_TYPE));
+            httpHeaders.add(OpenAiConfig.AUTHORIZATION, OpenAiConfig.BEARER + apiKey);
+
+            String translatedPrompt = prompt;
+
+            if (LanguageDiscriminationUtils.isKorean(prompt)) {
+                translatedPrompt = translate.translate(prompt, "ko", "en");
+            }
+
+            ImageGenerationRequest imageGenerationRequest = ImageGenerationRequest.builder()
+                    .prompt(translatedPrompt)
+                    .model(OpenAiConfig.MODEL2)
+                    .n(2)
+                    .size("512x512")
+                    .response_format(OpenAiConfig.RESPONSE_FORMAT)
+                    .build();
+
+            HttpEntity<ImageGenerationRequest> requestHttpEntity = new HttpEntity<>(imageGenerationRequest, httpHeaders);
+
+            ResponseEntity<ImageGenerationResponse> responseEntity = restTemplate.postForEntity(
+                    OpenAiConfig.IMAGE_URL,
+                    requestHttpEntity,
+                    ImageGenerationResponse.class
+            );
+
+            ImageGenerationResponse imageGenerationResponse = responseEntity.getBody();
+            if (imageGenerationResponse == null || imageGenerationResponse.getData() == null) {
+                throw new BusinessLogicException(ExceptionCode.GENERAL_ERROR, "OpenAI API No Response");
+            }
+
+            List<String> s3Urls = new ArrayList<>();
+            for (ImageGenerationResponse.ImageURL imageUrl : imageGenerationResponse.getData()) {
+                String base64Image = imageUrl.getB64_json();
+                byte[] decodedImage = Base64.getDecoder().decode(base64Image);
+                String s3Url = s3UploadService.uploadAndReturnCloudFrontUrl(decodedImage, "image/png");
+                s3Urls.add(s3Url);
+            }
+
+            return s3Urls;
+
+        } catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerEx) {
+            throw new BusinessLogicException(ExceptionCode.OPENAI_API_ERROR, "OpenAI API 호출 실패");
+        } catch (AmazonS3Exception s3Ex) {
+            throw new BusinessLogicException(ExceptionCode.S3_UPLOAD_ERROR, "S3 업로드 실패");
+        } catch (Exception ex) {
+            throw new BusinessLogicException(ExceptionCode.GENERAL_ERROR, "이미지 생성 중 오류 발생");
+        }
+    }
+
 
     private String modifyPromptBasedOnOption(String originalPrompt, int option) {
         String prefix = "";
