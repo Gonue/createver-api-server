@@ -67,4 +67,40 @@ public class S3UploadService {
         String s3Url = amazonS3.getUrl(bucket, s3FileName).toString();
         return CloudFrontUrlUtils.convertToCloudFrontUrl(s3Url);
     }
+
+    public String uploadAndReturnCloudFrontUrl(byte[] imageData, String contentType) {
+        String s3FileName = "images/" + generateShortUuid() + ".png";
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(imageData.length);
+        objectMetadata.setContentDisposition("inline");
+        objectMetadata.setContentType(contentType);
+
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(imageData);
+
+        amazonS3.putObject(bucket, s3FileName, byteArrayInputStream, objectMetadata);
+
+        String s3Url = amazonS3.getUrl(bucket, s3FileName).toString();
+        return CloudFrontUrlUtils.convertToCloudFrontUrl(s3Url);
+    }
+
+    public String uploadMp3(byte[] mp3Data) {
+        String s3FileName = "musics/" + generateShortUuid() + ".mp3";
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(mp3Data.length);
+        objectMetadata.setContentDisposition("inline");
+        objectMetadata.setContentType("audio/mpeg");
+
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(mp3Data);
+
+        amazonS3.putObject(bucket, s3FileName, byteArrayInputStream, objectMetadata);
+
+        return amazonS3.getUrl(bucket, s3FileName).toString();
+    }
+
+    public String uploadMp3AndReturnCloudFrontUrl(byte[] mp3Data) {
+        String s3Url = uploadMp3(mp3Data);
+        return CloudFrontUrlUtils.convertToCloudFrontUrl(s3Url);
+    }
 }
