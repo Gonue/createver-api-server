@@ -21,24 +21,32 @@ public class ImageTagService {
 
     @Transactional
     public List<ImageTag> getOrCreateTags(String[] tagNames) {
-        List<ImageTag> tags = new ArrayList<>();
+
         Set<String> tagNameSet = new HashSet<>(Arrays.asList(tagNames));
 
         List<ImageTag> existingTags = imageTagRepository.findByNameIn(tagNameSet);
-
         Map<String, ImageTag> tagMap = existingTags.stream()
-                                                    .collect(Collectors.toMap(ImageTag::getName, Function.identity()));
+                .collect(Collectors.toMap(ImageTag::getName, Function.identity()));
 
-        for (String tagName : tagNames) {
-            ImageTag tag = tagMap.get(tagName);
-            if (tag == null) {
-                tag = ImageTag.builder().name(tagName).build();
-                tag = imageTagRepository.save(tag);
+        List<ImageTag> newTags = new ArrayList<>();
+        
+        for (String tagName : tagNameSet) { // 중복 제거된 태그 순회
+            if (!tagMap.containsKey(tagName)) {
+                // 새 태그 생성 및 리스트에 추가
+                ImageTag newTag = ImageTag.builder()
+                        .name(tagName)
+                        .build();
+                newTags.add(newTag);
             }
-            tags.add(tag);
+        }
+        // 새 태그들을 데이터베이스에 일괄 저장
+        if (!newTags.isEmpty()) {
+            imageTagRepository.saveAll(newTags);
+            // 저장된 태그들을 기존 태그 목록에 추가
+            existingTags.addAll(newTags);
         }
 
-        return tags;
+        return existingTags;
     }
 
     @Transactional(readOnly = true)
