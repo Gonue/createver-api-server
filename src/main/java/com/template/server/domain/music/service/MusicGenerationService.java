@@ -5,6 +5,8 @@ import com.template.server.domain.music.dto.request.MusicGenerationRequest;
 import com.template.server.domain.music.dto.request.MusicPromptRequest;
 import com.template.server.domain.music.dto.response.MusicGenerationResponse;
 import com.template.server.global.util.aws.service.S3UploadService;
+import com.template.server.global.util.translate.LanguageDiscriminationUtils;
+import com.template.server.global.util.translate.Translate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -21,7 +23,7 @@ public class MusicGenerationService {
 
     private final RestTemplate restTemplate;
     private final S3UploadService s3UploadService;
-
+    private final Translate translate;
 
     @Value(("${sagemaker.api-key}"))
     private String sageMakerKey;
@@ -34,15 +36,22 @@ public class MusicGenerationService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Token " + sageMakerKey);
 
+        String translatedPrompt = musicPromptRequest.getPrompt();
+
+        if (LanguageDiscriminationUtils.isKorean(musicPromptRequest.getPrompt())) {
+            translatedPrompt = translate.translate(musicPromptRequest.getPrompt(), "ko", "en");
+        }
+
+
         MusicGenerationInput musicGenerationInput = MusicGenerationInput.builder()
                 .topK(250)
                 .topP(0)
-                .prompt(musicPromptRequest.getPrompt())
+                .prompt(translatedPrompt)
                 .duration(5)
                 .temperature(1)
                 .continuation(false)
                 .modelVersion("stereo-large")
-                .outputFormat("mp3")
+                .outputFormat("wav")
                 .continuationStart(0)
                 .multiBandDiffusion(false)
                 .normalizationStrategy("peak")
@@ -88,7 +97,7 @@ public class MusicGenerationService {
                             null,
                             clientHttpResponse -> StreamUtils.copyToByteArray(clientHttpResponse.getBody())
                     );
-                    return s3UploadService.uploadMp3AndReturnCloudFrontUrl(musicData);
+                    return s3UploadService.uploadWavAndReturnCloudFrontUrl(musicData);
                 } else if ("failed".equals(status) || "canceled".equals(status)) {
                     throw new RuntimeException("Music generation failed or was canceled");
                 }
