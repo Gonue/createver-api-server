@@ -31,3 +31,22 @@ jobs:
           echo "${{ secrets.GCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GITH_USERNAME }} --password-stdin
           docker build -t ghcr.io/${{ secrets.GITH_USERNAME }}/createver .
           docker push ghcr.io/${{ secrets.GITH_USERNAME }}/createver
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo docker pull ghcr.io/${{ secrets.GITH_USERNAME }}/createver
+            sudo docker rm -f $(docker ps -qa)
+            sudo docker run ${{ secrets.DOCKER_RUN_SCRIPT }}
+            sudo docker image prune -f
+
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.'
