@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration>
+
+    <!-- 기본 콘솔 앱펜더 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %green(%d{yyyy-MM-dd HH:mm:ss.SSS}) %magenta([%thread]) %highlight([%level]) %cyan(%logger{35}) : %yellow(%msg%n)
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- AWS CloudWatch 앱펜더 -->
+    <appender name="aws_cloud_watch_log" class="ca.pjer.logback.AwsLogsAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <layout>
+             <pattern>[%thread] [%date] [%level] [%file:%line] - %msg%n</pattern>
+         </layout>
+
+        <logGroupName>createver-api-server/error-log</logGroupName>
+        <logStreamUuidPrefix>error-log-</logStreamUuidPrefix>
+        <logRegion>ap-northeast-2</logRegion>
+        <maxBatchLogEvents>50</maxBatchLogEvents>
+        <maxFlushTimeMillis>30000</maxFlushTimeMillis>
+        <maxBlockTimeMillis>5000</maxBlockTimeMillis>
+        <retentionTimeDays>0</retentionTimeDays>
+        <accessKeyId>${AWS_CLOUD_WATCH_ACCESS_KEY}</accessKeyId>
+        <secretAccessKey>${AWS_CLOUD_WATCH_SECRET_KEY}</secretAccessKey>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%5level] %logger{35}[%method:%line] : %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- default profile -->
+    <springProfile name="default">
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+        <logger name="com.template.server" level="DEBUG" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+    </springProfile>
+
+    <!-- server profile -->
+    <springProfile name="server">
+        <root level="error">
+            <appender-ref ref="aws_cloud_watch_log"/>
+        </root>
+        <logger name="com.template.server" level="error" additivity="false">
+            <appender-ref ref="aws_cloud_watch_log"/>
+        </logger>
+    </springProfile>
+
+</configuration>
+

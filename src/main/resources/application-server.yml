@@ -31,14 +31,6 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
-logging:
-  level:
-    org:
-      springframework:
-        web: info
-    org.springframework.web.servlet: info
-    org.hibernate.type.descriptor.sql.BasicBinder: trace
-
 cloud:
   aws:
     credentials:

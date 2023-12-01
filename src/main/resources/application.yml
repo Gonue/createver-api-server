@@ -38,16 +38,6 @@ spring:
 server:
   port: 80
 
-#  sql.init.mode: always
-logging:
-  level:
-    org:
-      springframework:
-        web: trace
-        cache: trace
-    org.springframework.web.servlet: trace
-    org.hibernate.type.descriptor.sql.BasicBinder: trace
-
 cloud:
   aws:
     credentials:
