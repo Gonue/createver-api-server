@@ -40,7 +40,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             sudo docker pull ghcr.io/${{ secrets.GITH_USERNAME }}/createver
-            sudo docker rm -f $(docker ps -qa)
+            sudo docker rm -f $(sudo docker ps -qa)
             sudo docker run ${{ secrets.DOCKER_RUN_SCRIPT }}
             sudo docker image prune -f
 
