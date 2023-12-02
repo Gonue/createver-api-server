@@ -15,7 +15,7 @@ public class LogAspect {
 
     private final LogTracer logTracer;
 
-    @Around("execution(* com.template.server..*Controller.*(..)) || execution(* com.template.server..*Service.*(..)) || execution(* com.template.server..*Repository.*(..))")
+    @Around("execution(* com.template.server..*Controller.*(..)) && !execution(* com.template.server.domain.health.HealthCheckController.*(..)) || execution(* com.template.server..*Service.*(..)) || execution(* com.template.server..*Repository.*(..))")
     public Object doLog(ProceedingJoinPoint joinPoint) throws Throwable {
         TraceStatus status = null;
         boolean hasException = false;
