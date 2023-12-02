@@ -1,27 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-
 <configuration>
 
     <!-- 기본 콘솔 앱펜더 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>
-                %green(%d{yyyy-MM-dd HH:mm:ss.SSS}) %magenta([%thread]) %highlight([%level]) %cyan(%logger{35}) : %yellow(%msg%n)
-            </pattern>
+            <pattern>%green(%d{yyyy-MM-dd HH:mm:ss.SSS}) %magenta([%thread]) %highlight([%level]) %cyan(%logger{35}) : %yellow(%msg%n)</pattern>
         </encoder>
     </appender>
 
-    <!-- AWS CloudWatch 앱펜더 -->
-    <appender name="aws_cloud_watch_log" class="ca.pjer.logback.AwsLogsAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>ERROR</level>
-        </filter>
-        <layout>
-             <pattern>[%thread] [%date] [%level] [%file:%line] - %msg%n</pattern>
-         </layout>
-
-        <logGroupName>createver-api-server/error-log</logGroupName>
-        <logStreamUuidPrefix>error-log-</logStreamUuidPrefix>
+    <!-- AWS CloudWatch INFO 로그 앱펜더 -->
+    <appender name="AWS_CLOUD_WATCH_INFO" class="ca.pjer.logback.AwsLogsAppender">
+        <logGroupName>createver-api-server/info-log</logGroupName>
         <logRegion>ap-northeast-2</logRegion>
         <maxBatchLogEvents>50</maxBatchLogEvents>
         <maxFlushTimeMillis>30000</maxFlushTimeMillis>
@@ -31,7 +20,28 @@
         <secretAccessKey>${AWS_CLOUD_WATCH_SECRET_KEY}</secretAccessKey>
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%5level] %logger{35}[%method:%line] : %m%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%level] %logger{35} : %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- AWS CloudWatch ERROR 로그 앱펜더 -->
+    <appender name="AWS_CLOUD_WATCH_ERROR" class="ca.pjer.logback.AwsLogsAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <logGroupName>createver-api-server/error-log</logGroupName>
+        <logRegion>ap-northeast-2</logRegion>
+        <maxBatchLogEvents>50</maxBatchLogEvents>
+        <maxFlushTimeMillis>30000</maxFlushTimeMillis>
+        <maxBlockTimeMillis>5000</maxBlockTimeMillis>
+        <retentionTimeDays>0</retentionTimeDays>
+        <accessKeyId>${AWS_CLOUD_WATCH_ACCESS_KEY}</accessKeyId>
+        <secretAccessKey>${AWS_CLOUD_WATCH_SECRET_KEY}</secretAccessKey>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%level] %logger{35}[%method:%line] : %m%n</pattern>
         </encoder>
     </appender>
 
@@ -43,18 +53,18 @@
         <logger name="com.template.server" level="DEBUG" additivity="false">
             <appender-ref ref="CONSOLE"/>
         </logger>
-
     </springProfile>
 
-    <!-- server profile -->
-    <springProfile name="server">
-        <root level="error">
-            <appender-ref ref="aws_cloud_watch_log"/>
+    <!-- production profile -->
+    <springProfile name="prod">
+        <root level="info">
+            <appender-ref ref="AWS_CLOUD_WATCH_INFO"/>
+            <appender-ref ref="AWS_CLOUD_WATCH_ERROR"/>
         </root>
-        <logger name="com.template.server" level="error" additivity="false">
-            <appender-ref ref="aws_cloud_watch_log"/>
+        <logger name="com.template.server" level="info" additivity="false">
+            <appender-ref ref="AWS_CLOUD_WATCH_INFO"/>
+            <appender-ref ref="AWS_CLOUD_WATCH_ERROR"/>
         </logger>
     </springProfile>
 
 </configuration>
-
