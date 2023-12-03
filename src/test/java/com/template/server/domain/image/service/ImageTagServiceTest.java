@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -34,13 +35,13 @@ class ImageTagServiceTest {
     void getOrCreateTagsTest() {
         // Given
         String[] tagNames = {"tag1", "tag2", "newTag"};
-        List<ImageTag> existingTags = Arrays.asList(
-                ImageTag.builder().name("tag1").build(),
-                ImageTag.builder().name("tag2").build()
-        );
+        List<ImageTag> existingTags = new ArrayList<>(Arrays.asList(
+            ImageTag.builder().name("tag1").build(),
+            ImageTag.builder().name("tag2").build()
+        ));
 
         when(imageTagRepository.findByNameIn(anySet())).thenReturn(existingTags);
-        when(imageTagRepository.save(any(ImageTag.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(imageTagRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
         List<ImageTag> tags = imageTagService.getOrCreateTags(tagNames);
@@ -49,7 +50,7 @@ class ImageTagServiceTest {
         assertNotNull(tags);
         assertEquals(3, tags.size());
         verify(imageTagRepository).findByNameIn(anySet());
-        verify(imageTagRepository, times(1)).save(any(ImageTag.class));
+        verify(imageTagRepository).saveAll(anyList());
     }
 
     @Test
