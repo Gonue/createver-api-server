@@ -52,7 +52,7 @@ jobs:
           token: ${{ github.token }}
 
       - name: 아티팩트 업로드
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: built-artifact
           path: build/libs/app.jar
