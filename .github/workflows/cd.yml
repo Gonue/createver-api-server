@@ -14,18 +14,6 @@ jobs:
       - name: Runner 환경 Repository 세팅
         uses: actions/checkout@v3
 
-      - name: 아티팩트 다운로드
-        uses: actions/download-artifact@v3
-        with:
-          name: built-artifact
-          path: build/libs
-
-      - name: Docker 빌드 & GCR 푸시
-        run: |
-          echo "${{ secrets.GCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GITH_USERNAME }} --password-stdin
-          docker build -t ghcr.io/${{ secrets.GITH_USERNAME }}/createver .
-          docker push ghcr.io/${{ secrets.GITH_USERNAME }}/createver
-
       - name: EC2 배포
         uses: appleboy/ssh-action@master
         with:
