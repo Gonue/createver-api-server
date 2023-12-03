@@ -26,8 +26,13 @@ jobs:
             sudo docker run ${{ secrets.DOCKER_RUN_SCRIPT }}
             sudo docker image prune -f
 
-      - name: Discord 알림
-        uses: sarisia/actions-status-discord@v1
+  discord-notification:
+        runs-on: ubuntu-latest
         if: always()
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+        needs: deploy
+        steps:
+          - name: Discord 알림
+            uses: sarisia/actions-status-discord@v1
+            if: always()
+            with:
+              webhook: ${{ secrets.DISCORD_WEBHOOK }}

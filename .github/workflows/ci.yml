@@ -78,8 +78,9 @@ jobs:
             docker push ghcr.io/${{ secrets.GITH_USERNAME }}/createver
 
   discord-notification:
-        needs: docker-build-and-push
         runs-on: ubuntu-latest
+        if: always()
+        needs: [ build-and-test, docker-build-and-push ]
         steps:
           - name: Discord 알림
             uses: sarisia/actions-status-discord@v1
