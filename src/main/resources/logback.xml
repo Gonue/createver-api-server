@@ -50,7 +50,7 @@
         <root level="info">
             <appender-ref ref="CONSOLE"/>
         </root>
-        <logger name="com.template.server" level="DEBUG" additivity="false">
+        <logger name="com.createver.server" level="DEBUG" additivity="false">
             <appender-ref ref="CONSOLE"/>
         </logger>
     </springProfile>
@@ -61,7 +61,7 @@
             <appender-ref ref="AWS_CLOUD_WATCH_INFO"/>
             <appender-ref ref="AWS_CLOUD_WATCH_ERROR"/>
         </root>
-        <logger name="com.template.server" level="info" additivity="false">
+        <logger name="com.createver.server" level="info" additivity="false">
             <appender-ref ref="AWS_CLOUD_WATCH_INFO"/>
             <appender-ref ref="AWS_CLOUD_WATCH_ERROR"/>
         </logger>
