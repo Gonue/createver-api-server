@@ -1,5 +1,6 @@
 package com.template.server.domain.image.dto.response.pro;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ public class StablePromptRequest {
     private int checkPoint;
     private int textInversion;
     private int lora;
+    @NotBlank
     private String prompt;
     private int width;
     private int height;

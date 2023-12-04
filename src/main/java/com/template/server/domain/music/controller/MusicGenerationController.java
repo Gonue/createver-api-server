@@ -3,6 +3,7 @@ package com.template.server.domain.music.controller;
 import com.template.server.domain.music.dto.request.MusicPromptRequest;
 import com.template.server.domain.music.service.MusicGenerationService;
 import com.template.server.global.error.response.Response;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,7 @@ public class MusicGenerationController {
 
 
     @PostMapping
-    public Response<String> createMusic(@RequestBody MusicPromptRequest request) throws InterruptedException {
+    public Response<String> createMusic(@RequestBody @Valid MusicPromptRequest request) throws InterruptedException {
         String musicUrl = musicGenerationService.generateAndUploadMusic(request);
         return Response.success(200, musicUrl);
     }

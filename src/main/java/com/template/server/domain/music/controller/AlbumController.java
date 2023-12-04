@@ -6,6 +6,7 @@ import com.template.server.domain.music.dto.request.AlbumUpdateRequest;
 import com.template.server.domain.music.dto.response.AlbumResponse;
 import com.template.server.domain.music.service.AlbumService;
 import com.template.server.global.error.response.Response;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,7 @@ public class AlbumController {
     private final AlbumService albumService;
 
     @PostMapping
-    public Response<Void> createAlbum(@RequestBody AlbumCreateRequest request, Authentication authentication) {
+    public Response<Void> createAlbum(@RequestBody @Valid AlbumCreateRequest request, Authentication authentication) {
         albumService.createAlbum(authentication.getName(), request.getTitle(), request.getImageUrl(), request.getMusicUrl());
         return Response.success(201, null);
     }
@@ -39,7 +40,7 @@ public class AlbumController {
 
     @PatchMapping("/{albumId}")
     public Response<AlbumResponse> updateAlbum(@PathVariable Long albumId,
-                                               @RequestBody AlbumUpdateRequest request,
+                                               @RequestBody @Valid AlbumUpdateRequest request,
                                                Authentication authentication){
         AlbumDto albumDto = albumService.updateAlbum(authentication.getName(), albumId, request.getTitle(), request.getImageUrl(), request.getMusicUrl());
         return Response.success(200, AlbumResponse.from(albumDto));

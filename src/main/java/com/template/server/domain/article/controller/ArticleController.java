@@ -6,6 +6,7 @@ import com.template.server.domain.article.dto.request.ArticleUpdateRequest;
 import com.template.server.domain.article.dto.response.ArticleResponse;
 import com.template.server.domain.article.service.ArticleService;
 import com.template.server.global.error.response.Response;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,7 @@ public class ArticleController {
 
     //Create Article
     @PostMapping("/admin")
-    public Response<Void> createArticle(@RequestBody ArticleCreateRequest request, Authentication authentication){
+    public Response<Void> createArticle(@RequestBody @Valid ArticleCreateRequest request, Authentication authentication){
         articleService.createArticle(request.getTitle(), request.getContent(), authentication.getName(), request.getThumbnailUrl());
         return Response.success(201, null);
     }
@@ -43,7 +44,7 @@ public class ArticleController {
     //Update Article
     @PatchMapping("/admin/{articleId}")
     public Response<ArticleResponse> updateArticle(@PathVariable Long articleId,
-                                                   @RequestBody ArticleUpdateRequest request,
+                                                   @RequestBody @Valid ArticleUpdateRequest request,
                                                    Authentication authentication){
         ArticleDto articleDto = articleService.updateArticle(request.getTitle(), request.getContent(), authentication.getName(), articleId, request.getThumbnailUrl());
         return Response.success(200, ArticleResponse.from(articleDto));

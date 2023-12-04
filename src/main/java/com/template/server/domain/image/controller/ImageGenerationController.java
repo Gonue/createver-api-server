@@ -5,6 +5,7 @@ import com.template.server.domain.image.dto.response.CustomGenerationResponse;
 import com.template.server.domain.image.dto.response.pro.StablePromptRequest;
 import com.template.server.domain.image.service.ImageGenerationService;
 import com.template.server.global.error.response.Response;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +23,7 @@ public class ImageGenerationController {
     private final ImageGenerationService imageGenerationService;
 
     @PostMapping
-    public Response<List<CustomGenerationResponse>> inputRequest(@RequestBody PromptRequest request, Authentication authentication){
+    public Response<List<CustomGenerationResponse>> inputRequest(@RequestBody @Valid PromptRequest request, Authentication authentication){
         String email = null;
         if (authentication != null){
             email = authentication.getName();
@@ -32,13 +33,13 @@ public class ImageGenerationController {
     }
 
     @PostMapping("/stable")
-    public Response<List<CustomGenerationResponse>> stableInputRequest(@RequestBody StablePromptRequest request, Authentication authentication){
+    public Response<List<CustomGenerationResponse>> stableInputRequest(@RequestBody @Valid StablePromptRequest request, Authentication authentication){
         List<CustomGenerationResponse> customGenerationResponses = imageGenerationService.stableMakeImage(authentication.getName(), request);
         return Response.success(200, customGenerationResponses);
     }
 
     @PostMapping("/simple")
-    public Response<List<String>> simpleImageGeneration(@RequestBody PromptRequest request) {
+    public Response<List<String>> simpleImageGeneration(@RequestBody @Valid PromptRequest request) {
         List<String> s3Urls = imageGenerationService.simpleImageMake(request.getPrompt());
         return Response.success(200, s3Urls);
     }

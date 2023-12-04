@@ -6,6 +6,7 @@ import com.template.server.domain.image.dto.request.ImageCommentRequest;
 import com.template.server.domain.image.dto.response.ImageCommentResponse;
 import com.template.server.domain.image.service.ImageCommentService;
 import com.template.server.global.error.response.Response;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,7 @@ public class ImageCommentController {
 
     @PostMapping("/{galleryId}/comment")
     public Response<Void> createComment(@PathVariable Long galleryId,
-                                        @RequestBody ImageCommentRequest request,
+                                        @RequestBody @Valid ImageCommentRequest request,
                                         Authentication authentication) {
         String email = authentication.getName();
         imageCommentService.createComment(galleryId, request.getContent(), email);
@@ -30,7 +31,7 @@ public class ImageCommentController {
 
     @PatchMapping("/comment/{imageCommentId}")
     public Response<ImageCommentResponse> updateComment(@PathVariable Long imageCommentId,
-                                                        @RequestBody ImageCommentRequest request,
+                                                        @RequestBody @Valid ImageCommentRequest request,
                                                         Authentication authentication) {
         String email = authentication.getName();
         ImageCommentDto updatedComment = imageCommentService.updateComment(email, imageCommentId, request.getContent());

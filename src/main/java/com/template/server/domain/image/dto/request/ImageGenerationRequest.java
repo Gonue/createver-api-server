@@ -9,7 +9,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ImageGenerationRequest implements Serializable {
-
     private String prompt;
     private String model;
     private int n;

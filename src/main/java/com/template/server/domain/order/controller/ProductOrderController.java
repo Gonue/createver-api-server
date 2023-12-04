@@ -6,6 +6,7 @@ import com.template.server.domain.order.dto.Response.ProductOrderResponse;
 import com.template.server.domain.order.entity.ProductOrderStatus;
 import com.template.server.domain.order.service.ProductOrderService;
 import com.template.server.global.error.response.Response;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,7 @@ public class ProductOrderController {
 
     // 주문 생성 API
     @PostMapping
-    public Response<Void> createOrder(@RequestBody ProductOrderRequest request,
+    public Response<Void> createOrder(@RequestBody @Valid ProductOrderRequest request,
                                       Authentication authentication) {
         productOrderService.createOrder(authentication.getName(), request);
         return Response.success();

@@ -85,7 +85,7 @@ public class ArticleService {
 
     private Article findArticle(Long articleId){
         return articleRepository.findById(articleId).orElseThrow(() ->
-                new BusinessLogicException(ExceptionCode.ARTICLE_NOT_FOUND, String.format("$s 을 찾을 수 없음", articleId)));
+                new BusinessLogicException(ExceptionCode.ARTICLE_NOT_FOUND, String.format("%s 을 찾을 수 없음", articleId)));
     }
 
     private void checkArticleMember(Article article, Member member, String email, Long articleId) {

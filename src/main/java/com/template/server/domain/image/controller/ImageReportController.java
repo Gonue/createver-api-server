@@ -4,6 +4,7 @@ package com.template.server.domain.image.controller;
 import com.template.server.domain.image.dto.request.ImageReportRequest;
 import com.template.server.domain.image.service.ImageReportService;
 import com.template.server.global.error.response.Response;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class ImageReportController {
 
     @PostMapping("/report/{galleryId}")
     public Response<Void> addReport(@PathVariable Long galleryId,
-                                    @RequestBody ImageReportRequest request,
+                                    @RequestBody @Valid ImageReportRequest request,
                                     Authentication authentication) {
         imageReportService.addReport(galleryId, authentication.getName(), request.getContent());
         return Response.success();
