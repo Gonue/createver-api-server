@@ -17,9 +17,15 @@ spring:
       port: ${SERVER_REDIS_PORT}
 
   mvc:
-    pathmatch:
+    throw-exception-if-no-handler-found: true
+
+    path-match:
       matching-strategy: ant_path_matcher
     log-request-details: true
+
+  web:
+    resources:
+      add-mappings: false
 
   jpa:
     defer-datasource-initialization: true

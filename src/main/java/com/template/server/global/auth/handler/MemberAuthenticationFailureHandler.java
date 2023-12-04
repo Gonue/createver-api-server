@@ -14,10 +14,9 @@ import java.io.IOException;
 @Slf4j
 public class MemberAuthenticationFailureHandler implements AuthenticationFailureHandler {
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request,
-                                        HttpServletResponse response,
-                                        AuthenticationException exception) throws IOException {
-        ErrorResponder.sendErrorResponse(response, HttpStatus.UNAUTHORIZED);
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
+
+        ErrorResponder.sendErrorResponse(response, HttpStatus.UNAUTHORIZED, exception.getMessage());
         log.error("Authentication failed: {}", exception.getMessage());
     }
 }

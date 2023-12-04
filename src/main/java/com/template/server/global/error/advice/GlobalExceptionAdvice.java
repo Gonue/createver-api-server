@@ -10,97 +10,93 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionAdvice {
 
-    @ExceptionHandler
-    public ResponseEntity handleBusinessLogicException(BusinessLogicException e) {
-        log.error("Error occurs {}",e.toString());
-        final ErrorResponse response = ErrorResponse.of(e.getExceptionCode());
-        return new ResponseEntity<>(response, HttpStatus.valueOf(e.getExceptionCode()
-                .getStatus()));
+
+    // BusinessLogicException 처리
+    @ExceptionHandler(BusinessLogicException.class)
+    public ResponseEntity<ErrorResponse> handleBusinessLogicException(BusinessLogicException e) {
+        log.error("Error occurs {}", e.toString());
+        ErrorResponse response = ErrorResponse.of(HttpStatus.valueOf(e.getExceptionCode().getStatus()), e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(e.getExceptionCode().getStatus()));
     }
 
+    // RuntimeException 처리
     @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleRuntimeException(RuntimeException e){
-        log.error("Error occurs {}",e.toString());
-        final ErrorResponse response = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR);
-
-        return response;
+    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
+        log.error("Error occurs {}", e.toString());
+        ErrorResponse response = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    // MethodArgumentNotValidException 처리
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleMethodArgumentNotValidException(
-            MethodArgumentNotValidException e) {
-        log.error("Error occurs {}",e.toString());
-        final ErrorResponse response = ErrorResponse.of(e.getBindingResult());
-
-        return response;
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        log.error("Error occurs {}", e.toString());
+        ErrorResponse response = ErrorResponse.of(e.getBindingResult());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    // ConstraintViolationException 처리
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleConstraintViolationException(
-            ConstraintViolationException e) {
-        log.error("Error occurs {}",e.toString());
-        final ErrorResponse response = ErrorResponse.of(e.getConstraintViolations());
-
-        return response;
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException e) {
+        log.error("Error occurs {}", e.toString());
+        ErrorResponse response = ErrorResponse.of(e.getConstraintViolations());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    // HttpRequestMethodNotSupportedException 처리
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    public ErrorResponse handleHttpRequestMethodNotSupportedException(
-            HttpRequestMethodNotSupportedException e) {
-        log.error("Error occurs {}",e.toString());
-        final ErrorResponse response = ErrorResponse.of(HttpStatus.METHOD_NOT_ALLOWED);
-
-        return response;
+    public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        log.error("Error occurs {}", e.toString());
+        ErrorResponse response = ErrorResponse.of(HttpStatus.METHOD_NOT_ALLOWED, "Method Not Allowed");
+        return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
+    // HttpMessageNotReadableException 처리
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleHttpMessageNotReadableException(
-            HttpMessageNotReadableException e) {
-        log.error("Error occurs {}",e.toString());
-        final ErrorResponse response = ErrorResponse.of(HttpStatus.BAD_REQUEST,
-                "Required request body is missing");
-
-        return response;
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        log.error("Error occurs {}", e.toString());
+        ErrorResponse response = ErrorResponse.of(HttpStatus.BAD_REQUEST, "Required request body is missing");
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    // MissingServletRequestParameterException 처리
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleMissingServletRequestParameterException(
-            MissingServletRequestParameterException e) {
-        log.error("Error occurs {}",e.toString());
-        final ErrorResponse response = ErrorResponse.of(HttpStatus.BAD_REQUEST,
-                e.getMessage());
-
-        return response;
+    public ResponseEntity<ErrorResponse> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+        log.error("Error occurs {}", e.toString());
+        ErrorResponse response = ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    // NullPointerException 처리
     @ExceptionHandler(NullPointerException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleNullPointerException(NullPointerException e) {
+    public ResponseEntity<ErrorResponse> handleNullPointerException(NullPointerException e) {
         log.error("Null Pointer Exception: {}", e.getMessage());
-        return ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "Null Pointer Exception occurred");
+        ErrorResponse response = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "Null Pointer Exception occurred");
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleException(Exception e) {
-        log.error("# handle Exception", e);
-        final ErrorResponse response = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR);
+    // NoHandlerFoundException 처리
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoHandlerFoundException(NoHandlerFoundException e) {
+        log.error("Error occurs {}", e.toString());
+        ErrorResponse response = ErrorResponse.of(HttpStatus.NOT_FOUND, "Invalid resource request");
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 
-        return response;
+    // 기본 예외 처리
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+        log.error("# handle Exception", e);
+        ErrorResponse response = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

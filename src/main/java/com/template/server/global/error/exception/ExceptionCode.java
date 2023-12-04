@@ -25,8 +25,8 @@ public enum ExceptionCode {
     ALBUM_NOT_FOUND(404, "앨범을 찾을 수 없음")
     ;
 
-    private int status;
-    private String message;
+    private final int status;
+    private final String message;
 
     ExceptionCode(int status, String message) {
         this.status = status;
