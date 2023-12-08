@@ -1,0 +1,27 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:toc-title: 목차
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+
+'''
+
+== ArticleController
+
+=== 게시글 등록
+
+==== Request
+include::{snippets}/article-create/http-request.adoc[]
+
+==== Request 필드 설명
+include::{snippets}/article-create/request-fields.adoc[]
+
+==== Response
+include::{snippets}/article-create/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/article-create/response-fields.adoc[]
