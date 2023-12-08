@@ -38,6 +38,13 @@ jobs:
       - name: Gradle build
         run: ./gradlew build
 
+      - name: Codecov 보고서 업로드
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./build/customJacocoReportDir/test/jacocoTestReport.xml
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
       - name: 테스트 결과 PR에 코멘트 등록
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
