@@ -4,6 +4,7 @@ import com.createver.server.domain.image.dto.GalleryDto;
 import com.createver.server.domain.image.entity.Gallery;
 import com.createver.server.domain.image.repository.gallery.GalleryRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,7 +24,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+@DisplayName("Gallery Service 테스트")
 @ExtendWith(MockitoExtension.class)
 class GalleryServiceTest {
 

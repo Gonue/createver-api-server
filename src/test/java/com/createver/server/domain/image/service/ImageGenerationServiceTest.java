@@ -15,6 +15,7 @@ import com.createver.server.global.error.exception.BusinessLogicException;
 import com.createver.server.global.error.exception.ExceptionCode;
 import com.createver.server.global.util.aws.service.S3UploadService;
 import com.createver.server.global.util.ratelimit.RateLimiterManager;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 
+@DisplayName("Image Generation Service 테스트")
 @ExtendWith(MockitoExtension.class)
 class ImageGenerationServiceTest {
 
@@ -51,11 +53,10 @@ class ImageGenerationServiceTest {
     @Mock
     private ImageTagService imageTagService;
 
-
     @Mock
     private RateLimiterManager rateLimiterManager;
 
-
+    @DisplayName("기본 이미지 생성 테스트")
     @Test
     void testMakeImages() {
         // Given
@@ -99,6 +100,33 @@ class ImageGenerationServiceTest {
         assertEquals("s3Url", result.get(0).getS3Url());
     }
 
+    @Test
+    @DisplayName("단순 이미지 생성 테스트")
+    void testSimpleImageMake() {
+        // Given
+        String prompt = "test prompt";
+        String translatedPrompt = "translated prompt";
+        ImageGenerationResponse.ImageURL imageURL = new ImageGenerationResponse.ImageURL();
+        imageURL.setB64_json("someBase64EncodedString");
+        ImageGenerationResponse imageGenerationResponse = new ImageGenerationResponse();
+        imageGenerationResponse.setData(Arrays.asList(imageURL, imageURL)); // Mocking 2 images
+
+        when(restTemplate.postForEntity(anyString(), any(), eq(ImageGenerationResponse.class)))
+                .thenReturn(new ResponseEntity<>(imageGenerationResponse, HttpStatus.OK));
+        when(s3UploadService.uploadAndReturnCloudFrontUrl(any(), anyString())).thenReturn("s3Url");
+
+        // When
+        List<String> result = imageGenerationService.simpleImageMake(prompt);
+
+        // Then
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.size());
+        assertEquals("s3Url", result.get(0));
+        assertEquals("s3Url", result.get(1));
+    }
+
+    @DisplayName("이미지 생성 요청제한 테스트")
     @Test
     void testMakeImages_rateLimitExceeded() {
         // Given
