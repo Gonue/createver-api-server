@@ -7,7 +7,6 @@ plugins {
 }
 
 group = 'com.createver'
-version = '0.0.1-SNAPSHOT'
 
 java {
     sourceCompatibility = '17'
@@ -25,7 +24,7 @@ configurations {
 }
 
 ext {
-    snippetsDir = file('build/generated-snippets')
+	set('snippetsDir', file("build/generated-snippets"))
 }
 
 dependencies {
@@ -100,7 +99,7 @@ jacoco {
 }
 jacocoTestReport {
     reports {
-        xml.required = false
+        xml.required = true
         csv.required = false
         html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
     }
@@ -152,27 +151,25 @@ jacocoTestCoverageVerification {
         }
     }
 }
+asciidoctor {
+    baseDirFollowsSourceDir()
+    inputs.dir snippetsDir
+	configurations 'asciidoctorExt'
+	dependsOn test
+    outputDir file("${buildDir}/asciidoc/html5")
+}
 
-tasks.register('copyDocument', Copy) {
+task copyDocs(type: Copy) {
     dependsOn asciidoctor
     from file("${asciidoctor.outputDir}")
-    into file("src/main/resources/static/docs")
+   	into file("src/main/resources/static/docs")
 }
 
-tasks.named('asciidoctor') {
-	configurations "asciidoctorExt"
-	inputs.dir snippetsDir
-	dependsOn test
-}
-
-build {
-    dependsOn copyDocument
-}
 // BootJar 설정
 bootJar {
     archiveFileName = 'app.jar'
-    dependsOn asciidoctor
-    from("${asciidoctor.outputDir}/html5") {
-        into 'static/docs'
-    }
+    dependsOn copyDocs
+    from ("${asciidoctor.outputDir}") {
+   		into 'static/docs'
+   	}
 }
