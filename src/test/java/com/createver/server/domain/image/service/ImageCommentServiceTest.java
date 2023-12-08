@@ -7,7 +7,9 @@ import com.createver.server.domain.image.repository.gallery.GalleryRepository;
 import com.createver.server.domain.image.repository.comment.ImageCommentRepository;
 import com.createver.server.domain.member.entity.Member;
 import com.createver.server.domain.member.repository.MemberRepository;
+import com.createver.server.global.error.exception.BusinessLogicException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,6 +29,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@DisplayName("Image Comment Service 테스트")
 @ExtendWith(MockitoExtension.class)
 class ImageCommentServiceTest {
 
@@ -70,6 +73,7 @@ class ImageCommentServiceTest {
                 .build();
     }
 
+    @DisplayName("댓글 생성 테스트")
     @Test
     void createCommentTest() {
         // Given
@@ -89,6 +93,7 @@ class ImageCommentServiceTest {
         verify(imageCommentRepository).save(any(ImageComment.class));
     }
 
+    @DisplayName("댓글 수정 테스트")
     @Test
     void updateCommentTest() {
         // Given
@@ -115,6 +120,7 @@ class ImageCommentServiceTest {
         verify(imageCommentRepository).save(any(ImageComment.class));
     }
 
+    @DisplayName("댓글 삭제 테스트")
     @Test
     void deleteCommentTest() {
         // Given
@@ -133,6 +139,7 @@ class ImageCommentServiceTest {
         verify(imageCommentRepository).delete(any(ImageComment.class));
     }
 
+    @DisplayName("갤러리별 댓글 목록 조회 테스트")
     @Test
     void getAllCommentsByGalleryIdTest() {
         // Given
@@ -149,4 +156,43 @@ class ImageCommentServiceTest {
         assertFalse(result.isEmpty());
         verify(imageCommentRepository).findByGalleryId(galleryId, pageable);
     }
+
+    @DisplayName("존재하지 않는 갤러리 조회 시 예외 발생")
+    @Test
+    void createCommentWithNonexistentGalleryTest() {
+        // Given
+        Long nonexistentGalleryId = 999L;
+        when(galleryRepository.findById(nonexistentGalleryId)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(BusinessLogicException.class,
+                () -> imageCommentService.createComment(nonexistentGalleryId, "New Comment", "test@example.com"));
+    }
+
+    @DisplayName("존재하지 않는 댓글 수정 시 예외 발생")
+    @Test
+    void updateNonexistentCommentTest() {
+        // Given
+        Long nonexistentCommentId = 999L;
+        lenient().when(imageCommentRepository.findById(nonexistentCommentId)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(BusinessLogicException.class,
+                () -> imageCommentService.updateComment("test@example.com", nonexistentCommentId, "Updated Content"));
+    }
+
+    @DisplayName("댓글 삭제 권한 없는 사용자 시 예외 발생")
+    @Test
+    void deleteCommentWithUnauthorizedUserTest() {
+        // Given
+        Long commentId = 1L;
+        Member unauthorizedMember = Member.builder().email("unauthorized@example.com").build();
+        when(memberRepository.findByEmail("unauthorized@example.com")).thenReturn(Optional.of(unauthorizedMember));
+        when(imageCommentRepository.findById(commentId)).thenReturn(Optional.of(imageComment));
+
+        // When & Then
+        assertThrows(BusinessLogicException.class,
+                () -> imageCommentService.deleteComment("unauthorized@example.com", commentId));
+    }
+
 }

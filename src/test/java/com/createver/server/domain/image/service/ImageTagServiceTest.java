@@ -3,6 +3,7 @@ package com.createver.server.domain.image.service;
 import com.createver.server.domain.image.dto.ImageTagDto;
 import com.createver.server.domain.image.entity.ImageTag;
 import com.createver.server.domain.image.repository.tag.ImageTagRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,6 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.*;
 
+@DisplayName("Image Tag Service 테스트")
 @ExtendWith(MockitoExtension.class)
 class ImageTagServiceTest {
 
@@ -31,6 +33,7 @@ class ImageTagServiceTest {
     @Mock
     private ImageTagRepository imageTagRepository;
 
+    @DisplayName("태그 생성")
     @Test
     void getOrCreateTagsTest() {
         // Given
@@ -53,6 +56,7 @@ class ImageTagServiceTest {
         verify(imageTagRepository).saveAll(anyList());
     }
 
+    @DisplayName("전체 태그 목록")
     @Test
     void getAllTagsTest() {
         // Given
