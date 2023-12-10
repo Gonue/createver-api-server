@@ -23,6 +23,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@DisplayName("Album Service 테스트")
 @ExtendWith(MockitoExtension.class)
 class AlbumServiceTest {
 
