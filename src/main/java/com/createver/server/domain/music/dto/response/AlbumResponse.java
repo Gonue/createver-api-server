@@ -17,8 +17,7 @@ public class AlbumResponse {
     private final String musicUrl;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
-    private final MemberResponse memberResponse;
-
+    private final MemberResponse member;
 
     public static AlbumResponse from(AlbumDto dto){
         return new AlbumResponse(
