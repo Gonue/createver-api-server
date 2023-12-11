@@ -43,6 +43,7 @@
   - [반응형 웹](#반응형-웹)
   - [SEO 개선 및 전략](#seo-개선-및-전략)
   - [모니터링 및 알림](#모니터링-및-알림)
+  - [문서화](#문서화)
 
 ---
 
@@ -76,7 +77,8 @@
 - Spring Data JPA
 - QueryDSL
 - Spring Security
-- Swagger
+- Spring Rest Docs
+<!-- - Swagger -->
 
 ### Database
 
@@ -366,3 +368,12 @@ CD (Continuous Deployment)
 - 모니터링: Aws CloudWatch, Uptime Kuma 등으로 서버상태를 모니터링 하며 특정 상태(다운타임, 성능 저하 등) 변화에 따라 알림을 전송합니다.
 
 ---
+
+### 문서화
+
+Spring REST Docs를 사용하여 API 문서화 진행.
+
+<img src="https://github.com/Gonue/createver-api-server/assets/109960034/c3bfa19f-b87b-4fbb-81e2-c639c0376cfc">
+
+문서 주소 : https://api.createver.site/docs/index.html
+* 일부 API는 제외되어 있습니다.
