@@ -1,9 +1,6 @@
 package com.createver.server.domain.music.controller;
 
-import com.createver.server.domain.article.controller.ArticleController;
-import com.createver.server.domain.article.dto.ArticleDto;
 import com.createver.server.domain.member.dto.MemberDto;
-import com.createver.server.domain.member.entity.PlanType;
 import com.createver.server.domain.music.dto.AlbumDto;
 import com.createver.server.domain.music.dto.request.AlbumCreateRequest;
 import com.createver.server.domain.music.dto.request.AlbumUpdateRequest;
@@ -34,7 +31,6 @@ import java.util.List;
 
 import static com.createver.server.global.util.ApiDocumentUtils.getDocumentRequest;
 import static com.createver.server.global.util.ApiDocumentUtils.getDocumentResponse;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -227,7 +223,10 @@ class AlbumControllerTest {
 
         actions
                 .andExpect(status().isOk())
-                .andDo(document("find-album-by-id",
+                .andDo(document(
+                                "find-album-by-id",
+                                getDocumentRequest(),
+                                getDocumentResponse(),
                                 pathParameters(
                                         parameterWithName("albumId").description("조회할 앨범의 ID")
                                 ),

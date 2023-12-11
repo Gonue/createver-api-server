@@ -100,7 +100,7 @@ class S3UploadControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                multipart("/api/v1/image/upload")
+                multipart("/api/v1/image/upload/cdn")
                         .file(file)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer {JWT_ACCESS_TOKEN}")
                         .with(csrf().asHeader())
@@ -110,7 +110,7 @@ class S3UploadControllerTest {
         actions
                 .andExpect(status().isOk())
                 .andDo(document(
-                                "upload-file",
+                                "upload-file-cdn",
                                 getDocumentRequest(),
                                 getDocumentResponse(),
                                 requestParts(

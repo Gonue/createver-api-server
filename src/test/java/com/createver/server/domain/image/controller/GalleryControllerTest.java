@@ -233,7 +233,7 @@ class GalleryControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 get("/api/v1/image/list/tag")
-                        .param("tagName", "cute cats")
+                        .param("tagName", "Test Tag")
                         .param("page", "0")
                         .param("size", "20")
                         .param("sort", "createdAt,desc")

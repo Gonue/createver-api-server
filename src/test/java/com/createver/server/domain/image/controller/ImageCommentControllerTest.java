@@ -72,7 +72,7 @@ class ImageCommentControllerTest {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer {JWT_ACCESS_TOKEN}")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
-                        .with(csrf())
+                        .with(csrf().asHeader())
         );
 
         // then

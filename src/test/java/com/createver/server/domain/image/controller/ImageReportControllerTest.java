@@ -95,7 +95,7 @@ class ImageReportControllerTest {
         ResultActions actions = mockMvc.perform(
                 get("/api/v1/image/report/count/{galleryId}", galleryId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())
+                        .with(csrf().asHeader())
         );
 
         // then
@@ -128,7 +128,7 @@ class ImageReportControllerTest {
                 get("/api/v1/image/report/status/{galleryId}", galleryId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer {JWT_ACCESS_TOKEN}")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())
+                        .with(csrf().asHeader())
         );
 
         // then

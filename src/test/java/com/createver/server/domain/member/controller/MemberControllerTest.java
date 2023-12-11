@@ -35,6 +35,8 @@ import static com.createver.server.global.util.ApiDocumentUtils.getDocumentRespo
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -59,7 +61,6 @@ class MemberControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
 
     @Test
     @DisplayName("회원가입 테스트")
@@ -176,6 +177,8 @@ class MemberControllerTest {
         actions
                 .andExpect(status().isOk())
                 .andDo(document("delete-member",
+                                getDocumentRequest(),
+                                getDocumentResponse(),
                                 responseFields(
                                         fieldWithPath("status").description("응답 상태 코드"),
                                         fieldWithPath("message").description("응답 메시지"),
@@ -206,6 +209,8 @@ class MemberControllerTest {
         actions
                 .andExpect(status().isOk())
                 .andDo(document("get-member-info",
+                                getDocumentRequest(),
+                                getDocumentResponse(),
                                 responseFields(
                                         fieldWithPath("status").description("응답 상태 코드"),
                                         fieldWithPath("message").description("응답 메시지"),

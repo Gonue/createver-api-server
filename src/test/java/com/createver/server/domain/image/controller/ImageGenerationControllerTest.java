@@ -112,7 +112,7 @@ class ImageGenerationControllerTest {
     @WithMockCustomMember
     void stableInputRequestTest() throws Exception {
         // given
-        StablePromptRequest stablePromptRequest = new StablePromptRequest(5, 3, 2, "안정적인 테스트 프롬프트", 800, 600, 2, 50, 7.5, 12345, 1, "b64_json");
+        StablePromptRequest stablePromptRequest = new StablePromptRequest(5, 3, 2, "테스트 프롬프트", 800, 600, 2, 50, 7.5, 12345, 1, "b64_json");
         String content = objectMapper.writeValueAsString(stablePromptRequest);
 
         List<CustomGenerationResponse> customGenerationResponses = new ArrayList<>();

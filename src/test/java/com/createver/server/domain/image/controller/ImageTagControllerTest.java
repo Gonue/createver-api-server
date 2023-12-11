@@ -69,7 +69,8 @@ class ImageTagControllerTest {
         ResultActions actions = mockMvc.perform(
                 get("/api/v1/image/tags")
                         .param("page", "0")
-                        .param("size", "10")
+                        .param("size", "20")
+                        .param("sort", "createdAt,desc")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf().asHeader())
         );
@@ -82,7 +83,8 @@ class ImageTagControllerTest {
                                 getDocumentResponse(),
                                 queryParameters(
                                         parameterWithName("page").description("페이지 번호"),
-                                        parameterWithName("size").description("페이지 크기")
+                                        parameterWithName("size").description("페이지 크기"),
+                                        parameterWithName("sort").description("정렬 기준 (예: [createdAt, desc]")
                                 ),
                                 responseFields(
                                         fieldWithPath("status").description("응답 상태 코드"),
