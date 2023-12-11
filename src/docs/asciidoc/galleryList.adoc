@@ -1,0 +1,35 @@
+:doctype: book
+:icons: font
+:toc-title: 목차
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+
+
+=== ⬛️ 갤러리 목록 조회
+==== Request
+include::{snippets}/gallery-list/http-request.adoc[]
+
+==== Request 필드 설명
+include::{snippets}/gallery-list/query-parameters.adoc[]
+
+==== Response
+include::{snippets}/gallery-list/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/gallery-list/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 갤러리 검색
+==== Request
+include::{snippets}/gallery-search/http-request.adoc[]
+
+==== Request 필드 설명
+include::{snippets}/gallery-search/query-parameters.adoc[]
+
+==== Response
+include::{snippets}/gallery-search/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/gallery-search/response-fields.adoc[]

@@ -1,0 +1,52 @@
+:doctype: book
+:icons: font
+:toc-title: 목차
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+
+=== ⬛️ 갤러리 Like 추가
+
+==== Request
+include::{snippets}/add-like/http-request.adoc[]
+
+==== Request 설명
+include::{snippets}/add-like/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/add-like/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/add-like/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 갤러리 Like 수 카운트
+
+==== Request
+include::{snippets}/count-likes/http-request.adoc[]
+
+==== Request 설명
+include::{snippets}/count-likes/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/count-likes/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/count-likes/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 갤러리 사용자 Like 상태
+
+==== Request
+include::{snippets}/check-user-like-status/http-request.adoc[]
+
+==== Request 설명
+include::{snippets}/check-user-like-status/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/check-user-like-status/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/check-user-like-status/response-fields.adoc[]

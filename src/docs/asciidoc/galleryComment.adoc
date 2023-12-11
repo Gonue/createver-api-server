@@ -1,0 +1,70 @@
+:doctype: book
+:icons: font
+:toc-title: 목차
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+
+=== ⬛️ 갤러리 댓글 리스트 조회
+
+==== Request
+include::{snippets}/get-all-comments-by-gallery-id/http-request.adoc[]
+
+==== Request 설명
+include::{snippets}/get-all-comments-by-gallery-id/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/get-all-comments-by-gallery-id/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/get-all-comments-by-gallery-id/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 갤러리 댓글 생성
+
+==== Request
+include::{snippets}/create-image-comment/http-request.adoc[]
+
+==== Request 설명
+include::{snippets}/create-image-comment/request-fields.adoc[]
+include::{snippets}/create-image-comment/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/create-image-comment/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/create-image-comment/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 갤러리 댓글 수정
+
+==== Request
+include::{snippets}/update-image-comment/http-request.adoc[]
+
+==== Request 설명
+include::{snippets}/update-image-comment/request-fields.adoc[]
+include::{snippets}/update-image-comment/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/update-image-comment/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/update-image-comment/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 갤러리 댓글 삭제
+
+==== Request
+include::{snippets}/delete-image-comment/http-request.adoc[]
+
+==== Request 설명
+include::{snippets}/delete-image-comment/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/delete-image-comment/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/delete-image-comment/response-fields.adoc[]

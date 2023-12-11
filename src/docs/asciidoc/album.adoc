@@ -1,0 +1,86 @@
+:doctype: book
+:icons: font
+:toc-title: 목차
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+
+
+=== ⬛️ 앨범 단건 조회
+
+==== Request
+include::{snippets}/find-album-by-id/http-request.adoc[]
+
+==== Request 필드 설명
+include::{snippets}/find-album-by-id/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/find-album-by-id/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/find-album-by-id/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 앨범 리스트
+
+==== Request
+include::{snippets}/album-list/http-request.adoc[]
+
+==== Request 필드 설명
+include::{snippets}/album-list/query-parameters.adoc[]
+
+==== Response
+include::{snippets}/album-list/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/album-list/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 앨범 생성
+==== Request
+include::{snippets}/create-album/http-request.adoc[]
+
+==== Request 필드 설명
+include::{snippets}/create-album/request-fields.adoc[]
+
+==== Response
+include::{snippets}/create-album/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/create-album/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 앨범 수정
+==== Request
+include::{snippets}/update-album/http-request.adoc[]
+
+==== Request 필드 설명
+include::{snippets}/update-album/path-parameters.adoc[]
+include::{snippets}/update-album/request-fields.adoc[]
+
+==== Response
+include::{snippets}/update-album/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/update-album/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 앨범 삭제
+==== Request
+include::{snippets}/delete-album/http-request.adoc[]
+
+==== Request 필드 설명
+include::{snippets}/delete-album/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/delete-album/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/delete-album/response-fields.adoc[]
+
+'''
+

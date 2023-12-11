@@ -1,6 +1,3 @@
-ifndef::snippets[]
-:snippets: ../../../build/generated-snippets
-endif::[]
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -10,6 +7,35 @@ endif::[]
 
 = Createver API Docs
 
-Seok Hyeon Kim <6017891@gmail.com>ㅎㅇ
+Seok Hyeon Kim <6017891@gmail.com>
 
+
+// == 공통 에러
+// include::error.adoc[]
+
+// 이미지
+== 🏞️ 이미지 API
+include::image.adoc[]
+
+// 갤러리
+== 🖼️ 갤러리 API
+include::galleryComment.adoc[]
+include::galleryLike.adoc[]
+include::galleryReport.adoc[]
+include::galleryTag.adoc[]
+
+// 음악
+== 🎹 음악 API
+include::music.adoc[]
+
+//앨범
+== 🎧 앨범 API
+include::album.adoc[]
+
+//게시글
+== 🪧 게시글 API
 include::article.adoc[]
+
+// 회원
+== 😐 회원 API
+include::member.adoc[]

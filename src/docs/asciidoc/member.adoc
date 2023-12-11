@@ -1,0 +1,81 @@
+:doctype: book
+:icons: font
+:toc-title: 목차
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+
+
+=== ⬛️ 회원 가입
+
+==== Request
+include::{snippets}/join-member/http-request.adoc[]
+
+==== Request 필드 설명
+include::{snippets}/join-member/request-fields.adoc[]
+
+==== Response
+include::{snippets}/join-member/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/join-member/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 회원 조회
+
+==== Request
+include::{snippets}/get-member-info/http-request.adoc[]
+
+==== Response
+include::{snippets}/get-member-info/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/get-member-info/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 회원 정보 업데이트
+
+==== Request
+include::{snippets}/update-member/http-request.adoc[]
+
+==== Request 필드 설명
+include::{snippets}/update-member/request-fields.adoc[]
+
+==== Response
+include::{snippets}/update-member/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/update-member/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 회원 탈퇴
+
+==== Request
+include::{snippets}/delete-member/http-request.adoc[]
+
+==== Response
+include::{snippets}/delete-member/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/delete-member/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 회원 탈퇴
+
+==== Request
+include::{snippets}/get-my-galleries/http-request.adoc[]
+
+==== Request 필드 설명
+include::{snippets}/get-my-galleries/query-parameters.adoc[]
+
+==== Response
+include::{snippets}/get-my-galleries/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/get-my-galleries/response-fields.adoc[]
+
+'''
