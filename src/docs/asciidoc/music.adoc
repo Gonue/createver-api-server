@@ -1,0 +1,23 @@
+:doctype: book
+:icons: font
+:toc-title: 목차
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+
+
+=== ⬛️ 음악 생성
+
+==== Request
+include::{snippets}/create-music/http-request.adoc[]
+
+==== Request 필드 설명
+include::{snippets}/create-music/request-fields.adoc[]
+
+==== Response
+include::{snippets}/create-music/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/create-music/response-fields.adoc[]
+
+'''

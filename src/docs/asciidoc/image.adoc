@@ -1,0 +1,87 @@
+:doctype: book
+:icons: font
+:toc-title: 목차
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+
+
+=== ⬛️ 기본 이미지 생성
+
+==== Request
+
+include::{snippets}/input-image-request/http-request.adoc[]
+
+==== Request 필드 설명
+include::{snippets}/input-image-request/request-fields.adoc[]
+
+==== Response
+include::{snippets}/input-image-request/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/input-image-request/response-fields.adoc[]
+
+'''
+
+=== ⬛️ Stable Diffusion 이미지 생성
+
+==== Request
+
+include::{snippets}/stable-input-image-request/http-request.adoc[]
+
+==== Request 필드 설명
+include::{snippets}/stable-input-image-request/request-fields.adoc[]
+
+==== Response
+include::{snippets}/stable-input-image-request/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/stable-input-image-request/response-fields.adoc[]
+
+'''
+
+=== ⬛️ Simple 이미지 생성
+
+include::{snippets}/simple-image-generation/http-request.adoc[]
+
+==== Request 필드 설명
+include::{snippets}/simple-image-generation/request-fields.adoc[]
+
+==== Response
+include::{snippets}/simple-image-generation/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/simple-image-generation/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 이미지 업로드
+
+==== Request
+include::{snippets}/upload-file-cdn/http-request.adoc[]
+
+==== Request 설명
+include::{snippets}/upload-file-cdn/request-parts.adoc[]
+
+==== Response
+include::{snippets}/upload-file-cdn/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/upload-file-cdn/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 이미지 다운로드
+
+==== Request
+include::{snippets}/gallery-image-download/http-request.adoc[]
+
+==== Request 설명
+include::{snippets}/gallery-image-download/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/gallery-image-download/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/gallery-image-download/response-headers.adoc[]
+

@@ -1,6 +1,3 @@
-ifndef::snippets[]
-:snippets: ../../../build/generated-snippets
-endif::[]
 :doctype: book
 :icons: font
 :toc-title: 목차
@@ -8,11 +5,38 @@ endif::[]
 :toc: left
 :toclevels: 4
 
+=== ⬛ 게시글 단건 조회
+
+==== Request
+include::{snippets}/article-find-by-id/http-request.adoc[]
+
+==== Request 필드 설명
+include::{snippets}/article-find-by-id/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/article-find-by-id/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/article-find-by-id/response-fields.adoc[]
+
 '''
 
-== ArticleController
+=== ⬛️ 게시글 리스트 조회
+==== Request
+include::{snippets}/article-list/http-request.adoc[]
 
-=== 게시글 등록
+==== Request 필드 설명
+include::{snippets}/article-list/query-parameters.adoc[]
+
+==== Response
+include::{snippets}/article-list/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/article-list/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 게시글 등록
 
 ==== Request
 include::{snippets}/article-create/http-request.adoc[]
@@ -25,3 +49,37 @@ include::{snippets}/article-create/http-response.adoc[]
 
 ==== Response 필드 설명
 include::{snippets}/article-create/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 게시글 수정
+
+==== Request
+include::{snippets}/article-update/http-request.adoc[]
+
+==== Request 설명
+include::{snippets}/article-update/request-fields.adoc[]
+
+include::{snippets}/article-update/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/article-update/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/article-update/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 게시글 삭제
+
+==== Request
+include::{snippets}/article-delete/http-request.adoc[]
+
+==== Request 설명
+include::{snippets}/article-delete/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/article-delete/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/article-delete/response-fields.adoc[]

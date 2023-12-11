@@ -1,0 +1,70 @@
+:doctype: book
+:icons: font
+:toc-title: 목차
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+
+=== ⬛️ 갤러리 Report 추가
+
+==== Request
+include::{snippets}/add-report/http-request.adoc[]
+
+==== Request 설명
+include::{snippets}/add-report/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/add-report/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/add-report/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 갤러리 Report 수 카운트
+
+==== Request
+include::{snippets}/count-reports/http-request.adoc[]
+
+==== Request 설명
+include::{snippets}/count-reports/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/count-reports/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/count-reports/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 갤러리 사용자 Report 상태
+
+==== Request
+include::{snippets}/check-user-report-status/http-request.adoc[]
+
+==== Request 설명
+include::{snippets}/check-user-report-status/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/check-user-report-status/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/check-user-report-status/response-fields.adoc[]
+
+'''
+
+=== ⬛️ 갤러리 Blind 설정
+
+==== Request
+include::{snippets}/update-gallery-blind-status/http-request.adoc[]
+
+==== Request 설명
+include::{snippets}/update-gallery-blind-status/path-parameters.adoc[]
+
+include::{snippets}/update-gallery-blind-status/query-parameters.adoc[]
+
+==== Response
+include::{snippets}/update-gallery-blind-status/http-response.adoc[]
+
+==== Response 필드 설명
+include::{snippets}/update-gallery-blind-status/response-fields.adoc[]
