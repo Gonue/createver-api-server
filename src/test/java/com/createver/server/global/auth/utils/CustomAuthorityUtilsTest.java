@@ -23,8 +23,8 @@ class CustomAuthorityUtilsTest {
 
     @BeforeEach
     void setUp() {
-        // adminMailAddress 필드에 값을 설정
-        ReflectionTestUtils.setField(customAuthorityUtils, "adminMailAddress", "admin@example.com");
+        // adminMailAddresses 필드에 여러 관리자 이메일을 설정
+        ReflectionTestUtils.setField(customAuthorityUtils, "adminMailAddresses", List.of("admin@example.com", "anotherAdmin@example.com"));
     }
 
     @Test
@@ -39,6 +39,7 @@ class CustomAuthorityUtilsTest {
         // Then
         assertNotNull(authorities);
         assertTrue(authorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN")));
+        assertTrue(authorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_USER")));
     }
 
     @Test
@@ -53,8 +54,8 @@ class CustomAuthorityUtilsTest {
         // Then
         assertNotNull(authorities);
         assertTrue(authorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_USER")));
+        assertFalse(authorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN")));
     }
-
 
     @Test
     @DisplayName("DB에 저장된 Role을 기반으로 권한 정보 생성")
@@ -89,6 +90,7 @@ class CustomAuthorityUtilsTest {
 
         assertNotNull(userRoles);
         assertTrue(userRoles.contains("USER"));
+        assertFalse(userRoles.contains("ADMIN"));
     }
 }
 

@@ -60,7 +60,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     // Access Token
-    private String delegateAccessToken(String email, Collection<? extends GrantedAuthority> authorities) {
+        private String delegateAccessToken(String email, Collection<? extends GrantedAuthority> authorities) {
         List<String> roles = authorities.stream()
                                         .map(GrantedAuthority::getAuthority)
                                         .map(role -> role.startsWith("ROLE_") ? role.substring(5) : role)
