@@ -3,7 +3,9 @@ package com.createver.server.global.auth.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.createver.server.global.auth.dto.LoginDto;
 import com.createver.server.global.auth.jwt.JwtTokenizer;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,17 +18,15 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenizer jwtTokenizer;
-
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenizer jwtTokenizer) {
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenizer = jwtTokenizer;
-    }
+    private final RedisTemplate<String, String> redisTemplate;
 
     @SneakyThrows
     @Override
@@ -57,10 +57,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setHeader("Refresh", refreshToken);
 
         this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);
+        redisTemplate.opsForValue().set("REFRESH_TOKEN:" + email, refreshToken, Duration.ofMinutes(jwtTokenizer.getRefreshTokenExpirationMinutes()));
     }
 
     // Access Token
-    private String delegateAccessToken(String email, Collection<? extends GrantedAuthority> authorities) {
+        private String delegateAccessToken(String email, Collection<? extends GrantedAuthority> authorities) {
         List<String> roles = authorities.stream()
                                         .map(GrantedAuthority::getAuthority)
                                         .map(role -> role.startsWith("ROLE_") ? role.substring(5) : role)

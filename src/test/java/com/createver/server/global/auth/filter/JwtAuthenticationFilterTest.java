@@ -6,6 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,8 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 @DisplayName("Jwt 인증 필터 테스트")
@@ -29,6 +30,8 @@ class JwtAuthenticationFilterTest {
     private Authentication authentication;
     @Mock
     private UserDetails userDetails;
+    @Mock
+    private RedisTemplate<String, String> redisTemplate;
 
     @InjectMocks
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -65,6 +68,7 @@ class JwtAuthenticationFilterTest {
 
         when(jwtTokenizer.generateAccessToken(any(), any(), any(), any())).thenReturn("accessToken");
         when(jwtTokenizer.generateRefreshToken(any(), any(), any())).thenReturn("refreshToken");
+        when(redisTemplate.opsForValue()).thenReturn(mock(ValueOperations.class));
 
         jwtAuthenticationFilter.successfulAuthentication(request, response, null, authentication);
 

@@ -9,6 +9,7 @@ import com.createver.server.global.auth.utils.CustomAuthorityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,6 +28,7 @@ public class SecurityConfig {
     private final CustomAuthorityUtils authorityUtils;
     private final CorsConfigurationSource corsConfigurationSource;
     private final MemberService memberService;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -44,9 +46,9 @@ public class SecurityConfig {
         http.apply(new CustomFilterConfigurer());
 
         http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/oauth2/authorization/**").permitAll()
-                        .requestMatchers("/login/oauth2/code/*").permitAll()
-                        .requestMatchers("/api/v1/member/join", "/api/v1/member/login").permitAll()
+                        .requestMatchers("/oauth2/authorization/**", "/login/oauth2/code/*").permitAll()
+                        .requestMatchers("/api/v1/member/join").permitAll()
+                        .requestMatchers("api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/member/**").hasAnyRole("USER", "ADMIN")
 
                         .requestMatchers(HttpMethod.POST, "/api/v1/image/upload/**").hasAnyRole("USER", "ADMIN")
@@ -74,9 +76,9 @@ public class SecurityConfig {
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
 
-            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer);
+            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer, redisTemplate);
 
-            jwtAuthenticationFilter.setFilterProcessesUrl("/api/v1/member/login");
+            jwtAuthenticationFilter.setFilterProcessesUrl("/api/v1/auth/login");
             jwtAuthenticationFilter.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler());
             jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());
 
