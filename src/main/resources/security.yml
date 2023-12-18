@@ -9,11 +9,34 @@ spring:
           redirect-uri: https://api.createver.site/login/oauth2/code/google
           scope: profile, email
 
+        github:
+          client-id: ${GITHUB_CLIENT_ID}
+          client-secret: ${GITHUB_CLIENT_SECRET}
+          redirect-uri: https://api.createver.site/login/oauth2/code/github
+          scope: read:user, user:email
+
+        kakao:
+          client-id: ${KAKAO_CLIENT_ID}
+          client-secret: ${KAKAO_CLIENT_SECRET}
+          authorization-grant-type: authorization_code
+          redirect-uri: https://api.createver.site/login/oauth2/code/kakao
+          client-authentication-method: POST
+          client-name: Kakao
+          scope:
+            - profile_nickname
+            - account_email
+      provider:
+        kakao:
+          authorization-uri: https://kauth.kakao.com/oauth/authorize
+          token-uri: https://kauth.kakao.com/oauth/token
+          user-info-uri: https://kapi.kakao.com/v2/user/me
+          user-name-attribute: id
+
 mail:
   address:
     admin: ${ADMIN_ADDRESS}
 
 jwt:
   key: ${JWT_SECRET_KEY}
-  access-token-expiration-minutes: 720
-  refresh-token-expiration-minutes: 1440
+  access-token-expiration-minutes: ${ACCESS_TOKEN_EXT}
+  refresh-token-expiration-minutes: ${REFRESH_TOKEN_EXT}
