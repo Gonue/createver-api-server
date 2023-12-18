@@ -30,7 +30,6 @@ public class MemberService {
     private final CustomAuthorityUtils customAuthorityUtils;
     private final GalleryRepository galleryRepository;
 
-
     public static final String DEFAULT_IMAGE = "https://d2xbqs28wc0ywi.cloudfront.net/images/65fc23b3-e151-47cc-9c9b-1af57381e6fa_ham1.png";
 
     @Transactional
@@ -50,16 +49,18 @@ public class MemberService {
 
     //Oauth
     public void oauthJoin(String email, String nickName) {
-        memberRepository.findByEmail(email).orElseGet(() -> {
-            String password = UUID.randomUUID().toString();
-            return memberRepository.save(Member.builder()
-                    .email(email)
-                    .nickName(nickName)
-                    .password(passwordEncoder.encode(password))
-                    .profileImage(DEFAULT_IMAGE)
-                    .roles(customAuthorityUtils.createRoles(email))
-                    .build());
-        });
+        Member member = memberRepository.findByEmail(email)
+                .orElseGet(() -> {
+                    String password = UUID.randomUUID().toString();
+                    return Member.builder()
+                            .email(email)
+                            .nickName(nickName)
+                            .password(passwordEncoder.encode(password))
+                            .profileImage(DEFAULT_IMAGE)
+                            .roles(customAuthorityUtils.createRoles(email))
+                            .build();
+                });
+        memberRepository.save(member);
     }
 
     //회원 조회

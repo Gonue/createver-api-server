@@ -3,6 +3,7 @@ package com.createver.server.global.auth.handler;
 import com.createver.server.domain.member.service.MemberService;
 import com.createver.server.global.auth.jwt.JwtTokenizer;
 import com.createver.server.global.auth.utils.CustomAuthorityUtils;
+import com.createver.server.global.error.exception.BusinessLogicException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -15,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.net.URI;
 import java.util.Date;
@@ -30,20 +32,32 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
     private final CustomAuthorityUtils authorityUtils;
     private final MemberService memberService;
 
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
         OAuth2User oAuth2User = token.getPrincipal();
+        String registrationId = token.getAuthorizedClientRegistrationId();
 
-        String email = (String) oAuth2User.getAttributes().get("email");
-        String nickName = (String) oAuth2User.getAttributes().get("name");
+        String email = null;
+        String nickName = null;
+
+        if ("google".equals(registrationId)) {
+            email = (String) oAuth2User.getAttributes().get("email");
+            nickName = (String) oAuth2User.getAttributes().get("name");
+        } else if ("github".equals(registrationId)) {
+            email = (String) oAuth2User.getAttributes().get("email");
+            nickName = (String) oAuth2User.getAttributes().get("login");
+        } else if ("kakao".equals(registrationId)) {
+            Map<String, Object> kakaoAccount = (Map<String, Object>) oAuth2User.getAttributes().get("kakao_account");
+            Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");
+            email = (String) kakaoAccount.get("email");
+            nickName = (String) kakaoProfile.get("name");
+        }
 
         List<String> authorities = authorityUtils.createRoles(email);
         memberService.oauthJoin(email, nickName);
         redirect(request, response, email, authorities);
     }
-
 
     private void redirect(HttpServletRequest request, HttpServletResponse response, String email, List<String> authorities) throws IOException {
         String accessToken = delegateAccessToken(email, authorities);
