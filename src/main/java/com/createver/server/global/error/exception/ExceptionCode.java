@@ -22,7 +22,9 @@ public enum ExceptionCode {
     ORDER_NOT_FOUND(404, "주문을 찾을 수 없음"),
     RATE_LIMIT_EXCEEDED(429, "Rate limit exceeded"),
     ALREADY_REPORTED(409, "이미 신고한 내용"),
-    ALBUM_NOT_FOUND(404, "앨범을 찾을 수 없음")
+    ALBUM_NOT_FOUND(404, "앨범을 찾을 수 없음"),
+    INVALID_RATING(400, "평점은 1점에서 5점 사이의 0.5점 단위만 허용 합니다."),
+    REVIEW_NOT_FOUND(404, "리뷰를 찾을 수 없음.")
     ;
 
     private final int status;
