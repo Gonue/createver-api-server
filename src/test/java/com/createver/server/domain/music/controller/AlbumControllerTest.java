@@ -105,7 +105,7 @@ class AlbumControllerTest {
         AlbumUpdateRequest request = new AlbumUpdateRequest("Updated Title", "Updated Image URL", "Updated Music URL");
         String content = objectMapper.writeValueAsString(request);
 
-        MemberDto mockMember = new MemberDto(1L, "test@example.com", "nickname", "password", "profileImageUrl", LocalDateTime.now(), LocalDateTime.now(), null);
+        MemberDto mockMember = new MemberDto(1L, "test@example.com", "nickname", "password", "profileImageUrl", LocalDateTime.now(), LocalDateTime.now(), null, false);
 
         AlbumDto albumDto = new AlbumDto(
                 albumId,
@@ -154,7 +154,8 @@ class AlbumControllerTest {
                                 fieldWithPath("result.member.email").description("멤버 이메일"),
                                 fieldWithPath("result.member.nickName").description("멤버 닉네임"),
                                 fieldWithPath("result.member.profileImage").description("멤버 프로필 이미지"),
-                                fieldWithPath("result.member.planType").description("멤버 플랜 타입")
+                                fieldWithPath("result.member.planType").description("멤버 플랜 타입"),
+                                fieldWithPath("result.member.oauthUser").description("로그인 타입")
                         )
                 ));
     }
@@ -202,7 +203,7 @@ class AlbumControllerTest {
         // given
 
         Long albumId = 1L;
-        MemberDto mockMember = new MemberDto(1L, "test@example.com", "nickname", "password", "profileImageUrl", LocalDateTime.now(), LocalDateTime.now(), null);
+        MemberDto mockMember = new MemberDto(1L, "test@example.com", "nickname", "password", "profileImageUrl", LocalDateTime.now(), LocalDateTime.now(), null, false);
         AlbumDto albumDto = new AlbumDto(
                 albumId,
                 "title",
@@ -243,7 +244,8 @@ class AlbumControllerTest {
                                         fieldWithPath("result.member.email").description("멤버 이메일"),
                                         fieldWithPath("result.member.nickName").description("멤버 닉네임"),
                                         fieldWithPath("result.member.profileImage").description("멤버 프로필 이미지"),
-                                        fieldWithPath("result.member.planType").description("멤버 플랜 타입")
+                                        fieldWithPath("result.member.planType").description("멤버 플랜 타입"),
+                                        fieldWithPath("result.member.oauthUser").description("로그인 타입")
                                 )
                         )
                 );
@@ -261,7 +263,7 @@ class AlbumControllerTest {
                     "title" + i,
                     "imageUrl" + i,
                     "musicUrl" + i,
-                    new MemberDto(i + 1L, "test" + i + "@example.com", "김테스트", "password", "imageUrl", LocalDateTime.now(), LocalDateTime.now(), null),
+                    new MemberDto(i + 1L, "test" + i + "@example.com", "김테스트", "password", "imageUrl", LocalDateTime.now(), LocalDateTime.now(), null, false),
                     LocalDateTime.now(),
                     LocalDateTime.now()
             );

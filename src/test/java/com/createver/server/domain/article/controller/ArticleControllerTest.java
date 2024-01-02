@@ -102,7 +102,7 @@ class ArticleControllerTest {
         ArticleUpdateRequest request = new ArticleUpdateRequest("Updated Title", "Updated Content", "Updated ThumbnailUrl");
         String content = objectMapper.writeValueAsString(request);
 
-        MemberDto mockMember = new MemberDto(1L, "test@example.com", "nickname", "password", "profileImageUrl", LocalDateTime.now(), LocalDateTime.now(), PlanType.PRO);
+        MemberDto mockMember = new MemberDto(1L, "test@example.com", "nickname", "password", "profileImageUrl", LocalDateTime.now(), LocalDateTime.now(), PlanType.PRO, false);
         ArticleDto articleDto = new ArticleDto(articleId, request.getTitle(), request.getContent(), mockMember, request.getThumbnailUrl(), LocalDateTime.now(), LocalDateTime.now());
         when(articleService.updateArticle(anyString(), anyString(), anyString(), anyLong(), anyString())).thenReturn(articleDto);
 
@@ -142,7 +142,8 @@ class ArticleControllerTest {
                                 fieldWithPath("result.member.email").description("멤버 이메일"),
                                 fieldWithPath("result.member.nickName").description("멤버 닉네임"),
                                 fieldWithPath("result.member.profileImage").description("멤버 프로필 이미지"),
-                                fieldWithPath("result.member.planType").description("멤버 플랜 타입")
+                                fieldWithPath("result.member.planType").description("멤버 플랜 타입"),
+                                fieldWithPath("result.member.oauthUser").description("로그인 타입")
                         )
                 ));
     }
@@ -186,7 +187,7 @@ class ArticleControllerTest {
     void findArticleByIdTest() throws Exception {
         // given
         Long articleId = 1L;
-        MemberDto mockMember = new MemberDto(1L, "test@example.com", "nickname", "password", "profileImageUrl", LocalDateTime.now(), LocalDateTime.now(), null);
+        MemberDto mockMember = new MemberDto(1L, "test@example.com", "nickname", "password", "profileImageUrl", LocalDateTime.now(), LocalDateTime.now(), null, false);
         ArticleDto articleDto = new ArticleDto(articleId, "Title", "Content", mockMember, "ThumbnailUrl", LocalDateTime.now(), LocalDateTime.now());
         when(articleService.findArticleById(articleId)).thenReturn(articleDto);
 
@@ -219,7 +220,8 @@ class ArticleControllerTest {
                                 fieldWithPath("result.member.email").description("멤버 이메일"),
                                 fieldWithPath("result.member.nickName").description("멤버 닉네임"),
                                 fieldWithPath("result.member.profileImage").description("멤버 프로필 이미지"),
-                                fieldWithPath("result.member.planType").description("멤버 플랜 타입")
+                                fieldWithPath("result.member.planType").description("멤버 플랜 타입"),
+                                fieldWithPath("result.member.oauthUser").description("로그인 타입")
                         )
                 ));
     }
@@ -236,7 +238,7 @@ class ArticleControllerTest {
                     i + 1L,
                     "Test Title " + i,
                     "Test Content " + i,
-                    new MemberDto(i + 1L, "test" + i + "@example.com", "김테스트", "password", "imageUrl", LocalDateTime.now(), LocalDateTime.now(), null), // member
+                    new MemberDto(i + 1L, "test" + i + "@example.com", "김테스트", "password", "imageUrl", LocalDateTime.now(), LocalDateTime.now(), null, false), // member
                     "http://thumbnail.url",
                     LocalDateTime.now(),
                     LocalDateTime.now()

@@ -71,7 +71,7 @@ public class MemberDetailsService implements UserDetailsService {
 
         @Override
         public boolean isEnabled() {
-            return true;
+            return member.isActive();
         }
     }
 }

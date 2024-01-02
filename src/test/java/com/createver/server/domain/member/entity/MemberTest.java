@@ -43,7 +43,7 @@ class MemberTest {
     @Test
     void testUpdateMemberInfo() {
         // Given
-        Member member = new Member("test@example.com", "OriginalNick", "password", "original.jpg", Collections.singletonList("USER"));
+        Member member = new Member("test@example.com", "OriginalNick", "password", "original.jpg", Collections.singletonList("USER"), false);
         String updatedNickName = "UpdatedNick";
         String updatedProfileImage = "updated.jpg";
 
@@ -59,7 +59,7 @@ class MemberTest {
     @Test
     void testUpdateMemberInfoWithValidData() {
         // Given
-        Member member = new Member("test@example.com", "OriginalNick", "password", "original.jpg", Collections.singletonList("USER"));
+        Member member = new Member("test@example.com", "OriginalNick", "password", "original.jpg", Collections.singletonList("USER"), false);
         String updatedNickName = "UpdatedNick";
         String updatedProfileImage = "updated.jpg";
 
@@ -75,7 +75,7 @@ class MemberTest {
     @Test
     void testUpdateMemberInfoWithEmptyOrNull() {
         // Given
-        Member member = new Member("test@example.com", "OriginalNick", "password", "original.jpg", Collections.singletonList("USER"));
+        Member member = new Member("test@example.com", "OriginalNick", "password", "original.jpg", Collections.singletonList("USER"), false);
         String originalNickName = member.getNickName();
         String originalProfileImage = member.getProfileImage();
 
@@ -92,7 +92,7 @@ class MemberTest {
     @Test
     void testMemberPlanUpdate() {
         // Given
-        Member member = new Member("test@example.com", "NickName", "password", "image.jpg", Collections.singletonList("USER"));
+        Member member = new Member("test@example.com", "NickName", "password", "image.jpg", Collections.singletonList("USER"), false);
         Plan mockPlan = mock(Plan.class);
 
         // When

@@ -2,6 +2,7 @@ package com.createver.server.domain.member.controller;
 
 import com.createver.server.domain.image.dto.GalleryDto;
 import com.createver.server.domain.member.dto.MemberDto;
+import com.createver.server.domain.member.dto.request.MemberDeleteRequest;
 import com.createver.server.domain.member.dto.request.MemberJoinRequest;
 import com.createver.server.domain.member.dto.request.MemberUpdateRequest;
 import com.createver.server.domain.member.service.MemberService;
@@ -71,7 +72,7 @@ class MemberControllerTest {
         MemberJoinRequest joinRequest = new MemberJoinRequest("user@example.com", "nickname", "password12", "password12");
         String content = objectMapper.writeValueAsString(joinRequest);
 
-        MemberDto mockMember = new MemberDto(1L, "user@example.com", "nickname", "password12", null, LocalDateTime.now(), LocalDateTime.now(), null);
+        MemberDto mockMember = new MemberDto(1L, "user@example.com", "nickname", "password12", null, LocalDateTime.now(), LocalDateTime.now(), null, false);
         when(memberService.join(anyString(), anyString(), anyString())).thenReturn(mockMember);
 
         ResultActions actions =
@@ -122,7 +123,8 @@ class MemberControllerTest {
                 request.getProfileImage(),
                 LocalDateTime.now(),
                 LocalDateTime.now(),
-                null
+                null,
+                false
         );
         when(memberService.update(anyString(), eq(Optional.of(request.getNickName())), eq(Optional.of(request.getProfileImage())))).thenReturn(mockMember);
 
@@ -153,7 +155,8 @@ class MemberControllerTest {
                                 fieldWithPath("result.email").description("멤버 이메일"),
                                 fieldWithPath("result.nickName").description("멤버 닉네임"),
                                 fieldWithPath("result.profileImage").description("멤버 프로필 이미지"),
-                                fieldWithPath("result.planType").description("멤버 플랜 정보")
+                                fieldWithPath("result.planType").description("멤버 플랜 정보"),
+                                fieldWithPath("result.oauthUser").description("로그인 타입")
                         )
                 ));
     }
@@ -163,7 +166,11 @@ class MemberControllerTest {
     @WithMockCustomMember
     void deleteTest() throws Exception {
         // given
-        doNothing().when(memberService).delete(anyString());
+        String testPassword = "testPassword";
+        MemberDeleteRequest deleteRequest = new MemberDeleteRequest(testPassword);
+        String requestContent = objectMapper.writeValueAsString(deleteRequest);
+
+        doNothing().when(memberService).delete(anyString(), eq(testPassword));
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -171,6 +178,7 @@ class MemberControllerTest {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer {JWT_ACCESS_TOKEN}")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf().asHeader())
+                        .content(requestContent)
         );
 
         // then
@@ -194,7 +202,7 @@ class MemberControllerTest {
     @WithMockCustomMember
     void getMemberInfoTest() throws Exception {
         // given
-        MemberDto mockMember = new MemberDto(1L, "user@example.com", "nickname", "password12", "profileImageUrl", LocalDateTime.now(), LocalDateTime.now(), null);
+        MemberDto mockMember = new MemberDto(1L, "user@example.com", "nickname", "password12", "profileImageUrl", LocalDateTime.now(), LocalDateTime.now(), null, false);
         when(memberService.getMemberInfo(anyString())).thenReturn(mockMember);
 
         // when
@@ -218,7 +226,8 @@ class MemberControllerTest {
                                         fieldWithPath("result.email").description("멤버 이메일"),
                                         fieldWithPath("result.nickName").description("멤버 닉네임"),
                                         fieldWithPath("result.profileImage").description("멤버 프로필 이미지"),
-                                        fieldWithPath("result.planType").description("멤버 플랜 정보")
+                                        fieldWithPath("result.planType").description("멤버 플랜 정보"),
+                                        fieldWithPath("result.oauthUser").description("로그인 타입")
                                 )
                         )
                 );

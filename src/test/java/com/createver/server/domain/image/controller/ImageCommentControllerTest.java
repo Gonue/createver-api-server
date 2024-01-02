@@ -105,7 +105,7 @@ class ImageCommentControllerTest {
         ImageCommentRequest updateRequest = new ImageCommentRequest("수정된 댓글 내용");
         String content = objectMapper.writeValueAsString(updateRequest);
 
-        MemberDto mockMember = new MemberDto(1L, "test@example.com", "nickname", "password", "profileImageUrl", LocalDateTime.now(), LocalDateTime.now(), PlanType.PRO);
+        MemberDto mockMember = new MemberDto(1L, "test@example.com", "nickname", "password", "profileImageUrl", LocalDateTime.now(), LocalDateTime.now(), PlanType.PRO, false);
 
         ImageCommentDto imageCommentDto = new ImageCommentDto(
                 imageCommentId,
@@ -150,7 +150,8 @@ class ImageCommentControllerTest {
                                 fieldWithPath("result.member.email").description("멤버 이메일"),
                                 fieldWithPath("result.member.nickName").description("멤버 닉네임"),
                                 fieldWithPath("result.member.profileImage").description("멤버 프로필 이미지"),
-                                fieldWithPath("result.member.planType").description("멤버 플랜 타입")
+                                fieldWithPath("result.member.planType").description("멤버 플랜 타입"),
+                                fieldWithPath("result.member.oauthUser").description("로그인 타입")
                         )
                 ));
     }
@@ -196,7 +197,7 @@ class ImageCommentControllerTest {
         // given
         Long galleryId = 1L;
 
-        MemberDto mockMember = new MemberDto(1L, "test@example.com", "nickname", "password", "profileImageUrl", LocalDateTime.now(), LocalDateTime.now(), null);
+        MemberDto mockMember = new MemberDto(1L, "test@example.com", "nickname", "password", "profileImageUrl", LocalDateTime.now(), LocalDateTime.now(), null, false);
         List<ImageCommentDto> comments = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             ImageCommentDto imageCommentDto = new ImageCommentDto(
