@@ -3,12 +3,14 @@ package com.createver.server.domain.member.controller;
 import com.createver.server.domain.image.dto.GalleryDto;
 import com.createver.server.domain.image.dto.response.GalleryResponse;
 import com.createver.server.domain.member.dto.MemberDto;
+import com.createver.server.domain.member.dto.request.MemberDeleteRequest;
 import com.createver.server.domain.member.dto.request.MemberJoinRequest;
 import com.createver.server.domain.member.dto.request.MemberUpdateRequest;
 import com.createver.server.domain.member.dto.response.MemberJoinResponse;
 import com.createver.server.domain.member.dto.response.MemberResponse;
 import com.createver.server.domain.member.service.MemberService;
 import com.createver.server.global.error.response.Response;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,14 +21,11 @@ import jakarta.validation.Valid;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/member")
 public class MemberController {
 
     private final MemberService memberService;
-
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
 
     //회원가입
     @PostMapping("/join")
@@ -55,8 +54,8 @@ public class MemberController {
 
     //회원 탈퇴
     @DeleteMapping("/exit")
-    public Response<Void> delete(Authentication authentication){
-        memberService.delete(authentication.getName());
+    public Response<Void> delete(Authentication authentication, @RequestBody MemberDeleteRequest request){
+        memberService.delete(authentication.getName(), request.getPassword());
         return Response.success();
     }
 

@@ -58,6 +58,7 @@ public class MemberService {
                             .password(passwordEncoder.encode(password))
                             .profileImage(DEFAULT_IMAGE)
                             .roles(customAuthorityUtils.createRoles(email))
+                            .isOauthUser(true)
                             .build();
                 });
         memberRepository.save(member);
@@ -80,13 +81,17 @@ public class MemberService {
         return MemberDto.from(memberRepository.save(member));
     }
 
-
     //회원 탈퇴
     @Transactional
     @CacheEvict(value = "MemberCacheStore", key = "#email", cacheManager = "cacheManager")
-    public void delete(String email) {
+    public void delete(String email, String password) {
         Member member = memberOrException(email);
-        memberRepository.delete(member);
+
+        if (!passwordEncoder.matches(password, member.getPassword())) {
+            throw new BusinessLogicException(ExceptionCode.INVALID_PASSWORD, "잘못된 비밀번호입니다.");
+        }
+        member.deactivateMember();
+        memberRepository.save(member);
     }
 
     //사용자가 생성한 이미지 목록

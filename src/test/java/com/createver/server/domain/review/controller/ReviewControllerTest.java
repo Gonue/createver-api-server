@@ -103,7 +103,7 @@ class ReviewControllerTest {
                     i + 1L,
                     5.0,
                     "test review",
-                    new MemberDto(i + 1L, "test@mail.com" + i + "@example.com", "김테스트", "password", "imageUrl", LocalDateTime.now(), LocalDateTime.now(), null),
+                    new MemberDto(i + 1L, "test@mail.com" + i + "@example.com", "김테스트", "password", "imageUrl", LocalDateTime.now(), LocalDateTime.now(), null, false),
                     LocalDateTime.now(),
                     LocalDateTime.now()
             );

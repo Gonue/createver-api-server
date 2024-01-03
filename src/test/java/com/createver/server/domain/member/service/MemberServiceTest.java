@@ -7,7 +7,9 @@ import com.createver.server.domain.member.dto.MemberDto;
 import com.createver.server.domain.member.entity.Member;
 import com.createver.server.domain.member.repository.MemberRepository;
 import com.createver.server.global.auth.utils.CustomAuthorityUtils;
+import com.createver.server.global.error.exception.BusinessLogicException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -26,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@DisplayName("Member Service 테스트")
 class MemberServiceTest {
     @InjectMocks
     private MemberService memberService;
@@ -48,6 +51,7 @@ class MemberServiceTest {
     }
 
     @Test
+    @DisplayName("회원가입 테스트")
     void testJoin() {
         // Given
         String email = "test@test.com";
@@ -75,7 +79,9 @@ class MemberServiceTest {
         assertEquals(nickName, result.getNickName());
     }
 
+
     @Test
+    @DisplayName("OAuth 회원가입 테스트")
     void testOauthJoin() {
         // Given
         String email = "test@test.com";
@@ -94,8 +100,31 @@ class MemberServiceTest {
         // Then
         assertDoesNotThrow(() -> memberService.oauthJoin(email, nickName));
     }
+    @Test
+    @DisplayName("이메일 중복 시 회원가입 테스트")
+    void testJoin_WithDuplicatedEmail() {
+        // Given
+        String email = "test@test.com";
+        String password = "password";
+        String nickName = "nickName";
+
+        Member existingMember = Member.builder()
+            .email(email)
+            .password("existingPassword")
+            .nickName("existingNickName")
+            .build();
+
+        when(memberRepository.findByEmail(email)).thenReturn(Optional.of(existingMember));
+
+        // Then
+        assertThrows(BusinessLogicException.class, () -> {
+            // When
+            memberService.join(email, password, nickName);
+        });
+    }
 
     @Test
+    @DisplayName("회원 정보 조회 테스트")
     void testGetMemberInfo() {
         // Given
         String email = "test@test.com";
@@ -118,6 +147,7 @@ class MemberServiceTest {
     }
 
     @Test
+    @DisplayName("회원 정보 업데이트 테스트")
     void testUpdate() {
         // Given
         String email = "test@test.com";
@@ -139,23 +169,47 @@ class MemberServiceTest {
     }
 
     @Test
+    @DisplayName("회원 탈퇴 테스트")
     void testDelete() {
         // Given
         String email = "test@test.com";
+        String rawPassword = "rawPassword";
         String encodedPassword = "encodedPassword";
         Member member = Member.builder()
                 .email(email)
                 .password(encodedPassword)
                 .build();
 
-        // When
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
+        when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(true);
 
-        // Then
-        assertDoesNotThrow(() -> memberService.delete(email));
+        // When & Then
+        assertDoesNotThrow(() -> memberService.delete(email, rawPassword));
     }
 
     @Test
+    @DisplayName("잘못된 비밀번호로 회원 탈퇴 시도 테스트")
+    void testDelete_WithInvalidPassword() {
+        // Given
+        String email = "test@test.com";
+        String rawPassword = "rawPassword";
+        Member member = Member.builder()
+                .email(email)
+                .password("encodedPassword")
+                .build();
+
+        when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
+        when(passwordEncoder.matches(rawPassword, member.getPassword())).thenReturn(false);
+
+        // Then
+        assertThrows(BusinessLogicException.class, () -> {
+            // When
+            memberService.delete(email, rawPassword);
+        });
+    }
+
+    @Test
+    @DisplayName("회원의 갤러리 목록 조회 테스트")
     void testGetMyGalleries() {
         // Given
         String email = "test@test.com";
@@ -181,5 +235,20 @@ class MemberServiceTest {
         Page<GalleryDto> result = memberService.getMyGalleries(email, pageable);
         assertNotNull(result);
         assertEquals(galleryList.size(), result.getContent().size());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 이메일로 회원 정보 조회 테스트")
+    void testGetMemberInfo_WithNonExistentEmail() {
+        // Given
+        String email = "nonexistent@test.com";
+
+        when(memberRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        // Then
+        assertThrows(BusinessLogicException.class, () -> {
+            // When
+            memberService.getMemberInfo(email);
+        });
     }
 }

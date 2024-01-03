@@ -51,7 +51,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
             Map<String, Object> kakaoAccount = (Map<String, Object>) oAuth2User.getAttributes().get("kakao_account");
             Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");
             email = (String) kakaoAccount.get("email");
-            nickName = (String) kakaoProfile.get("name");
+            nickName = (String) kakaoProfile.get("nickname");
         }
 
         List<String> authorities = authorityUtils.createRoles(email);

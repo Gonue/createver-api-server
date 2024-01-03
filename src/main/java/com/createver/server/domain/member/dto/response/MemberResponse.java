@@ -13,6 +13,7 @@ public class MemberResponse {
     private String nickName;
     private String profileImage;
     private String planType;
+    private boolean isOauthUser;
 
     public static MemberResponse from(MemberDto dto){
         return new MemberResponse(
@@ -20,7 +21,8 @@ public class MemberResponse {
                 dto.getEmail(),
                 dto.getNickName(),
                 dto.getProfileImage(),
-                dto.getPlanType() != null ? dto.getPlanType().toString() : "Free"
+                dto.getPlanType() != null ? dto.getPlanType().toString() : "Free",
+                dto.isOauthUser()
         );
     }
 }
