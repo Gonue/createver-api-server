@@ -19,6 +19,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -43,31 +46,32 @@ class MusicGenerationServiceTest {
     private String sageMakerEndPoint;
 
 
-    @DisplayName("음악 생성 및 S3 업로드 성공 테스트")
-    @Test
-    void generateAndUploadMusic_Success() throws InterruptedException {
-        // Given
-        MusicPromptRequest request = new MusicPromptRequest("Test Prompt");
-        Map<String, Object> apiResponse = new HashMap<>();
-        apiResponse.put("id", "predictionId");
+@DisplayName("음악 생성 및 S3 업로드 성공 테스트")
+   @Test
+   void generateAndUploadMusic_Success() throws Exception {
+       // Given
+       MusicPromptRequest request = new MusicPromptRequest("Test Prompt");
+       Map<String, Object> apiResponse = new HashMap<>();
+       apiResponse.put("id", "predictionId");
 
-        MusicGenerationResponse mockResponse = new MusicGenerationResponse();
-        mockResponse.setStatus("succeeded");
-        mockResponse.setOutput("mockUrl");
+       MusicGenerationResponse mockResponse = new MusicGenerationResponse();
+       mockResponse.setStatus("succeeded");
+       mockResponse.setOutput("mockUrl");
 
-        when(restTemplate.postForObject(eq(sageMakerEndPoint), any(HttpEntity.class), eq(Map.class))).thenReturn(apiResponse);
-        when(restTemplate.exchange(anyString(), any(), any(), eq(MusicGenerationResponse.class)))
-                .thenReturn(ResponseEntity.ok(mockResponse));
-        when(restTemplate.execute(anyString(), any(), any(), any())).thenReturn(new byte[]{});
-        when(s3UploadService.uploadWavAndReturnCloudFrontUrl(any())).thenReturn("cloudFrontUrl");
+       when(restTemplate.postForObject(eq(sageMakerEndPoint), any(HttpEntity.class), eq(Map.class))).thenReturn(apiResponse);
+       when(restTemplate.exchange(anyString(), any(), any(), eq(MusicGenerationResponse.class)))
+               .thenReturn(ResponseEntity.ok(mockResponse));
+       when(restTemplate.execute(anyString(), any(), any(), any())).thenReturn(new byte[]{});
+       when(s3UploadService.uploadWavAndReturnCloudFrontUrl(any())).thenReturn("cloudFrontUrl");
 
-        // When
-        String resultUrl = musicGenerationService.generateAndUploadMusic(request);
+       // When
+       CompletableFuture<String> futureResult = musicGenerationService.generateAndUploadMusic(request);
+       String resultUrl = futureResult.join();
 
-        // Then
-        assertNotNull(resultUrl);
-        assertEquals("cloudFrontUrl", resultUrl);
-    }
+       // Then
+       assertNotNull(resultUrl);
+       assertEquals("cloudFrontUrl", resultUrl);
+   }
 
     @DisplayName("API 응답이 null이거나 id가 없는 경우 예외 발생 테스트")
     @Test
@@ -76,24 +80,26 @@ class MusicGenerationServiceTest {
 
         when(restTemplate.postForObject(eq(sageMakerEndPoint), any(HttpEntity.class), eq(Map.class))).thenReturn(null);
 
-        assertThrows(RuntimeException.class, () -> musicGenerationService.generateAndUploadMusic(request));
+        CompletableFuture<String> futureResult = musicGenerationService.generateAndUploadMusic(request);
+        assertThrows(CompletionException.class, futureResult::join);
     }
 
 
-    @DisplayName("API 상태가 failed 또는 canceled일 때 예외 발생 테스트")
-    @Test
-    void generateAndUploadMusic_FailedOrCanceled_ThrowsException() {
-        MusicPromptRequest request = new MusicPromptRequest("Test Prompt");
-        Map<String, Object> apiResponse = new HashMap<>();
-        apiResponse.put("id", "predictionId");
+@DisplayName("API 상태가 failed 또는 canceled일 때 예외 발생 테스트")
+   @Test
+   void generateAndUploadMusic_FailedOrCanceled_ThrowsException() {
+       MusicPromptRequest request = new MusicPromptRequest("Test Prompt");
+       Map<String, Object> apiResponse = new HashMap<>();
+       apiResponse.put("id", "predictionId");
 
-        MusicGenerationResponse failedResponse = new MusicGenerationResponse();
-        failedResponse.setStatus("failed");
+       MusicGenerationResponse failedResponse = new MusicGenerationResponse();
+       failedResponse.setStatus("failed");
 
-        when(restTemplate.postForObject(eq(sageMakerEndPoint), any(HttpEntity.class), eq(Map.class))).thenReturn(apiResponse);
-        when(restTemplate.exchange(anyString(), any(), any(), eq(MusicGenerationResponse.class)))
-                .thenReturn(ResponseEntity.ok(failedResponse));
+       when(restTemplate.postForObject(eq(sageMakerEndPoint), any(HttpEntity.class), eq(Map.class))).thenReturn(apiResponse);
+       when(restTemplate.exchange(anyString(), any(), any(), eq(MusicGenerationResponse.class)))
+               .thenReturn(ResponseEntity.ok(failedResponse));
 
-        assertThrows(RuntimeException.class, () -> musicGenerationService.generateAndUploadMusic(request));
-    }
+       CompletableFuture<String> futureResult = musicGenerationService.generateAndUploadMusic(request);
+       assertThrows(CompletionException.class, futureResult::join);
+   }
 }

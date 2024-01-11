@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 
 @Service
@@ -46,24 +47,24 @@ public class MusicGenerationService {
                 }
 
                 MusicGenerationInput musicGenerationInput = MusicGenerationInput.builder()
-                    .topK(250)
-                    .topP(0)
-                    .prompt(translatedPrompt)
-                    .duration(5)
-                    .temperature(1)
-                    .continuation(false)
-                    .modelVersion("stereo-large")
-                    .outputFormat("wav")
-                    .continuationStart(0)
-                    .multiBandDiffusion(false)
-                    .normalizationStrategy("peak")
-                    .classifierFreeGuidance(3)
-                    .build();
+                        .topK(250)
+                        .topP(0)
+                        .prompt(translatedPrompt)
+                        .duration(5)
+                        .temperature(1)
+                        .continuation(false)
+                        .modelVersion("stereo-large")
+                        .outputFormat("wav")
+                        .continuationStart(0)
+                        .multiBandDiffusion(false)
+                        .normalizationStrategy("peak")
+                        .classifierFreeGuidance(3)
+                        .build();
 
                 MusicGenerationRequest musicGenerationRequest = MusicGenerationRequest.builder()
-                    .version("7be0f12c54a8d033a0fbd14418c9af98962da9a86f5ff7811f9b3423a1f0b7d7")
-                    .input(musicGenerationInput)
-                    .build();
+                        .version("7be0f12c54a8d033a0fbd14418c9af98962da9a86f5ff7811f9b3423a1f0b7d7")
+                        .input(musicGenerationInput)
+                        .build();
 
                 HttpEntity<MusicGenerationRequest> entity = new HttpEntity<>(musicGenerationRequest, headers);
                 Map<String, Object> response = restTemplate.postForObject(sageMakerEndPoint, entity, Map.class);
@@ -73,15 +74,15 @@ public class MusicGenerationService {
 
                 String predictionId = (String) response.get("id");
                 String getResultUrl = sageMakerEndPoint + "/" + predictionId;
-                return pollForResult(getResultUrl);
+                return pollForResult(getResultUrl).join();
             } catch (Exception e) {
                 throw new RuntimeException("Error during music generation", e);
             }
         });
     }
 
-    private String pollForResult(String getResultUrl) throws InterruptedException {
-        while (true) {
+    private CompletableFuture<String> pollForResult(String getResultUrl) {
+        return CompletableFuture.supplyAsync(() -> {
             HttpHeaders getResultHeaders = new HttpHeaders();
             getResultHeaders.set("Authorization", "Token " + sageMakerKey);
             HttpEntity<String> getResultEntity = new HttpEntity<>(getResultHeaders);
@@ -92,10 +93,15 @@ public class MusicGenerationService {
                     getResultEntity,
                     MusicGenerationResponse.class);
 
-            MusicGenerationResponse musicGenerationResponse = resultResponseEntity.getBody();
-            if (musicGenerationResponse != null) {
-                String status = musicGenerationResponse.getStatus();
-                if ("succeeded".equals(status)) {
+            return resultResponseEntity.getBody();
+        }).thenCompose(musicGenerationResponse -> {
+            if (musicGenerationResponse == null) {
+                throw new RuntimeException("No response from music generation service");
+            }
+
+            String status = musicGenerationResponse.getStatus();
+            switch (status) {
+                case "succeeded":
                     String musicUrl = musicGenerationResponse.getOutput();
                     byte[] musicData = restTemplate.execute(
                             musicUrl,
@@ -103,12 +109,20 @@ public class MusicGenerationService {
                             null,
                             clientHttpResponse -> StreamUtils.copyToByteArray(clientHttpResponse.getBody())
                     );
-                    return s3UploadService.uploadWavAndReturnCloudFrontUrl(musicData);
-                } else if ("failed".equals(status) || "canceled".equals(status)) {
+                    return CompletableFuture.completedFuture(s3UploadService.uploadWavAndReturnCloudFrontUrl(musicData));
+                case "failed", "canceled":
                     throw new RuntimeException("Music generation failed or was canceled");
-                }
+                default:
+                    return CompletableFuture.supplyAsync(() -> {
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            throw new RuntimeException("Interrupted during polling", e);
+                        }
+                        return pollForResult(getResultUrl);
+                    }).thenCompose(Function.identity());
             }
-            Thread.sleep(5000);
-        }
+        });
     }
 }
