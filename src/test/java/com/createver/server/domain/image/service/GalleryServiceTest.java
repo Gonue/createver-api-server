@@ -105,4 +105,20 @@ class GalleryServiceTest {
         assertEquals("test prompt", result.getContent().get(0).getPrompt());
         verify(galleryRepository).findAllGalleriesWithComment(pageable);
     }
+
+    @Test
+    void adminGalleryListTest() {
+        // Given
+        Page<GalleryDto> pageDto = new PageImpl<>(Collections.singletonList(galleryDto));
+        when(galleryRepository.findAllGalleriesWithoutFilter(pageable)).thenReturn(pageDto);
+
+        // When
+        Page<GalleryDto> result = galleryService.adminGalleryList(pageable);
+
+        // Then
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals("test prompt", result.getContent().get(0).getPrompt());
+        verify(galleryRepository).findAllGalleriesWithoutFilter(pageable);
+    }
 }

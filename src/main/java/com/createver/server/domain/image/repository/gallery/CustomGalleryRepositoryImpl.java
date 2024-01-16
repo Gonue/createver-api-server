@@ -102,6 +102,52 @@ public class CustomGalleryRepositoryImpl implements CustomGalleryRepository {
                         gallery.isBlinded))
                 .from(gallery)
                 .leftJoin(imageComment).on(imageComment.gallery.eq(gallery))
+                .where(gallery.isBlinded.isFalse())
+                .groupBy(gallery)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
+
+        // 정렬 조건
+        if (!ObjectUtils.isEmpty(pageable)) {
+            for (Sort.Order order : pageable.getSort()) {
+                PathBuilder<Gallery> pathBuilder = new PathBuilder<>(gallery.getType(), gallery.getMetadata());
+                query.orderBy(
+                        new OrderSpecifier(
+                                order.getDirection().isAscending() ? Order.ASC : Order.DESC,
+                                pathBuilder.get(order.getProperty())));
+            }
+        }
+
+        List<GalleryDto> content = query.fetch();
+        JPAQuery<Long> countQuery = queryFactory
+                .select(gallery.count())
+                .from(gallery)
+                .leftJoin(imageComment).on(imageComment.gallery.eq(gallery))
+                .where(gallery.isBlinded.isFalse());
+
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    @Override
+    public Page<GalleryDto> findAllGalleriesWithoutFilter(Pageable pageable) {
+        QGallery gallery = QGallery.gallery;
+        QImageComment imageComment = QImageComment.imageComment;
+
+        JPAQuery<GalleryDto> query = queryFactory
+                .select(Projections.constructor(GalleryDto.class,
+                        gallery.galleryId,
+                        gallery.prompt,
+                        gallery.storageUrl,
+                        gallery.option,
+                        gallery.createdAt,
+                        imageComment.commentId.count(),
+                        gallery.likeCount,
+                        gallery.downloadCount,
+                        gallery.reportCount,
+                        gallery.isBlinded))
+                .from(gallery)
+                .leftJoin(imageComment).on(imageComment.gallery.eq(gallery))
                 .groupBy(gallery)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());

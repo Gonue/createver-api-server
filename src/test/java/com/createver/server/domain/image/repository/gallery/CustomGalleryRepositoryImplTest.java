@@ -119,6 +119,30 @@ class CustomGalleryRepositoryImplTest {
             assertTrue(galleries.get(i).getLikeCount() <= galleries.get(i + 1).getLikeCount());
         }
     }
+
+    @Test
+    @DisplayName("필터 없이 모든 갤러리 조회 및 정렬 테스트")
+    void findAllGalleriesWithoutFilterTest() {
+        Sort sort = Sort.by(Sort.Direction.DESC, "likeCount");
+        Pageable pageable = PageRequest.of(0, 10, sort);
+
+        // When
+        Page<GalleryDto> result = galleryRepository.findAllGalleriesWithoutFilter(pageable);
+
+        // Then
+        assertFalse(result.isEmpty());
+        List<GalleryDto> galleries = result.getContent();
+        assertTrue(galleries.size() > 0);
+        for (int i = 0; i < galleries.size() - 1; i++) {
+            assertTrue(galleries.get(i).getLikeCount() >= galleries.get(i + 1).getLikeCount());
+        }
+
+        // 페이지 정보 확인
+        assertEquals(0, result.getNumber());
+        assertEquals(10, result.getSize());
+        assertNotNull(result.getPageable());
+    }
+
     @Test
     @DisplayName("옵션 및 프롬프트를 포함한 갤러리 조회 테스트")
     void hasOptionsAndPromptTest() {

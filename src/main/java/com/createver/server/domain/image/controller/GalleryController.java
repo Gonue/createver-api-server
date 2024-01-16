@@ -32,6 +32,11 @@ public class GalleryController {
         return Response.success(galleryService.galleryListWithComment(pageable).map(GalleryResponse::from));
     }
 
+    @GetMapping("/admin/list/gallery")
+    public Response<Page<GalleryResponse>> adminGalleryList(Pageable pageable) {
+        return Response.success(galleryService.adminGalleryList(pageable).map(GalleryResponse::from));
+    }
+
     @GetMapping("/list/search")
     public Response<Page<GalleryResponse>> findGalleryList(
             @RequestParam String prompt,

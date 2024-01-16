@@ -30,4 +30,9 @@ public class GalleryService {
     public Page<GalleryDto> galleryListWithComment(Pageable pageable){
         return galleryRepository.findAllGalleriesWithComment(pageable);
     }
+
+    @Transactional(readOnly = true)
+    public Page<GalleryDto> adminGalleryList(Pageable pageable) {
+        return galleryRepository.findAllGalleriesWithoutFilter(pageable);
+    }
 }

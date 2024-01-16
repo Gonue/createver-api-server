@@ -136,6 +136,77 @@ class GalleryControllerTest {
     }
 
     @Test
+    @DisplayName("관리자용 갤러리 목록 조회 테스트")
+    @WithMockCustomMember
+    void testAdminGalleryList() throws Exception {
+        // given
+        List<GalleryDto> galleries = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            GalleryDto galleryDto = new GalleryDto(
+                    i + 1L,
+                    "Test Prompt" + i,
+                    "http://storage.url",
+                    0,
+                    LocalDateTime.now(),
+                    5L,
+                    10 + i,
+                    2 + i,
+                    1,
+                    false);
+            galleries.add(galleryDto);
+        }
+        Page<GalleryDto> page = new PageImpl<>(galleries, PageRequest.of(0, 20), 1);
+        when(galleryService.adminGalleryList(any(Pageable.class))).thenReturn(page);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/api/v1/image/admin/list/gallery")
+                        .param("page", "0")
+                        .param("size", "20")
+                        .param("sort", "createdAt,desc")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf().asHeader())
+        );
+
+        // then
+        actions.andExpect(status().isOk())
+                .andDo(document(
+                        "admin-gallery-list",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        queryParameters(
+                                parameterWithName("page").description("페이지 번호"),
+                                parameterWithName("size").description("페이지 크기"),
+                                parameterWithName("sort").description("정렬 기준 (예: [createdAt, desc], [title, asc])")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("응답 상태 코드"),
+                                fieldWithPath("message").description("응답 메시지"),
+                                subsectionWithPath("result").description("페이징 처리된 갤러리 목록과 관련된 결과 데이터"),
+                                subsectionWithPath("result.content[]").description("갤러리 목록"),
+                                fieldWithPath("result.content[].galleryId").description("갤러리 ID"),
+                                fieldWithPath("result.content[].prompt").description("프롬프트"),
+                                fieldWithPath("result.content[].storageUrl").description("이미지 URL"),
+                                fieldWithPath("result.content[].option").description("옵션"),
+                                fieldWithPath("result.content[].createdAt").description("생성 시간"),
+                                fieldWithPath("result.content[].commentCount").description("댓글 수"),
+                                fieldWithPath("result.content[].likeCount").description("좋아요 수"),
+                                fieldWithPath("result.content[].downloadCount").description("다운로드 수"),
+                                fieldWithPath("result.content[].reportCount").description("신고 수"),
+                                fieldWithPath("result.content[].blinded").description("블라인드 여부"),
+                                subsectionWithPath("result.pageable").description("페이지 정보"),
+                                fieldWithPath("result.totalPages").description("전체 페이지 수"),
+                                fieldWithPath("result.totalElements").description("전체 게시글 수"),
+                                fieldWithPath("result.size").description("페이지당 게시글 수"),
+                                fieldWithPath("result.number").description("현재 페이지 번호"),
+                                subsectionWithPath("result.sort").description("정렬 정보"),
+                                fieldWithPath("result.numberOfElements").description("현재 페이지의 게시글 수"),
+                                fieldWithPath("result.empty").description("결과가 비어 있는지 여부")
+                        )
+                ));
+    }
+
+    @Test
     @DisplayName("갤러리 검색 테스트")
     @WithMockCustomMember
     void testFindGalleryList() throws Exception {
