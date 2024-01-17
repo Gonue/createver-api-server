@@ -16,5 +16,6 @@ public interface CustomGalleryRepository {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Gallery> findGalleryByIdForUpdate(Long galleryId);
     Page<GalleryDto> findAllGalleriesWithComment(Pageable pageable);
+    Page<GalleryDto> findAllGalleriesWithoutFilter(Pageable pageable);
     Page<Gallery> hasOptionsAndPrompt(List<Integer> options, String prompt, Pageable pageable);
 }
