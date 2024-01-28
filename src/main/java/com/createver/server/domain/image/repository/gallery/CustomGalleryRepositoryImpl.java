@@ -122,9 +122,7 @@ public class CustomGalleryRepositoryImpl implements CustomGalleryRepository {
         JPAQuery<Long> countQuery = queryFactory
                 .select(gallery.count())
                 .from(gallery)
-                .leftJoin(imageComment).on(imageComment.gallery.eq(gallery))
                 .where(gallery.isBlinded.isFalse());
-
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -166,8 +164,7 @@ public class CustomGalleryRepositoryImpl implements CustomGalleryRepository {
         List<GalleryDto> content = query.fetch();
         JPAQuery<Long> countQuery = queryFactory
                 .select(gallery.count())
-                .from(gallery)
-                .leftJoin(imageComment).on(imageComment.gallery.eq(gallery));
+                .from(gallery);
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
