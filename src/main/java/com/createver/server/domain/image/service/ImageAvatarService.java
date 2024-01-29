@@ -25,7 +25,6 @@ import java.util.Map;
 public class ImageAvatarService {
 
     private final RestTemplate restTemplate;
-    private final S3UploadService s3UploadService;
     private final ImageAvatarRepository imageAvatarRepository;
     private final MemberRepository memberRepository;
 
@@ -54,7 +53,7 @@ public class ImageAvatarService {
                 .version("ddfc2b08d209f9fa8c1eca692712918bd449f695dabb4a958da31802a9570fe4")
                 .input(input)
 //                .webhook("https://api.createver.site/api/v1/image/avatar/webhook")
-                .webhook("https://7789-175-120-150-63.ngrok-free.app/api/v1/image/avatar/webhook")
+                .webhook("https://935d-175-120-150-63.ngrok-free.app/api/v1/image/avatar/webhook")
                 .webhookEventsFilter(List.of("completed"))
                 .build();
 

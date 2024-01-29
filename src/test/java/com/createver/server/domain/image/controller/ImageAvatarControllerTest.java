@@ -1,0 +1,76 @@
+package com.createver.server.domain.image.controller;
+
+import com.createver.server.domain.image.dto.request.AvatarPromptRequest;
+import com.createver.server.domain.image.dto.response.ImageAvatarWebhookResponse;
+import com.createver.server.domain.image.service.ImageAvatarProcessingService;
+import com.createver.server.domain.image.service.ImageAvatarService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.security.core.Authentication;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@ExtendWith(SpringExtension.class)
+@DisplayName("Image Avatar Controller 테스트")
+class ImageAvatarControllerTest {
+
+    private MockMvc mockMvc;
+    private ObjectMapper objectMapper;
+
+    @InjectMocks
+    private ImageAvatarController imageAvatarController;
+
+    @Mock
+    private ImageAvatarService imageAvatarService;
+
+    @Mock
+    private ImageAvatarProcessingService imageAvatarProcessingService;
+
+    @Mock
+    private Authentication authentication;
+
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(imageAvatarController).build();
+        objectMapper = new ObjectMapper();
+    }
+
+    @DisplayName("아바타 이미지 생성 테스트")
+    @Test
+    void generateAvatarTest() throws Exception {
+        AvatarPromptRequest request = new AvatarPromptRequest();
+        when(authentication.getName()).thenReturn("test@test.com");
+        when(imageAvatarService.generateAvatarImage(any(), any())).thenReturn("predictionId");
+
+        mockMvc.perform(post("/api/v1/image/avatar")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("predictionId")));
+    }
+
+    @DisplayName("웹훅 핸들러 테스트")
+    @Test
+    void handleWebhookTest() throws Exception {
+        ImageAvatarWebhookResponse webhookResponse = new ImageAvatarWebhookResponse();
+
+        mockMvc.perform(post("/api/v1/image/avatar/webhook")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(webhookResponse)))
+                .andExpect(status().isOk());
+    }
+}

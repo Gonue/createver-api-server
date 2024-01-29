@@ -17,21 +17,15 @@ public class ImageAvatarProcessingService {
     private final S3UploadService s3UploadService;
 
     public void processWebhookResponse(ImageAvatarWebhookResponse imageAvatarWebhookResponse) {
-
         String predictionId = imageAvatarWebhookResponse.getId();
         List<String> imageUrls = imageAvatarWebhookResponse.getImageUrls();
 
-        if (imageUrls != null && !imageUrls.isEmpty()) {
+        ImageAvatar imageAvatar = imageAvatarRepository.findByPredictionId(predictionId);
+        if (imageAvatar != null && imageUrls != null && !imageUrls.isEmpty()) {
             String imageUrl = imageUrls.get(0);
             String s3Url = s3UploadService.uploadFromUrl(imageUrl, "image/png");
-
-            ImageAvatar imageAvatar = imageAvatarRepository.findByPredictionId(predictionId);
-            if (imageAvatar != null) {
-                imageAvatar.updateResultImageAndStatus(s3Url, "completed");
-                imageAvatarRepository.save(imageAvatar);
-            }
+            imageAvatar.updateResultImageAndStatus(s3Url, "completed");
+            imageAvatarRepository.save(imageAvatar);
         }
-
-
     }
 }
