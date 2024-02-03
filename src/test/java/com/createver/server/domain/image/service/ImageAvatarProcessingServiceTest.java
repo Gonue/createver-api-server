@@ -10,7 +10,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,6 +25,8 @@ class ImageAvatarProcessingServiceTest {
 
     @InjectMocks
     private ImageAvatarProcessingService imageAvatarProcessingService;
+    @Mock
+    private ImageAvatarSseService imageAvatarSseService;
 
     @Mock
     private ImageAvatarRepository imageAvatarRepository;
@@ -94,5 +98,33 @@ class ImageAvatarProcessingServiceTest {
         verify(imageAvatarRepository, times(1)).findByPredictionId("predictionId");
         verify(s3UploadService, never()).uploadFromUrl(anyString(), anyString());
         verify(imageAvatarRepository, never()).save(any(ImageAvatar.class));
+    }
+
+    @DisplayName("SSE 이벤트 성공적으로 전송")
+    @Test
+    void processWebhookResponse_WithValidImageUrls() throws IOException {
+        // Given
+        String predictionId = "predictionId";
+        String imageUrl = "http://example.com/image.png";
+        SseEmitter emitter = mock(SseEmitter.class);
+
+        ImageAvatar imageAvatar = ImageAvatar.builder()
+                .predictionId(predictionId)
+                .build();
+
+        when(imageAvatarRepository.findByPredictionId(predictionId)).thenReturn(imageAvatar);
+        when(s3UploadService.uploadFromUrl(imageUrl, "image/png")).thenReturn("s3ImageUrl");
+        when(imageAvatarSseService.getEmitters(predictionId)).thenReturn(Arrays.asList(emitter));
+
+        ImageAvatarWebhookResponse response = new ImageAvatarWebhookResponse();
+        response.setId(predictionId);
+        response.setImageUrls(Arrays.asList(imageUrl));
+
+        // When
+        imageAvatarProcessingService.processWebhookResponse(response);
+
+        // Then
+        verify(emitter).send(any(SseEmitter.SseEventBuilder.class));
+        verify(emitter).complete();
     }
 }
