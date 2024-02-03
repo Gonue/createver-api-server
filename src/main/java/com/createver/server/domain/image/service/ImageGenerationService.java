@@ -3,16 +3,13 @@ package com.createver.server.domain.image.service;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.createver.server.domain.image.dto.request.ImageGenerationRequest;
 import com.createver.server.domain.image.dto.request.PromptRequest;
-import com.createver.server.domain.image.dto.request.pro.StableGenerationRequest;
 import com.createver.server.domain.image.dto.response.CustomGenerationResponse;
 import com.createver.server.domain.image.dto.response.ImageGenerationResponse;
 
-import com.createver.server.domain.image.dto.response.pro.StablePromptRequest;
 import com.createver.server.domain.image.entity.Gallery;
 import com.createver.server.domain.image.entity.ImageTag;
 import com.createver.server.domain.image.repository.gallery.GalleryRepository;
 import com.createver.server.domain.member.entity.Member;
-import com.createver.server.domain.member.entity.PlanType;
 import com.createver.server.domain.member.repository.MemberRepository;
 import com.createver.server.global.config.OpenAiConfig;
 import com.createver.server.global.error.exception.BusinessLogicException;
@@ -160,92 +157,6 @@ public class ImageGenerationService {
         }
     }
 
-    public List<CustomGenerationResponse> stableMakeImage(String email, StablePromptRequest promptRequest) {
-
-        Member member = memberRepository.findByEmail(email).orElseThrow(() ->
-                new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND, String.format("%s 를 찾을 수 없습니다.", email))
-        );
-
-        PlanType currentPlanType = member.getPlan().getPlanType();
-        if (currentPlanType != PlanType.PRO && currentPlanType != PlanType.ULTRA) {
-            throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED_ACCESS, "Pro 또는 Ultra 플랜 회원만 이용 가능한 기능입니다.");
-        }
-
-        try {
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setContentType(MediaType.parseMediaType("application/json; charset=UTF-8"));
-            httpHeaders.add("Authorization", "BEARER" + sageMakerKey);
-
-            String originalPrompt = promptRequest.getPrompt();
-            String translatedPrompt = originalPrompt;
-
-            if (LanguageDiscriminationUtils.isKorean(originalPrompt)) {
-                translatedPrompt = translate.translate(originalPrompt, "ko", "en");
-            }
-
-            StableGenerationRequest stableGenerationRequest = StableGenerationRequest.builder()
-                    .checkPoint(promptRequest.getCheckPoint())
-                    .textInversion(promptRequest.getTextInversion())
-                    .lora(promptRequest.getLora())
-                    .prompt(translatedPrompt)
-                    .width(promptRequest.getWidth())
-                    .height(promptRequest.getHeight())
-                    .num_images_per_prompt(promptRequest.getNum_images_per_prompt())
-                    .num_inference_steps(promptRequest.getNum_inference_steps())
-                    .guidance_scale(promptRequest.getGuidance_scale())
-                    .seed(promptRequest.getSeed())
-                    .option(5)
-                    .response_format("b64_json")
-                    .build();
-
-            HttpEntity<StableGenerationRequest> requestHttpEntity = new HttpEntity<>(stableGenerationRequest, httpHeaders);
-
-            ResponseEntity<ImageGenerationResponse> responseEntity = restTemplate.postForEntity(
-                    sageMakerEndPoint,
-                    requestHttpEntity,
-                    ImageGenerationResponse.class
-            );
-
-            ImageGenerationResponse imageGenerationResponse = responseEntity.getBody();
-
-            List<CustomGenerationResponse> customGenerationResponses = new ArrayList<>();
-            if (imageGenerationResponse == null || imageGenerationResponse.getData() == null) {
-                throw new BusinessLogicException(ExceptionCode.GENERAL_ERROR, "SageMaker API No Response");
-            }
-
-            for (ImageGenerationResponse.ImageURL imageUrl : imageGenerationResponse.getData()) {
-                byte[] decodedImage = Base64.getDecoder().decode(imageUrl.getB64_json());
-                String s3Url = s3UploadService.upload(decodedImage, "image/png");
-
-
-                Gallery gallery = Gallery.builder()
-                        .prompt(promptRequest.getPrompt())
-                        .storageUrl(s3Url)
-                        .option(promptRequest.getOption())
-                        .member(member).build();
-
-                Gallery savedGallery = galleryRepository.save(gallery);
-                CustomGenerationResponse customGenerationResponse = CustomGenerationResponse.builder()
-                        .galleryId(savedGallery.getGalleryId())
-                        .prompt(savedGallery.getPrompt())
-                        .s3Url(s3Url)
-                        .option(savedGallery.getOption())
-                        .createdAt(savedGallery.getCreatedAt())
-                        .build();
-                customGenerationResponses.add(customGenerationResponse);
-
-            }
-
-            return customGenerationResponses;
-        } catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerEx) {
-            throw new BusinessLogicException(ExceptionCode.SAGEMAKER_API_ERROR, "SageMaker API 호출 실패");
-        } catch (AmazonS3Exception s3Ex) {
-            throw new BusinessLogicException(ExceptionCode.S3_UPLOAD_ERROR, "S3 업로드 실패");
-        } catch (Exception ex) {
-            throw new BusinessLogicException(ExceptionCode.GENERAL_ERROR, "이미지 생성 중 오류 발생");
-        }
-    }
-
     public List<String> simpleImageMake(String prompt) {
         try {
             HttpHeaders httpHeaders = new HttpHeaders();
@@ -297,7 +208,6 @@ public class ImageGenerationService {
             throw new BusinessLogicException(ExceptionCode.GENERAL_ERROR, "이미지 생성 중 오류 발생");
         }
     }
-
 
     private String modifyPromptBasedOnOption(String originalPrompt, int option) {
         String prefix = "";
