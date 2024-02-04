@@ -4,7 +4,11 @@ public class LanguageDiscriminationUtils {
 
     private LanguageDiscriminationUtils() {
     }
+
     public static boolean isKorean(String text) {
+        if (text == null || text.isEmpty()) {
+            return false;
+        }
         for (char c : text.toCharArray()) {
             if (Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HANGUL_SYLLABLES ||
                 Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HANGUL_JAMO ||

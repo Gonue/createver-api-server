@@ -5,6 +5,8 @@ import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.util.IOUtils;
 import com.createver.server.domain.image.entity.Gallery;
+import com.createver.server.domain.image.entity.ImageAvatar;
+import com.createver.server.domain.image.repository.avatar.ImageAvatarRepository;
 import com.createver.server.domain.image.repository.gallery.GalleryRepository;
 import com.createver.server.global.error.exception.BusinessLogicException;
 import com.createver.server.global.error.exception.ExceptionCode;
@@ -26,6 +28,7 @@ public class S3DownloadService {
 
     private final AmazonS3 amazonS3;
     private final GalleryRepository galleryRepository;
+    private final ImageAvatarRepository imageAvatarRepository;
 
     @Transactional
     public byte[] downloadFileByGalleryId(Long galleryId) {
@@ -60,5 +63,16 @@ public class S3DownloadService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public byte[] downloadImageByPredictionId(String predictionId) {
+        ImageAvatar imageAvatar = imageAvatarRepository.findByPredictionId(predictionId);
+
+        if (imageAvatar == null) {
+            throw new BusinessLogicException(ExceptionCode.S3_FILE_ERROR, "해당 predictionId가 존재하지 않습니다.");
+        }
+
+        String key = extractKeyFromStorageUrl(imageAvatar.getResultImageUrl());
+        return downloadFileFromS3(key);
     }
 }

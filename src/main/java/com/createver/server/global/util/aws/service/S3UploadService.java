@@ -5,7 +5,9 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.createver.server.global.util.aws.CloudFrontUrlUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
@@ -20,7 +22,7 @@ public class S3UploadService {
     private String bucket;
 
     private final AmazonS3 amazonS3;
-
+    private final RestTemplate restTemplate;
 
     private String generateShortUuid() {
         UUID uuid = UUID.randomUUID();
@@ -103,4 +105,15 @@ public class S3UploadService {
         String s3Url = uploadWav(wavData);
         return CloudFrontUrlUtils.convertToCloudFrontUrl(s3Url);
     }
+
+    public String uploadFromUrl(String imageUrl, String contentType) {
+        ResponseEntity<byte[]> response = restTemplate.getForEntity(imageUrl, byte[].class);
+
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            throw new RuntimeException("Failed to download image from URL: " + imageUrl);
+        }
+
+        return upload(response.getBody(), contentType);
+    }
+
 }

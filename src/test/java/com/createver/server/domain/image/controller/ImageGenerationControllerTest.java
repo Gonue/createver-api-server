@@ -2,7 +2,6 @@ package com.createver.server.domain.image.controller;
 
 import com.createver.server.domain.image.dto.request.PromptRequest;
 import com.createver.server.domain.image.dto.response.CustomGenerationResponse;
-import com.createver.server.domain.image.dto.response.pro.StablePromptRequest;
 import com.createver.server.domain.image.service.ImageGenerationService;
 import com.createver.server.global.config.SecurityConfig;
 import com.createver.server.global.user.WithMockCustomMember;
@@ -98,71 +97,6 @@ class ImageGenerationControllerTest {
                                 fieldWithPath("status").description("응답 상태 코드"),
                                 fieldWithPath("message").description("응답 메시지"),
                                 subsectionWithPath("result[]").description("생성된 이미지에 대한 정보"),
-                                fieldWithPath("result[].galleryId").description("갤러리 ID"),
-                                fieldWithPath("result[].prompt").description("이미지 생성에 사용된 프롬프트"),
-                                fieldWithPath("result[].s3Url").description("이미지의 S3 URL"),
-                                fieldWithPath("result[].option").description("이미지 생성 옵션"),
-                                fieldWithPath("result[].createdAt").description("이미지 생성 시간")
-                        )
-                ));
-    }
-
-    @Test
-    @DisplayName("Stable Diffusion 이미지 생성 요청 처리 테스트")
-    @WithMockCustomMember
-    void stableInputRequestTest() throws Exception {
-        // given
-        StablePromptRequest stablePromptRequest = new StablePromptRequest(5, 3, 2, "테스트 프롬프트", 800, 600, 2, 50, 7.5, 12345, 1, "b64_json");
-        String content = objectMapper.writeValueAsString(stablePromptRequest);
-
-        List<CustomGenerationResponse> customGenerationResponses = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            CustomGenerationResponse customGenerationResponse = new CustomGenerationResponse(
-                    i + 1L,
-                    "Stable Test Prompt",
-                    "http://stable.image.url",
-                    5,
-                    LocalDateTime.now()
-            );
-            customGenerationResponses.add(customGenerationResponse);
-        }
-
-        when(imageGenerationService.stableMakeImage(anyString(), any(StablePromptRequest.class))).thenReturn(customGenerationResponses);
-
-        // when
-        ResultActions actions =
-                mockMvc.perform(
-                        post("/api/v1/image/create/stable")
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer {JWT_ACCESS_TOKEN}")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .with(csrf().asHeader())
-                                .content(content)
-                );
-        // then
-        actions
-                .andExpect(status().isOk())
-                .andDo(document(
-                        "stable-input-image-request",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestFields(
-                                fieldWithPath("checkPoint").description("체크포인트 옵션"),
-                                fieldWithPath("textInversion").description("텍스트 반전 옵션"),
-                                fieldWithPath("lora").description("Lora 옵션"),
-                                fieldWithPath("prompt").description("이미지 생성 프롬프트"),
-                                fieldWithPath("width").description("이미지 너비"),
-                                fieldWithPath("height").description("이미지 높이"),
-                                fieldWithPath("num_images_per_prompt").description("프롬프트당 생성할 이미지 수"),
-                                fieldWithPath("num_inference_steps").description("추론 단계 수"),
-                                fieldWithPath("guidance_scale").description("가이던스 스케일"),
-                                fieldWithPath("seed").description("시드 선택"),
-                                fieldWithPath("option").description("추가 옵션").optional(),
-                                fieldWithPath("response_format").description("응답 포맷").optional()
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description("응답 상태 코드"),
-                                fieldWithPath("message").description("응답 메시지"),
-                                subsectionWithPath("result[]").description("이미지에 대한 정보"),
                                 fieldWithPath("result[].galleryId").description("갤러리 ID"),
                                 fieldWithPath("result[].prompt").description("이미지 생성에 사용된 프롬프트"),
                                 fieldWithPath("result[].s3Url").description("이미지의 S3 URL"),

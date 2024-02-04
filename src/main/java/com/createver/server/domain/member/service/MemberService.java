@@ -1,7 +1,10 @@
 package com.createver.server.domain.member.service;
 
 import com.createver.server.domain.image.dto.GalleryDto;
+import com.createver.server.domain.image.dto.ImageAvatarDto;
 import com.createver.server.domain.image.entity.Gallery;
+import com.createver.server.domain.image.entity.ImageAvatar;
+import com.createver.server.domain.image.repository.avatar.ImageAvatarRepository;
 import com.createver.server.domain.image.repository.gallery.GalleryRepository;
 import com.createver.server.domain.member.dto.MemberDto;
 import com.createver.server.domain.member.entity.Member;
@@ -29,6 +32,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthorityUtils customAuthorityUtils;
     private final GalleryRepository galleryRepository;
+    private final ImageAvatarRepository imageAvatarRepository;
 
     public static final String DEFAULT_IMAGE = "https://d2xbqs28wc0ywi.cloudfront.net/images/65fc23b3-e151-47cc-9c9b-1af57381e6fa_ham1.png";
 
@@ -101,6 +105,11 @@ public class MemberService {
         return galleryPage.map(GalleryDto::from);
     }
 
+    @Transactional(readOnly = true)
+    public Page<ImageAvatarDto> getMyAvatar(String email, Pageable pageable){
+        Page<ImageAvatar> imageAvatarPage = imageAvatarRepository.findByMemberEmail(email, pageable);
+        return imageAvatarPage.map(ImageAvatarDto::from);
+    }
 
     private Member memberOrException(String email) {
         return memberRepository.findByEmail(email).orElseThrow(() ->

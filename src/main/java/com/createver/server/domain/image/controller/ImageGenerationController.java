@@ -2,7 +2,6 @@ package com.createver.server.domain.image.controller;
 
 import com.createver.server.domain.image.dto.request.PromptRequest;
 import com.createver.server.domain.image.dto.response.CustomGenerationResponse;
-import com.createver.server.domain.image.dto.response.pro.StablePromptRequest;
 import com.createver.server.domain.image.service.ImageGenerationService;
 import com.createver.server.global.error.response.Response;
 import jakarta.validation.Valid;
@@ -29,12 +28,6 @@ public class ImageGenerationController {
             email = authentication.getName();
         }
         List<CustomGenerationResponse> customGenerationResponses = imageGenerationService.makeImages(request, email);
-        return Response.success(200, customGenerationResponses);
-    }
-
-    @PostMapping("/stable")
-    public Response<List<CustomGenerationResponse>> stableInputRequest(@RequestBody @Valid StablePromptRequest request, Authentication authentication){
-        List<CustomGenerationResponse> customGenerationResponses = imageGenerationService.stableMakeImage(authentication.getName(), request);
         return Response.success(200, customGenerationResponses);
     }
 
