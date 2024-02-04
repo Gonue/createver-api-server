@@ -62,7 +62,17 @@ class ImageAvatarControllerTest {
     @DisplayName("아바타 이미지 생성 테스트")
     @Test
     void generateAvatarTest() throws Exception {
-        AvatarPromptRequest request = new AvatarPromptRequest();
+        AvatarPromptRequest request = AvatarPromptRequest.builder()
+                .prompt("Test prompt")
+                .numSteps(10)
+                .styleName("Test style")
+                .inputImage("Test image")
+                .numOutputs(2)
+                .guidanceScale(5)
+                .negativePrompt("Test negative prompt")
+                .styleStrengthRatio(20)
+                .build();
+
         when(authentication.getName()).thenReturn("test@test.com");
         when(imageAvatarService.generateAvatarImage(any(), any())).thenReturn("predictionId");
 
