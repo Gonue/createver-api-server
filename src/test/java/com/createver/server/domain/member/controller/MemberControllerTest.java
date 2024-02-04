@@ -1,10 +1,12 @@
 package com.createver.server.domain.member.controller;
 
 import com.createver.server.domain.image.dto.GalleryDto;
+import com.createver.server.domain.image.dto.ImageAvatarDto;
 import com.createver.server.domain.member.dto.MemberDto;
 import com.createver.server.domain.member.dto.request.MemberDeleteRequest;
 import com.createver.server.domain.member.dto.request.MemberJoinRequest;
 import com.createver.server.domain.member.dto.request.MemberUpdateRequest;
+import com.createver.server.domain.member.entity.Member;
 import com.createver.server.domain.member.service.MemberService;
 import com.createver.server.global.config.SecurityConfig;
 import com.createver.server.global.user.WithMockCustomMember;
@@ -307,4 +309,85 @@ class MemberControllerTest {
                 ));
     }
 
+    @Test
+    @DisplayName("회원의 아바타 목록 조회 테스트")
+    @WithMockCustomMember
+    void getMyAvatarTest() throws Exception {
+        // given
+        List<ImageAvatarDto> imageAvatars = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            ImageAvatarDto imageAvatarDto = new ImageAvatarDto(
+                    i + 1L,
+                    "Test Prompt " + i,
+                    1 + i,
+                    "test style",
+                    "Test Url",
+                    10 + i,
+                    2 + i,
+                    "Test Prompt",
+                    50,
+                    "Test Url",
+                    "Test Status",
+                    "Test Id" + i,
+                    new MemberDto(i + 1L, "test" + i + "@example.com", "김테스트", "password", "imageUrl", LocalDateTime.now(), LocalDateTime.now(), null, false), // member
+                    LocalDateTime.now(),
+                    LocalDateTime.now()
+            );
+            imageAvatars.add(imageAvatarDto);
+        }
+        Page<ImageAvatarDto> page = new PageImpl<>(imageAvatars, PageRequest.of(0, 20), 1);
+        when(memberService.getMyAvatar(anyString(), any(Pageable.class))).thenReturn(page);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/api/v1/member/my-avatar")
+                        .param("page", "0")
+                        .param("size", "20")
+                        .param("sort", "createdAt,desc")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer {JWT_ACCESS_TOKEN}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf().asHeader())
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andDo(document(
+                        "get-my-avatars",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        queryParameters(
+                                parameterWithName("page").description("페이지 번호"),
+                                parameterWithName("size").description("페이지 크기"),
+                                parameterWithName("sort").description("정렬 기준 (예: [createdAt, desc], [likeCount, desc])")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("응답 상태 코드"),
+                                fieldWithPath("message").description("응답 메시지"),
+                                subsectionWithPath("result").description("페이징 처리된 회원의 갤러리 목록과 관련된 결과 데이터"),
+                                subsectionWithPath("result.content[]").description("아바타 목록"),
+                                fieldWithPath("result.content[].avatarId").description("아바타 ID"),
+                                fieldWithPath("result.content[].prompt").description("프롬프트"),
+                                fieldWithPath("result.content[].numSteps").description("학습 단계 수"),
+                                fieldWithPath("result.content[].styleName").description("스타일 이름"),
+                                fieldWithPath("result.content[].inputImage").description("사용된 이미지"),
+                                fieldWithPath("result.content[].numOutputs").description("출력 갯수"),
+                                fieldWithPath("result.content[].guidanceScale").description("guidanceScale"),
+                                fieldWithPath("result.content[].negativePrompt").description("부정 프롬프트"),
+                                fieldWithPath("result.content[].styleStrengthRatio").description("styleStrengthRatio"),
+                                fieldWithPath("result.content[].resultImageUrl").description("최종 이미지"),
+                                fieldWithPath("result.content[].status").description("이미지 상태"),
+                                fieldWithPath("result.content[].predictionId").description("모델 고유 번호"),
+                                subsectionWithPath("result.content[].member").description("아바타 생성자 정보"),
+                                subsectionWithPath("result.pageable").description("페이지 정보"),
+                                fieldWithPath("result.totalPages").description("전체 페이지 수"),
+                                fieldWithPath("result.totalElements").description("전체 게시글 수"),
+                                fieldWithPath("result.size").description("페이지당 게시글 수"),
+                                fieldWithPath("result.number").description("현재 페이지 번호"),
+                                subsectionWithPath("result.sort").description("정렬 정보"),
+                                fieldWithPath("result.numberOfElements").description("현재 페이지의 게시글 수"),
+                                fieldWithPath("result.empty").description("결과가 비어 있는지 여부")
+                        )
+                ));
+    }
 }

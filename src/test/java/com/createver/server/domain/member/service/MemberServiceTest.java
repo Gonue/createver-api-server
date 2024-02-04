@@ -1,7 +1,10 @@
 package com.createver.server.domain.member.service;
 
 import com.createver.server.domain.image.dto.GalleryDto;
+import com.createver.server.domain.image.dto.ImageAvatarDto;
 import com.createver.server.domain.image.entity.Gallery;
+import com.createver.server.domain.image.entity.ImageAvatar;
+import com.createver.server.domain.image.repository.avatar.ImageAvatarRepository;
 import com.createver.server.domain.image.repository.gallery.GalleryRepository;
 import com.createver.server.domain.member.dto.MemberDto;
 import com.createver.server.domain.member.entity.Member;
@@ -24,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -44,6 +48,9 @@ class MemberServiceTest {
 
     @Mock
     private GalleryRepository galleryRepository;
+
+    @Mock
+    private ImageAvatarRepository imageAvatarRepository;
 
     @BeforeEach
     void setUp() {
@@ -100,6 +107,7 @@ class MemberServiceTest {
         // Then
         assertDoesNotThrow(() -> memberService.oauthJoin(email, nickName));
     }
+
     @Test
     @DisplayName("이메일 중복 시 회원가입 테스트")
     void testJoin_WithDuplicatedEmail() {
@@ -109,10 +117,10 @@ class MemberServiceTest {
         String nickName = "nickName";
 
         Member existingMember = Member.builder()
-            .email(email)
-            .password("existingPassword")
-            .nickName("existingNickName")
-            .build();
+                .email(email)
+                .password("existingPassword")
+                .nickName("existingNickName")
+                .build();
 
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(existingMember));
 
@@ -235,6 +243,47 @@ class MemberServiceTest {
         Page<GalleryDto> result = memberService.getMyGalleries(email, pageable);
         assertNotNull(result);
         assertEquals(galleryList.size(), result.getContent().size());
+    }
+
+    @Test
+    @DisplayName("회원의 아바타 생성 목록 조회 테스트")
+    void testGetMyAvatars() {
+        // Given
+        String email = "test@test.com";
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Member member = Member.builder()
+                .email(email)
+                .nickName("nickName")
+                .profileImage(MemberService.DEFAULT_IMAGE)
+                .build();
+        List<ImageAvatar> imageAvatarList = Arrays.asList(
+
+                ImageAvatar.builder()
+                        .prompt("Test Prompt")
+                        .numSteps(50)
+                        .styleName("Test Style")
+                        .inputImage("https://www.example.com")
+                        .numOutputs(5)
+                        .guidanceScale(50)
+                        .negativePrompt("Test Prompt")
+                        .styleStrengthRatio(3)
+                        .resultImageUrl("https://www.example.com")
+                        .status("su")
+                        .predictionId("Test ID")
+                        .member(member)
+                        .build()
+        );
+        Page<ImageAvatar> imageAvatarPage = new PageImpl<>(imageAvatarList, pageable, imageAvatarList.size());
+
+        // When
+        when(imageAvatarRepository.findByMemberEmail(email, pageable)).thenReturn(imageAvatarPage);
+
+        // Then
+        Page<ImageAvatarDto> result = memberService.getMyAvatar(email, pageable);
+        assertThat(result).isNotNull();
+        assertNotNull(result);
+        assertEquals(imageAvatarList.size(), result.getContent().size());
     }
 
     @Test

@@ -7,6 +7,7 @@ import com.createver.server.domain.image.service.ImageAvatarService;
 import com.createver.server.domain.image.service.ImageAvatarSseService;
 import com.createver.server.global.error.response.Response;
 import com.createver.server.global.util.aws.service.S3DownloadService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class ImageAvatarController {
     private final S3DownloadService s3DownloadService;
 
     @PostMapping
-    public Response<String> generateAvatar(@RequestBody AvatarPromptRequest request, Authentication authentication) {
+    public Response<String> generateAvatar(@RequestBody @Valid AvatarPromptRequest request, Authentication authentication) {
         String email = (authentication != null) ? authentication.getName() : null;
         String predictionId = imageAvatarService.generateAvatarImage(request, email);
         return Response.success(200, predictionId);

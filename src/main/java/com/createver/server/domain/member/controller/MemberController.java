@@ -1,7 +1,9 @@
 package com.createver.server.domain.member.controller;
 
 import com.createver.server.domain.image.dto.GalleryDto;
+import com.createver.server.domain.image.dto.ImageAvatarDto;
 import com.createver.server.domain.image.dto.response.GalleryResponse;
+import com.createver.server.domain.image.dto.response.ImageAvatarResponse;
 import com.createver.server.domain.member.dto.MemberDto;
 import com.createver.server.domain.member.dto.request.MemberDeleteRequest;
 import com.createver.server.domain.member.dto.request.MemberJoinRequest;
@@ -65,4 +67,9 @@ public class MemberController {
         return Response.success(galleryDtos.map(GalleryResponse::from));
     }
 
+    @GetMapping("/my-avatar")
+    public Response<Page<ImageAvatarResponse>> getMyAvatar(Authentication authentication, Pageable pageable){
+        Page<ImageAvatarDto> imageAvatarDtos = memberService.getMyAvatar(authentication.getName(), pageable);
+        return Response.success(imageAvatarDtos.map(ImageAvatarResponse::from));
+    }
 }
