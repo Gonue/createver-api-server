@@ -28,6 +28,8 @@
 - [설명](#설명)
   - [사용 모델](#사용-모델)
   - [이미지 생성 및 관리](#이미지-생성-및-관리)
+    - [프롬프트](#프롬프트)
+    - [프롬프트 + 이미지](#프롬프트--이미지)
     - [검색](#검색)
   - [음악 생성 및 관리](#음악-생성-및-관리)
   - [블로그](#블로그)
@@ -104,7 +106,7 @@
 
 ## E-R 다이어그램
 
-<img src="https://github.com/Gonue/mine/assets/109960034/111b587b-4ee0-49f5-a5de-c2dc98bdad0e">
+<img src="https://github.com/Gonue/createver-api-server/assets/109960034/0901f15c-a444-4a06-8231-19858dd81cfd">
 
 ---
 
@@ -135,6 +137,8 @@
 
 ### 이미지 생성 및 관리
 
+
+#### 프롬프트
 <p align="center">
 
 <img src="https://github.com/Gonue/mine/assets/109960034/3d368adf-7f1a-4118-9872-4c2c7918be04" width="400px" height="400px">
@@ -160,6 +164,23 @@
   - 관리 : 라이프 사이클을 지정하여 자주 사용하지 않는 이미지의 경우 좀 더 비용 효율적인 스토리지 계층(S3 Glacier)으로 자동 이동 됩니다.
 - 성능 최적화: 서버의 부하를 고려한 요청 제한을 두어 안정적인 시스템 운영 유지시키고, Querydsl을 활용하여 데이터베이스 쿼리를 최적화하고, 효율적인 데이터 접근 방식을 구현했습니다.
 
+
+<img src="https://github.com/Gonue/mine/assets/109960034/c088bed5-e18a-462e-b014-765e03055d72">
+[이미지 생성시 전체 동작 과정]
+
+#### 프롬프트 + 이미지
+
+<img src="https://github.com/Gonue/createver-api-server/assets/109960034/53242419-a58a-49c0-885a-ed266ad86c49" width="400px" height="400px">
+<img src="https://github.com/Gonue/createver-api-server/assets/109960034/228bf235-fa10-40e7-8b70-fcc9727e4dd2" width="400px" height="400px">
+
+주요 기능 및 특징
+- 맞춤형 이미지 생성: 사용자가 입력한 이미지 파일 및 텍스트 프롬프트를 기반으로 개인화된 이미지를 생성합니다.
+- 다양한 언어 지원: 한국어와 영어를 포함한 다양한 언어의 프롬프트 처리 및 번역 기능을 제공합니다.
+- 사용자 친화적 옵션 선택: 사용자가 간편하게 이미지 스타일과 형식을 선택할 수 있는 몇가지 옵션을 제공합니다.
+
+<img src="https://github.com/Gonue/createver-api-server/assets/109960034/4f023681-0551-40d8-aef6-a7f55331592f">
+[비동기 처리 과정]
+
 #### 검색
 
 <img src="https://github.com/Gonue/mine/assets/109960034/fff5d49a-9410-4d77-9368-915b93a828ac">
@@ -172,8 +193,6 @@
 - 프롬프트 기반 검색: 사용자가 입력한 프롬프트가 포함된 이미지를 검색합니다.
 - 성능 최적화: 이미지 리스트와 같이 데이터베이스 쿼리 최적화 및 효율적 데이터접근 방식을 구현했습니다.
 
-<img src="https://github.com/Gonue/mine/assets/109960034/c088bed5-e18a-462e-b014-765e03055d72">
-[이미지 생성시 전체 동작 과정]
 
 ### 음악 생성 및 관리
 
