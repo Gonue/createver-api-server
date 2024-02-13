@@ -51,12 +51,12 @@ public class SecurityConfig {
                         .requestMatchers("api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/member/**").hasAnyRole("USER", "ADMIN")
 
-//                        .requestMatchers(HttpMethod.POST, "/api/v1/image/upload/**").hasAnyRole("USER", "ADMIN")
 
                         .requestMatchers(HttpMethod.POST, "/api/v1/music", "/api/v1/music/create").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/music/*").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/music/*").hasAnyRole("USER", "ADMIN")
 
+                        .requestMatchers("/api/v1/banner/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/article/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/image/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/review/admin/**").hasRole("ADMIN")
