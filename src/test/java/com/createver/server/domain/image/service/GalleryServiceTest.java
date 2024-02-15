@@ -2,8 +2,10 @@ package com.createver.server.domain.image.service;
 
 import com.createver.server.domain.image.dto.GalleryDto;
 import com.createver.server.domain.image.entity.Gallery;
+import com.createver.server.domain.image.entity.ImageTag;
 import com.createver.server.domain.image.repository.gallery.GalleryRepository;
 import com.createver.server.domain.image.service.gallery.GalleryService;
+import com.createver.server.domain.member.entity.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 @DisplayName("Gallery Service 테스트")
@@ -54,6 +57,30 @@ class GalleryServiceTest {
                 1L, "test prompt", "url", 1, LocalDateTime.now(),
                 0L, 10, 5, 0, false
         );
+    }
+
+    @Test
+    void createGalleryTest() {
+        // Given
+        String prompt = "test prompt";
+        String s3Url = "url";
+        int option = 1;
+        List<ImageTag> tags = Arrays.asList();
+        Member member = Member.builder()
+                .email("test")
+                .build();
+        when(galleryRepository.save(any(Gallery.class))).thenReturn(gallery);
+        // When
+        Gallery result = galleryService.createGallery(prompt, s3Url, option, tags, member);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(prompt, result.getPrompt());
+        assertEquals(s3Url, result.getStorageUrl());
+        assertEquals(option, result.getOption());
+        assertEquals(tags, result.getTags());
+
+        verify(galleryRepository).save(any(Gallery.class));
     }
 
     @Test

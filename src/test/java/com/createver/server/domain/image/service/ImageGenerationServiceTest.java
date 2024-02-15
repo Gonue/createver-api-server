@@ -3,13 +3,15 @@ package com.createver.server.domain.image.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.createver.server.domain.image.dto.request.ImageGenerationRequest;
 import com.createver.server.domain.image.dto.request.PromptRequest;
 import com.createver.server.domain.image.dto.response.CustomGenerationResponse;
 import com.createver.server.domain.image.dto.response.ImageGenerationResponse;
 import com.createver.server.domain.image.entity.Gallery;
 import com.createver.server.domain.image.entity.ImageTag;
-import com.createver.server.domain.image.repository.gallery.GalleryRepository;
+import com.createver.server.domain.image.service.gallery.GalleryService;
 import com.createver.server.domain.image.service.gallery.ImageGenerationService;
+import com.createver.server.domain.image.service.gallery.OpenAiService;
 import com.createver.server.domain.image.service.tag.ImageTagService;
 import com.createver.server.domain.member.entity.Member;
 import com.createver.server.domain.member.repository.MemberRepository;
@@ -17,20 +19,15 @@ import com.createver.server.global.error.exception.BusinessLogicException;
 import com.createver.server.global.error.exception.ExceptionCode;
 import com.createver.server.global.util.aws.service.S3UploadService;
 import com.createver.server.global.util.ratelimit.RateLimiterManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @DisplayName("Image Generation Service 테스트")
@@ -41,108 +38,110 @@ class ImageGenerationServiceTest {
     private ImageGenerationService imageGenerationService;
 
     @Mock
-    private RestTemplate restTemplate;
+    private OpenAiService openAiService;
 
     @Mock
     private S3UploadService s3UploadService;
 
     @Mock
-    private GalleryRepository galleryRepository;
-
-    @Mock
     private MemberRepository memberRepository;
 
+    @Mock
+    private GalleryService galleryService;
     @Mock
     private ImageTagService imageTagService;
 
     @Mock
     private RateLimiterManager rateLimiterManager;
 
-    @DisplayName("기본 이미지 생성 테스트")
+    @BeforeEach
+    void setUp() {
+    }
+
     @Test
+    @DisplayName("기본 이미지 생성 테스트")
     void testMakeImages() {
-        // Given
         String email = "test@test.com";
-        PromptRequest promptRequest = new PromptRequest("test", 1);
-
-        Member member = Member.builder()
-                .email(email)
-                .nickName("nick")
-                .password("password").build();
-
-        Gallery gallery = Gallery.builder()
-                .prompt("prompt")
-                .storageUrl("s3Url")
-                .option(1).build();
-
-        ImageTag imageTag = ImageTag.builder()
-                .name("tag")
-                .build();
+        PromptRequest promptRequest = new PromptRequest("test prompt", 1);
+        Member member = Member.builder().email(email).build();
+        ImageTag imageTag = ImageTag.builder().build();
 
         ImageGenerationResponse.ImageURL imageURL = new ImageGenerationResponse.ImageURL();
-        imageURL.setB64_json("someBase64EncodedString");
+        String originalInput = "Test String";
+        String encodedString = Base64.getEncoder().encodeToString(originalInput.getBytes());
+        imageURL.setB64_json(encodedString);
         ImageGenerationResponse imageGenerationResponse = new ImageGenerationResponse();
-        imageGenerationResponse.setData(Arrays.asList(imageURL, imageURL, imageURL, imageURL)); // Mocking 4 images
+        imageGenerationResponse.setData(Arrays.asList(imageURL));
 
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
+        when(openAiService.generateImage(any(ImageGenerationRequest.class))).thenReturn(imageGenerationResponse);
+        when(s3UploadService.uploadAndReturnCloudFrontUrl(any(byte[].class), anyString())).thenReturn("s3Url");
+        when(imageTagService.getOrCreateTags(any(String[].class))).thenReturn(Collections.singletonList(imageTag));
         when(rateLimiterManager.allowRequest(email)).thenReturn(true);
-        when(restTemplate.postForEntity(anyString(), any(), eq(ImageGenerationResponse.class)))
-                .thenReturn(new ResponseEntity<>(imageGenerationResponse, HttpStatus.OK));
-        when(s3UploadService.upload(any(), anyString())).thenReturn("s3Url");
-        when(galleryRepository.save(any(Gallery.class))).thenReturn(gallery);
-        when(imageTagService.getOrCreateTags(any())).thenReturn(Arrays.asList(imageTag));
+        when(galleryService.createGallery(anyString(), anyString(), anyInt(), anyList(), any(Member.class)))
+                .thenReturn(Gallery.builder().prompt(promptRequest.getPrompt()).storageUrl("s3Url").option(promptRequest.getOption()).tags(Arrays.asList(imageTag)).member(member).build());
 
-        // When
-        List<CustomGenerationResponse> result = imageGenerationService.makeImages(promptRequest, email);
+        List<CustomGenerationResponse> responses = imageGenerationService.makeImages(promptRequest, email);
 
-        // Then
-        assertNotNull(result);
-        assertFalse(result.isEmpty());
-        assertEquals(4, result.size());
-        assertEquals("s3Url", result.get(0).getS3Url());
+        assertNotNull(responses);
+        assertEquals(1, responses.size());
+        assertEquals("s3Url", responses.get(0).getS3Url());
     }
 
     @Test
     @DisplayName("단순 이미지 생성 테스트")
     void testSimpleImageMake() {
-        // Given
         String prompt = "test prompt";
-        String translatedPrompt = "translated prompt";
+
+        String encodedString = Base64.getEncoder().encodeToString("test image data".getBytes());
         ImageGenerationResponse.ImageURL imageURL = new ImageGenerationResponse.ImageURL();
-        imageURL.setB64_json("someBase64EncodedString");
+        imageURL.setB64_json(encodedString);
         ImageGenerationResponse imageGenerationResponse = new ImageGenerationResponse();
-        imageGenerationResponse.setData(Arrays.asList(imageURL, imageURL)); // Mocking 2 images
+        imageGenerationResponse.setData(Arrays.asList(imageURL, imageURL));
 
-        when(restTemplate.postForEntity(anyString(), any(), eq(ImageGenerationResponse.class)))
-                .thenReturn(new ResponseEntity<>(imageGenerationResponse, HttpStatus.OK));
-        when(s3UploadService.uploadAndReturnCloudFrontUrl(any(), anyString())).thenReturn("s3Url");
+        when(openAiService.generateImage(any(ImageGenerationRequest.class))).thenReturn(imageGenerationResponse);
+        when(s3UploadService.uploadAndReturnCloudFrontUrl(any(byte[].class), eq("image/png"))).thenReturn("s3Url");
 
-        // When
-        List<String> result = imageGenerationService.simpleImageMake(prompt);
+        List<String> s3Urls = imageGenerationService.simpleImageMake(prompt);
 
-        // Then
-        assertNotNull(result);
-        assertFalse(result.isEmpty());
-        assertEquals(2, result.size());
-        assertEquals("s3Url", result.get(0));
-        assertEquals("s3Url", result.get(1));
+        assertNotNull(s3Urls);
+        assertEquals(2, s3Urls.size());
+        assertTrue(s3Urls.stream().allMatch(url -> url.equals("s3Url")));
     }
 
-    @DisplayName("이미지 생성 요청제한 테스트")
     @Test
+    @DisplayName("이미지 생성 요청 제한 테스트")
     void testMakeImages_rateLimitExceeded() {
-        // Given
         String email = "test@test.com";
-        PromptRequest promptRequest = new PromptRequest("test", 1);
+        PromptRequest promptRequest = new PromptRequest("test prompt", 1);
 
-        Mockito.when(rateLimiterManager.allowRequest(email)).thenReturn(false);
+        when(rateLimiterManager.allowRequest(any(String.class))).thenReturn(false);
 
-        BusinessLogicException thrown = assertThrows(
+        BusinessLogicException exception = assertThrows(
                 BusinessLogicException.class,
-                () -> imageGenerationService.makeImages(promptRequest, email),
-                "Expected makeImages() to throw, but it didn't"
+                () -> imageGenerationService.makeImages(promptRequest, email)
         );
 
-        assertEquals(ExceptionCode.RATE_LIMIT_EXCEEDED, thrown.getExceptionCode());
+        assertEquals(ExceptionCode.RATE_LIMIT_EXCEEDED, exception.getExceptionCode());
+    }
+
+    @Test
+    @DisplayName("OpenAI 서비스 호출 실패 시 OPENAI_API_ERROR 예외 발생")
+    void testImageGenerationFailure() {
+        // Given
+        PromptRequest promptRequest = new PromptRequest("test prompt", 1);
+        String email = "user@example.com";
+
+        when(rateLimiterManager.allowRequest(email)).thenReturn(true);
+        doThrow(new BusinessLogicException(ExceptionCode.OPENAI_API_ERROR, "OpenAI API 호출 실패"))
+                .when(openAiService).generateImage(any(ImageGenerationRequest.class));
+
+        // When & Then
+        BusinessLogicException exception = assertThrows(
+                BusinessLogicException.class,
+                () -> imageGenerationService.makeImages(promptRequest, email)
+        );
+
+        assertEquals(ExceptionCode.OPENAI_API_ERROR, exception.getExceptionCode());
     }
 }
