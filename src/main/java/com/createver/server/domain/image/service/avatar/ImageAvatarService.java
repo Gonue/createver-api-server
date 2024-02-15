@@ -1,4 +1,4 @@
-package com.createver.server.domain.image.service;
+package com.createver.server.domain.image.service.avatar;
 
 import com.createver.server.domain.image.dto.request.AvatarPromptRequest;
 import com.createver.server.domain.image.dto.request.ImageAvatarRequest;

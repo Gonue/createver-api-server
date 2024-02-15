@@ -2,9 +2,9 @@ package com.createver.server.domain.image.controller;
 
 import com.createver.server.domain.image.dto.request.AvatarPromptRequest;
 import com.createver.server.domain.image.dto.response.ImageAvatarWebhookResponse;
-import com.createver.server.domain.image.service.ImageAvatarProcessingService;
-import com.createver.server.domain.image.service.ImageAvatarService;
-import com.createver.server.domain.image.service.ImageAvatarSseService;
+import com.createver.server.domain.image.service.avatar.ImageAvatarProcessingService;
+import com.createver.server.domain.image.service.avatar.ImageAvatarService;
+import com.createver.server.domain.image.service.avatar.ImageAvatarSseService;
 import com.createver.server.global.error.response.Response;
 import com.createver.server.global.util.aws.service.S3DownloadService;
 import jakarta.validation.Valid;

@@ -4,7 +4,7 @@ package com.createver.server.domain.image.controller;
 import com.createver.server.domain.image.dto.ImageCommentDto;
 import com.createver.server.domain.image.dto.request.ImageCommentRequest;
 import com.createver.server.domain.image.dto.response.ImageCommentResponse;
-import com.createver.server.domain.image.service.ImageCommentService;
+import com.createver.server.domain.image.service.comment.ImageCommentService;
 import com.createver.server.global.error.response.Response;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

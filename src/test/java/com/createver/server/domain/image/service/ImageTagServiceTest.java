@@ -3,6 +3,7 @@ package com.createver.server.domain.image.service;
 import com.createver.server.domain.image.dto.ImageTagDto;
 import com.createver.server.domain.image.entity.ImageTag;
 import com.createver.server.domain.image.repository.tag.ImageTagRepository;
+import com.createver.server.domain.image.service.tag.ImageTagService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

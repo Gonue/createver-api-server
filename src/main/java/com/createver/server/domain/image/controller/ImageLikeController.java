@@ -1,6 +1,6 @@
 package com.createver.server.domain.image.controller;
 
-import com.createver.server.domain.image.service.ImageLikeService;
+import com.createver.server.domain.image.service.like.ImageLikeService;
 import com.createver.server.global.error.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

@@ -1,7 +1,7 @@
 package com.createver.server.domain.image.controller;
 
 import com.createver.server.domain.image.entity.ImageView;
-import com.createver.server.domain.image.service.ImageViewService;
+import com.createver.server.domain.image.service.view.ImageViewService;
 import com.createver.server.global.error.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

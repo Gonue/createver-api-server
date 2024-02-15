@@ -3,6 +3,8 @@ package com.createver.server.domain.image.service;
 import com.createver.server.domain.image.dto.response.ImageAvatarWebhookResponse;
 import com.createver.server.domain.image.entity.ImageAvatar;
 import com.createver.server.domain.image.repository.avatar.ImageAvatarRepository;
+import com.createver.server.domain.image.service.avatar.ImageAvatarProcessingService;
+import com.createver.server.domain.image.service.avatar.ImageAvatarSseService;
 import com.createver.server.global.util.aws.service.S3UploadService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +17,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 

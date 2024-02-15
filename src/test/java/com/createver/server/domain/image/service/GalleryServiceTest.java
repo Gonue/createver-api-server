@@ -3,6 +3,7 @@ package com.createver.server.domain.image.service;
 import com.createver.server.domain.image.dto.GalleryDto;
 import com.createver.server.domain.image.entity.Gallery;
 import com.createver.server.domain.image.repository.gallery.GalleryRepository;
+import com.createver.server.domain.image.service.gallery.GalleryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

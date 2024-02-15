@@ -1,7 +1,7 @@
 package com.createver.server.domain.image.controller;
 
 import com.createver.server.domain.image.dto.GalleryDto;
-import com.createver.server.domain.image.service.GalleryService;
+import com.createver.server.domain.image.service.gallery.GalleryService;
 import com.createver.server.global.config.SecurityConfig;
 import com.createver.server.global.user.WithMockCustomMember;
 import com.createver.server.global.util.aws.service.S3DownloadService;

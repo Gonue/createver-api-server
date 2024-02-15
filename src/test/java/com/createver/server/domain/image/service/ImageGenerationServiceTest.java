@@ -9,6 +9,8 @@ import com.createver.server.domain.image.dto.response.ImageGenerationResponse;
 import com.createver.server.domain.image.entity.Gallery;
 import com.createver.server.domain.image.entity.ImageTag;
 import com.createver.server.domain.image.repository.gallery.GalleryRepository;
+import com.createver.server.domain.image.service.gallery.ImageGenerationService;
+import com.createver.server.domain.image.service.tag.ImageTagService;
 import com.createver.server.domain.member.entity.Member;
 import com.createver.server.domain.member.repository.MemberRepository;
 import com.createver.server.global.error.exception.BusinessLogicException;

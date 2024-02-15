@@ -1,7 +1,7 @@
 package com.createver.server.domain.image.controller;
 
 import com.createver.server.domain.image.dto.response.GalleryResponse;
-import com.createver.server.domain.image.service.GalleryService;
+import com.createver.server.domain.image.service.gallery.GalleryService;
 import com.createver.server.global.error.response.Response;
 import com.createver.server.global.util.aws.service.S3DownloadService;
 import lombok.RequiredArgsConstructor;

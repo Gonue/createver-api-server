@@ -1,6 +1,6 @@
 package com.createver.server.domain.image.controller;
 
-import com.createver.server.domain.image.service.ImageLikeService;
+import com.createver.server.domain.image.service.like.ImageLikeService;
 import com.createver.server.global.config.SecurityConfig;
 import com.createver.server.global.user.WithMockCustomMember;
 import org.junit.jupiter.api.DisplayName;
