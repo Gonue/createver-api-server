@@ -3,6 +3,7 @@ package com.createver.server.domain.image.service;
 import com.createver.server.domain.image.dto.request.AvatarPromptRequest;
 import com.createver.server.domain.image.entity.ImageAvatar;
 import com.createver.server.domain.image.repository.avatar.ImageAvatarRepository;
+import com.createver.server.domain.image.service.avatar.ImageAvatarService;
 import com.createver.server.domain.member.entity.Member;
 import com.createver.server.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;

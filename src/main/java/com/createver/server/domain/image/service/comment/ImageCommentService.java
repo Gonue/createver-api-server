@@ -1,4 +1,4 @@
-package com.createver.server.domain.image.service;
+package com.createver.server.domain.image.service.comment;
 
 import com.createver.server.domain.image.dto.ImageCommentDto;
 import com.createver.server.domain.image.entity.Gallery;

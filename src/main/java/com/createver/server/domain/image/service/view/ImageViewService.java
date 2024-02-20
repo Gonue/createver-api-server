@@ -1,4 +1,4 @@
-package com.createver.server.domain.image.service;
+package com.createver.server.domain.image.service.view;
 
 import com.createver.server.domain.image.entity.Gallery;
 import com.createver.server.domain.image.entity.ImageView;

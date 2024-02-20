@@ -1,7 +1,7 @@
 package com.createver.server.domain.image.controller;
 
 import com.createver.server.domain.image.dto.ImageTagDto;
-import com.createver.server.domain.image.service.ImageTagService;
+import com.createver.server.domain.image.service.tag.ImageTagService;
 import com.createver.server.global.error.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

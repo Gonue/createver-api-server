@@ -7,6 +7,7 @@ import com.createver.server.domain.image.entity.Gallery;
 import com.createver.server.domain.image.entity.ImageLike;
 import com.createver.server.domain.image.repository.gallery.GalleryRepository;
 import com.createver.server.domain.image.repository.like.ImageLikeRepository;
+import com.createver.server.domain.image.service.like.ImageLikeService;
 import com.createver.server.domain.member.entity.Member;
 import com.createver.server.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;

@@ -4,6 +4,7 @@ import com.createver.server.domain.image.entity.Gallery;
 import com.createver.server.domain.image.entity.ImageView;
 import com.createver.server.domain.image.repository.gallery.GalleryRepository;
 import com.createver.server.domain.image.repository.view.ImageViewRepository;
+import com.createver.server.domain.image.service.view.ImageViewService;
 import com.createver.server.domain.member.entity.Member;
 import com.createver.server.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;

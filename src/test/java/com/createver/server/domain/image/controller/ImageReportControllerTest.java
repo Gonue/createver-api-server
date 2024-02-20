@@ -1,7 +1,7 @@
 package com.createver.server.domain.image.controller;
 
 import com.createver.server.domain.image.dto.request.ImageReportRequest;
-import com.createver.server.domain.image.service.ImageReportService;
+import com.createver.server.domain.image.service.report.ImageReportService;
 import com.createver.server.global.config.SecurityConfig;
 import com.createver.server.global.user.WithMockCustomMember;
 import com.fasterxml.jackson.databind.ObjectMapper;

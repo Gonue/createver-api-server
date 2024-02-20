@@ -2,7 +2,7 @@ package com.createver.server.domain.image.controller;
 
 import com.createver.server.domain.image.dto.ImageCommentDto;
 import com.createver.server.domain.image.dto.request.ImageCommentRequest;
-import com.createver.server.domain.image.service.ImageCommentService;
+import com.createver.server.domain.image.service.comment.ImageCommentService;
 import com.createver.server.domain.member.dto.MemberDto;
 import com.createver.server.domain.member.entity.PlanType;
 import com.createver.server.global.config.SecurityConfig;

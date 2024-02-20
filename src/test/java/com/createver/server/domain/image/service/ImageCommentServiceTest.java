@@ -5,6 +5,7 @@ import com.createver.server.domain.image.entity.Gallery;
 import com.createver.server.domain.image.entity.ImageComment;
 import com.createver.server.domain.image.repository.gallery.GalleryRepository;
 import com.createver.server.domain.image.repository.comment.ImageCommentRepository;
+import com.createver.server.domain.image.service.comment.ImageCommentService;
 import com.createver.server.domain.member.entity.Member;
 import com.createver.server.domain.member.repository.MemberRepository;
 import com.createver.server.global.error.exception.BusinessLogicException;

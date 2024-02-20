@@ -2,7 +2,7 @@ package com.createver.server.domain.image.controller;
 
 
 import com.createver.server.domain.image.dto.request.ImageReportRequest;
-import com.createver.server.domain.image.service.ImageReportService;
+import com.createver.server.domain.image.service.report.ImageReportService;
 import com.createver.server.global.error.response.Response;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

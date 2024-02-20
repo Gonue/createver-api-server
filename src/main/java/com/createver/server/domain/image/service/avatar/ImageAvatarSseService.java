@@ -1,4 +1,4 @@
-package com.createver.server.domain.image.service;
+package com.createver.server.domain.image.service.avatar;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
