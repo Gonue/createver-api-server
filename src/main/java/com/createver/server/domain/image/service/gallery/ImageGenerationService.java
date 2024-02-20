@@ -147,7 +147,9 @@ public class ImageGenerationService {
     }
 
     private String getNextImageSize() {
-        return isLargeSizeNext ? "1024x1792" : "1024x1024";
+        String nextSize = isLargeSizeNext ? "1024x1792" : "1024x1024";
+        isLargeSizeNext = !isLargeSizeNext;
+        return nextSize;
     }
 
     private boolean isLargeSizeNext = true;

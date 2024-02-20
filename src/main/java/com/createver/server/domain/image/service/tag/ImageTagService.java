@@ -22,9 +22,11 @@ public class ImageTagService {
     @Transactional
     public List<ImageTag> getOrCreateTags(String[] tagNames) {
 
-        Set<String> tagNameSet = new HashSet<>(Arrays.asList(tagNames));
+        Set<String> tagNameSet = Arrays.stream(tagNames)
+                .map(tagName -> tagName.replace(",", "").replace(".", "")) // 쉼표와 마침표 제거
+                .collect(Collectors.toSet());
 
-        List<ImageTag> existingTags = imageTagRepository.findByNameIn(tagNameSet);
+        List<ImageTag> existingTags = new ArrayList<>(imageTagRepository.findByNameIn(tagNameSet));
         Map<String, ImageTag> tagMap = existingTags.stream()
                 .collect(Collectors.toMap(ImageTag::getName, Function.identity()));
 

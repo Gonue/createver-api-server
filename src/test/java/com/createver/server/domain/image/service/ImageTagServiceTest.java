@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.*;
 
@@ -75,5 +74,28 @@ class ImageTagServiceTest {
         assertNotNull(result);
         assertFalse(result.isEmpty());
         verify(imageTagRepository).findAll(pageable);
+    }
+
+    @DisplayName("쉼표와 마침표 포함 태그 생성")
+    @Test
+    void getOrCreateTagsWithCommaAndPeriodTest() {
+        // Given
+        String[] tagNames = {"Test,", "Tag.", "Hello,World."};
+        List<ImageTag> existingTags = Collections.emptyList();
+
+        when(imageTagRepository.findByNameIn(anySet())).thenReturn(new ArrayList<>(existingTags));
+        when(imageTagRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // When
+        List<ImageTag> tags = imageTagService.getOrCreateTags(tagNames);
+
+        // Then
+        assertNotNull(tags);
+        assertEquals(3, tags.size());
+        assertTrue(tags.stream().anyMatch(tag -> "Test".equals(tag.getName())));
+        assertTrue(tags.stream().anyMatch(tag -> "Tag".equals(tag.getName())));
+        assertTrue(tags.stream().anyMatch(tag -> "HelloWorld".equals(tag.getName())));
+        verify(imageTagRepository).findByNameIn(anySet());
+        verify(imageTagRepository, times(1)).saveAll(anyList());
     }
 }
