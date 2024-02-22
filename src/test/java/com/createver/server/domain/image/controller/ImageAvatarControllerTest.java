@@ -3,7 +3,7 @@ package com.createver.server.domain.image.controller;
 import com.createver.server.domain.image.dto.request.AvatarPromptRequest;
 import com.createver.server.domain.image.dto.response.ImageAvatarWebhookResponse;
 import com.createver.server.domain.image.service.avatar.ImageAvatarProcessingService;
-import com.createver.server.domain.image.service.avatar.ImageAvatarService;
+import com.createver.server.domain.image.service.avatar.ImageAvatarGenerationService;
 import com.createver.server.domain.image.service.avatar.ImageAvatarSseService;
 import com.createver.server.global.util.aws.service.S3DownloadService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,7 +38,7 @@ class ImageAvatarControllerTest {
     private ImageAvatarController imageAvatarController;
 
     @Mock
-    private ImageAvatarService imageAvatarService;
+    private ImageAvatarGenerationService imageAvatarGenerationService;
 
     @Mock
     private ImageAvatarProcessingService imageAvatarProcessingService;
@@ -73,7 +73,7 @@ class ImageAvatarControllerTest {
                 .build();
 
         when(authentication.getName()).thenReturn("test@test.com");
-        when(imageAvatarService.generateAvatarImage(any(), any())).thenReturn("predictionId");
+        when(imageAvatarGenerationService.generateAvatarImage(any(), any())).thenReturn("predictionId");
 
         mockMvc.perform(post("/api/v1/image/avatar")
                 .contentType("application/json")

@@ -1,4 +1,4 @@
-package com.createver.server.domain.image.service.gallery;
+package com.createver.server.global.client;
 
 import com.createver.server.domain.image.dto.request.ImageGenerationRequest;
 import com.createver.server.domain.image.dto.response.ImageGenerationResponse;
@@ -6,19 +6,21 @@ import com.createver.server.global.config.OpenAiConfig;
 import com.createver.server.global.error.exception.BusinessLogicException;
 import com.createver.server.global.error.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-@Service
+@Component
 @RequiredArgsConstructor
-public class OpenAiService {
+@Slf4j
+public class OpenAiApiClient {
 
     private final RestTemplate restTemplate;
 
@@ -39,12 +41,14 @@ public class OpenAiService {
                     ImageGenerationResponse.class);
 
             if (response.getBody() == null) {
-                throw new BusinessLogicException(ExceptionCode.GENERAL_ERROR, "OpenAI API No Response");
+                log.error("OpenAi API did not return 'body'");
+                throw new BusinessLogicException(ExceptionCode.OPENAI_NO_RESPONSE, "OpenAI API No Response");
             }
 
             return response.getBody();
         } catch (HttpClientErrorException | HttpServerErrorException e) {
-            throw new BusinessLogicException(ExceptionCode.OPENAI_API_ERROR, "OpenAI API 호출 실패");
+            log.error("Error calling OpenAI API: {}", e.getMessage());
+            throw new BusinessLogicException(ExceptionCode.OPENAI_API_ERROR);
         }
     }
 }

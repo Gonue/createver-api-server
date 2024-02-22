@@ -1,10 +1,8 @@
-package com.createver.server.domain.image.service;
+package com.createver.server.domain.image.service.avatar;
 
 import com.createver.server.domain.image.dto.response.ImageAvatarWebhookResponse;
 import com.createver.server.domain.image.entity.ImageAvatar;
 import com.createver.server.domain.image.repository.avatar.ImageAvatarRepository;
-import com.createver.server.domain.image.service.avatar.ImageAvatarProcessingService;
-import com.createver.server.domain.image.service.avatar.ImageAvatarSseService;
 import com.createver.server.global.util.aws.service.S3UploadService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

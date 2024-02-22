@@ -1,6 +1,5 @@
-package com.createver.server.domain.image.service;
+package com.createver.server.domain.image.service.avatar;
 
-import com.createver.server.domain.image.service.avatar.ImageAvatarSseService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,8 +1,6 @@
 package com.createver.server.global.config;
 
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
 public class OpenAiConfig {
     public static final String AUTHORIZATION = "Authorization";
     public static final String BEARER = "Bearer ";
@@ -15,4 +13,7 @@ public class OpenAiConfig {
     public static final String MODEL = "dall-e-3";
     public static final String MODEL2 = "dall-e-2";
 
+    private OpenAiConfig() {
+        throw new UnsupportedOperationException();
+    }
 }
