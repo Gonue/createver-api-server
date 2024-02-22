@@ -11,7 +11,7 @@ import com.createver.server.domain.image.entity.Gallery;
 import com.createver.server.domain.image.entity.ImageTag;
 import com.createver.server.domain.image.service.gallery.GalleryService;
 import com.createver.server.domain.image.service.gallery.ImageGenerationService;
-import com.createver.server.domain.image.service.gallery.OpenAiService;
+import com.createver.server.global.client.OpenAiApiClient;
 import com.createver.server.domain.image.service.tag.ImageTagService;
 import com.createver.server.domain.member.entity.Member;
 import com.createver.server.domain.member.repository.MemberRepository;
@@ -38,7 +38,7 @@ class ImageGenerationServiceTest {
     private ImageGenerationService imageGenerationService;
 
     @Mock
-    private OpenAiService openAiService;
+    private OpenAiApiClient openAiApiClient;
 
     @Mock
     private S3UploadService s3UploadService;
@@ -74,7 +74,7 @@ class ImageGenerationServiceTest {
         imageGenerationResponse.setData(Arrays.asList(imageURL));
 
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
-        when(openAiService.generateImage(any(ImageGenerationRequest.class))).thenReturn(imageGenerationResponse);
+        when(openAiApiClient.generateImage(any(ImageGenerationRequest.class))).thenReturn(imageGenerationResponse);
         when(s3UploadService.uploadAndReturnCloudFrontUrl(any(byte[].class), anyString())).thenReturn("s3Url");
         when(imageTagService.getOrCreateTags(any(String[].class))).thenReturn(Collections.singletonList(imageTag));
         when(rateLimiterManager.allowRequest(email)).thenReturn(true);
@@ -99,7 +99,7 @@ class ImageGenerationServiceTest {
         ImageGenerationResponse imageGenerationResponse = new ImageGenerationResponse();
         imageGenerationResponse.setData(Arrays.asList(imageURL, imageURL));
 
-        when(openAiService.generateImage(any(ImageGenerationRequest.class))).thenReturn(imageGenerationResponse);
+        when(openAiApiClient.generateImage(any(ImageGenerationRequest.class))).thenReturn(imageGenerationResponse);
         when(s3UploadService.uploadAndReturnCloudFrontUrl(any(byte[].class), eq("image/png"))).thenReturn("s3Url");
 
         List<String> s3Urls = imageGenerationService.simpleImageMake(prompt);
@@ -134,7 +134,7 @@ class ImageGenerationServiceTest {
 
         when(rateLimiterManager.allowRequest(email)).thenReturn(true);
         doThrow(new BusinessLogicException(ExceptionCode.OPENAI_API_ERROR, "OpenAI API 호출 실패"))
-                .when(openAiService).generateImage(any(ImageGenerationRequest.class));
+                .when(openAiApiClient).generateImage(any(ImageGenerationRequest.class));
 
         // When & Then
         BusinessLogicException exception = assertThrows(

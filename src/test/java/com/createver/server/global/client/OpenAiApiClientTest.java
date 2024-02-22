@@ -2,10 +2,10 @@ package com.createver.server.domain.image.service.gallery;
 
 import com.createver.server.domain.image.dto.request.ImageGenerationRequest;
 import com.createver.server.domain.image.dto.response.ImageGenerationResponse;
+import com.createver.server.global.client.OpenAiApiClient;
 import com.createver.server.global.config.OpenAiConfig;
 import com.createver.server.global.error.exception.BusinessLogicException;
 import com.createver.server.global.error.exception.ExceptionCode;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +29,7 @@ class OpenAiServiceTest {
     private RestTemplate restTemplate;
 
     @InjectMocks
-    private OpenAiService openAiService;
+    private OpenAiApiClient openAiApiClient;
 
     @Test
     void generateImageSuccess() {
@@ -46,7 +46,7 @@ class OpenAiServiceTest {
                 .thenReturn(responseEntity);
 
         // When
-        ImageGenerationResponse actualResponse = openAiService.generateImage(request);
+        ImageGenerationResponse actualResponse = openAiApiClient.generateImage(request);
 
         // Then
         assertEquals(expectedResponse, actualResponse);
@@ -60,7 +60,7 @@ class OpenAiServiceTest {
                 .thenThrow(new BusinessLogicException(ExceptionCode.OPENAI_API_ERROR, "OpenAI API 호출 실패"));
 
         // When & Then
-        assertThrows(BusinessLogicException.class, () -> openAiService.generateImage(request));
+        assertThrows(BusinessLogicException.class, () -> openAiApiClient.generateImage(request));
     }
 
     @Test
@@ -71,7 +71,7 @@ class OpenAiServiceTest {
                 .thenThrow(HttpClientErrorException.class);
 
         // When & Then
-        assertThrows(BusinessLogicException.class, () -> openAiService.generateImage(request));
+        assertThrows(BusinessLogicException.class, () -> openAiApiClient.generateImage(request));
     }
 
 
