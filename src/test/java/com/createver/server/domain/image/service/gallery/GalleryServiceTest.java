@@ -1,10 +1,9 @@
-package com.createver.server.domain.image.service;
+package com.createver.server.domain.image.service.gallery;
 
 import com.createver.server.domain.image.dto.GalleryDto;
 import com.createver.server.domain.image.entity.Gallery;
 import com.createver.server.domain.image.entity.ImageTag;
 import com.createver.server.domain.image.repository.gallery.GalleryRepository;
-import com.createver.server.domain.image.service.gallery.GalleryService;
 import com.createver.server.domain.member.entity.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,4 +1,4 @@
-package com.createver.server.domain.image.service;
+package com.createver.server.domain.image.service.like;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

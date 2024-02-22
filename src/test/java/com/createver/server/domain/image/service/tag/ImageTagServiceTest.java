@@ -1,4 +1,4 @@
-package com.createver.server.domain.image.service;
+package com.createver.server.domain.image.service.tag;
 
 import com.createver.server.domain.image.dto.ImageTagDto;
 import com.createver.server.domain.image.entity.ImageTag;

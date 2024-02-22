@@ -1,4 +1,4 @@
-package com.createver.server.domain.image.service;
+package com.createver.server.domain.image.service.gallery;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -9,8 +9,6 @@ import com.createver.server.domain.image.dto.response.CustomGenerationResponse;
 import com.createver.server.domain.image.dto.response.ImageGenerationResponse;
 import com.createver.server.domain.image.entity.Gallery;
 import com.createver.server.domain.image.entity.ImageTag;
-import com.createver.server.domain.image.service.gallery.GalleryService;
-import com.createver.server.domain.image.service.gallery.ImageGenerationService;
 import com.createver.server.global.client.OpenAiApiClient;
 import com.createver.server.domain.image.service.tag.ImageTagService;
 import com.createver.server.domain.member.entity.Member;
@@ -19,6 +17,7 @@ import com.createver.server.global.error.exception.BusinessLogicException;
 import com.createver.server.global.error.exception.ExceptionCode;
 import com.createver.server.global.util.aws.service.S3UploadService;
 import com.createver.server.global.util.ratelimit.RateLimiterManager;
+import com.createver.server.global.util.translate.service.TranslateService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +41,8 @@ class ImageGenerationServiceTest {
 
     @Mock
     private S3UploadService s3UploadService;
-
+    @Mock
+    private TranslateService translateService;
     @Mock
     private MemberRepository memberRepository;
 
@@ -101,6 +101,7 @@ class ImageGenerationServiceTest {
 
         when(openAiApiClient.generateImage(any(ImageGenerationRequest.class))).thenReturn(imageGenerationResponse);
         when(s3UploadService.uploadAndReturnCloudFrontUrl(any(byte[].class), eq("image/png"))).thenReturn("s3Url");
+        when(translateService.translateIfKorean(anyString())).thenReturn(prompt);
 
         List<String> s3Urls = imageGenerationService.simpleImageMake(prompt);
 

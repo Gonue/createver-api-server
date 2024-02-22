@@ -1,4 +1,4 @@
-package com.createver.server.domain.image.service;
+package com.createver.server.domain.image.service.report;
 
 import com.createver.server.domain.image.entity.Gallery;
 import com.createver.server.domain.image.entity.ImageReport;
