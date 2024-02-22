@@ -11,13 +11,13 @@ import com.createver.server.domain.image.entity.ImageTag;
 import com.createver.server.domain.image.service.tag.ImageTagService;
 import com.createver.server.domain.member.entity.Member;
 import com.createver.server.domain.member.repository.MemberRepository;
+import com.createver.server.global.client.OpenAiApiClient;
 import com.createver.server.global.config.OpenAiConfig;
 import com.createver.server.global.error.exception.BusinessLogicException;
 import com.createver.server.global.error.exception.ExceptionCode;
 import com.createver.server.global.util.aws.service.S3UploadService;
-import com.createver.server.global.util.translate.LanguageDiscriminationUtils;
 import com.createver.server.global.util.ratelimit.RateLimiterManager;
-import com.createver.server.global.util.translate.Translate;
+import com.createver.server.global.util.translate.service.TranslateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,13 +32,13 @@ import java.util.List;
 @Slf4j
 public class ImageGenerationService {
 
-    private final OpenAiService openAiService;
+    private final OpenAiApiClient openAiApiClient;
     private final S3UploadService s3UploadService;
     private final GalleryService galleryService;
     private final MemberRepository memberRepository;
     private final ImageTagService imageTagService;
     private final RateLimiterManager rateLimiterManager;
-    private final Translate translate;
+    private final TranslateService translateService;
 
 
     /**
@@ -50,7 +50,7 @@ public class ImageGenerationService {
      */
     public List<CustomGenerationResponse> makeImages(PromptRequest promptRequest, String email) {
         validateRateLimit(email);
-        String prompt = getTranslatedPrompt(promptRequest.getPrompt());
+        String prompt = translateService.translateIfKorean(promptRequest.getPrompt());
         List<ImageGenerationResponse.ImageURL> imageUrls = generateImages(
                 prompt,
                 promptRequest.getOption(),
@@ -68,7 +68,7 @@ public class ImageGenerationService {
      * @return 생성된 이미지의 S3 URL 리스트
      */
     public List<String> simpleImageMake(String prompt) {
-        String translatedPrompt = getTranslatedPrompt(prompt);
+        String translatedPrompt = translateService.translateIfKorean(prompt);
         List<ImageGenerationResponse.ImageURL> imageUrls = generateImages(
                 translatedPrompt,
                 0,
@@ -85,10 +85,6 @@ public class ImageGenerationService {
         }
     }
 
-    private String getTranslatedPrompt(String prompt) {
-        return LanguageDiscriminationUtils.translateIfKorean(prompt, translate);
-    }
-
     private List<ImageGenerationResponse.ImageURL> generateImages(String prompt, int option, String model, int imageCount, String imageSize) {
         try {
             String modifiedPrompt = modifyPromptBasedOnOption(prompt, option);
@@ -99,7 +95,7 @@ public class ImageGenerationService {
                     .size(imageSize)
                     .response_format(OpenAiConfig.RESPONSE_FORMAT)
                     .build();
-            return openAiService.generateImage(request).getData();
+            return openAiApiClient.generateImage(request).getData();
         } catch (Exception e) {
             log.error("이미지 생성 실패: {}", e.getMessage());
             throw new BusinessLogicException(ExceptionCode.OPENAI_API_ERROR, "Image generation failed: " + e.getMessage());

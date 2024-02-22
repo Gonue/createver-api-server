@@ -3,7 +3,7 @@ package com.createver.server.domain.image.controller;
 import com.createver.server.domain.image.dto.request.AvatarPromptRequest;
 import com.createver.server.domain.image.dto.response.ImageAvatarWebhookResponse;
 import com.createver.server.domain.image.service.avatar.ImageAvatarProcessingService;
-import com.createver.server.domain.image.service.avatar.ImageAvatarService;
+import com.createver.server.domain.image.service.avatar.ImageAvatarGenerationService;
 import com.createver.server.domain.image.service.avatar.ImageAvatarSseService;
 import com.createver.server.global.error.response.Response;
 import com.createver.server.global.util.aws.service.S3DownloadService;
@@ -24,7 +24,7 @@ import java.io.IOException;
 @RequestMapping("/api/v1/image/avatar")
 public class ImageAvatarController {
 
-    private final ImageAvatarService imageAvatarService;
+    private final ImageAvatarGenerationService imageAvatarService;
     private final ImageAvatarProcessingService imageAvatarProcessingService;
     private final ImageAvatarSseService imageAvatarSseService;
     private final S3DownloadService s3DownloadService;
