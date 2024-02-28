@@ -1,4 +1,4 @@
-package com.createver.server.domain.image.service.avatar;
+package com.createver.server.global.sse;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
-public class ImageAvatarSseService {
+public class SseService {
 
     private final Map<String, List<SseEmitter>> emitters = new ConcurrentHashMap<>();
 

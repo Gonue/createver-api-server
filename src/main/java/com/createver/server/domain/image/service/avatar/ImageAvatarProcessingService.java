@@ -3,6 +3,7 @@ package com.createver.server.domain.image.service.avatar;
 import com.createver.server.domain.image.dto.response.ImageAvatarWebhookResponse;
 import com.createver.server.domain.image.entity.ImageAvatar;
 import com.createver.server.domain.image.repository.avatar.ImageAvatarRepository;
+import com.createver.server.global.sse.SseService;
 import com.createver.server.global.util.aws.CloudFrontUrlUtils;
 import com.createver.server.global.util.aws.service.S3UploadService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class ImageAvatarProcessingService {
 
     private final ImageAvatarRepository imageAvatarRepository;
     private final S3UploadService s3UploadService;
-    private final ImageAvatarSseService imageAvatarSseService;
+    private final SseService sseService;
 
     public void processWebhookResponse(ImageAvatarWebhookResponse imageAvatarWebhookResponse) {
         String predictionId = imageAvatarWebhookResponse.getId();
@@ -37,7 +38,7 @@ public class ImageAvatarProcessingService {
     }
 
     private void sendSseEvent(String predictionId, String imageUrl) {
-        List<SseEmitter> emitters = imageAvatarSseService.getEmitters(predictionId);
+        List<SseEmitter> emitters = sseService.getEmitters(predictionId);
         for (SseEmitter emitter : emitters) {
             try {
                 emitter.send(SseEmitter.event().name("imageProcessed").data(imageUrl));
