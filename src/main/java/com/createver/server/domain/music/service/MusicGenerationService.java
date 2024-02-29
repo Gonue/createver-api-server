@@ -1,49 +1,51 @@
 package com.createver.server.domain.music.service;
 
-import com.createver.server.domain.music.dto.request.MusicGenerationInput;
+import com.createver.server.domain.member.entity.Member;
+import com.createver.server.domain.member.repository.MemberRepository;
 import com.createver.server.domain.music.dto.request.MusicGenerationRequest;
 import com.createver.server.domain.music.dto.request.MusicPromptRequest;
-import com.createver.server.domain.music.dto.response.MusicGenerationResponse;
-import com.createver.server.global.util.aws.service.S3UploadService;
-import com.createver.server.global.util.translate.LanguageDiscriminationUtils;
-import com.createver.server.global.util.translate.Translate;
+import com.createver.server.global.client.SageMakerApiClient;
+import com.createver.server.global.config.SageMakerConfig;
+import com.createver.server.global.error.exception.BusinessLogicException;
+import com.createver.server.global.error.exception.ExceptionCode;
+import com.createver.server.global.util.translate.service.TranslateService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StreamUtils;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
-
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MusicGenerationService {
 
-    private final RestTemplate restTemplate;
-    private final S3UploadService s3UploadService;
-    private final Translate translate;
+    private final MemberRepository memberRepository;
+    private final TranslateService translateService;
+    private final SageMakerApiClient sageMakerApiClient;
+    private final MusicService musicService;
 
-    @Value(("${sagemaker.api-key}"))
-    private String sageMakerKey;
-    @Value(("${sagemaker.end-point}"))
-    private String sageMakerEndPoint;
+    public String generateMusic(MusicPromptRequest musicPromptRequest, String email) {
+        try{
+            String translatedPrompt = translateService.translateIfKorean(musicPromptRequest.getPrompt());
+            MusicGenerationRequest musicGenerationRequest = buildMusicGenerationRequest(translatedPrompt);
 
+            String predictionId = sageMakerApiClient.callSageMakerApi(musicGenerationRequest);
 
-    public String generateAndUploadMusic(MusicPromptRequest musicPromptRequest) throws InterruptedException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Token " + sageMakerKey);
+            Member member = findMemberByEmail(email);
+            musicService.saveMusicDetails(musicPromptRequest.getPrompt(), predictionId, member);
 
-        String translatedPrompt = musicPromptRequest.getPrompt();
+            return predictionId;
 
-        if (LanguageDiscriminationUtils.isKorean(musicPromptRequest.getPrompt())) {
-            translatedPrompt = translate.translate(musicPromptRequest.getPrompt(), "ko", "en");
+        } catch (BusinessLogicException e) {
+            log.error("Business logic error during avatar generation for email {}: {}", email, e.getMessage(), e);
+            throw new BusinessLogicException(ExceptionCode.SAGEMAKER_NO_RESPONSE);
         }
+    }
 
+    private MusicGenerationRequest buildMusicGenerationRequest(String translatedPrompt){
 
-        MusicGenerationInput musicGenerationInput = MusicGenerationInput.builder()
+        MusicGenerationRequest.Input input = MusicGenerationRequest.Input.builder()
                 .topK(250)
                 .topP(0)
                 .prompt(translatedPrompt)
@@ -58,51 +60,15 @@ public class MusicGenerationService {
                 .classifierFreeGuidance(3)
                 .build();
 
-        MusicGenerationRequest musicGenerationRequest = MusicGenerationRequest.builder()
-                .version("7be0f12c54a8d033a0fbd14418c9af98962da9a86f5ff7811f9b3423a1f0b7d7")
-                .input(musicGenerationInput)
+        return MusicGenerationRequest.builder()
+                .version(SageMakerConfig.VERSION_2)
+                .input(input)
+                .webhook(SageMakerConfig.WEBHOOK_END_POINT_MUSIC)
+                .webhookEventsFilter(List.of(SageMakerConfig.WEBHOOK_EVENT_COMPLETED))
                 .build();
+    }
 
-        HttpEntity<MusicGenerationRequest> entity = new HttpEntity<>(musicGenerationRequest, headers);
-        Map<String, Object> response = restTemplate.postForObject(sageMakerEndPoint, entity, Map.class);
-
-        if (response == null || !response.containsKey("id")) {
-            throw new RuntimeException("Failed to get response from Replicate API");
-        }
-
-        String predictionId = (String) response.get("id");
-        String getResultUrl = sageMakerEndPoint + "/" + predictionId;
-
-        while (true) {
-            HttpHeaders getResultHeaders = new HttpHeaders();
-            getResultHeaders.set("Authorization", "Token " + sageMakerKey);
-            HttpEntity<String> getResultEntity = new HttpEntity<>(getResultHeaders);
-
-            ResponseEntity<MusicGenerationResponse> resultResponseEntity = restTemplate.exchange(
-                    getResultUrl,
-                    HttpMethod.GET,
-                    getResultEntity,
-                    MusicGenerationResponse.class);
-
-            MusicGenerationResponse musicGenerationResponse = resultResponseEntity.getBody();
-
-            if (musicGenerationResponse != null) {
-                String status = musicGenerationResponse.getStatus();
-
-                if ("succeeded".equals(status)) {
-                    String musicUrl = musicGenerationResponse.getOutput();
-                    byte[] musicData = restTemplate.execute(
-                            musicUrl,
-                            HttpMethod.GET,
-                            null,
-                            clientHttpResponse -> StreamUtils.copyToByteArray(clientHttpResponse.getBody())
-                    );
-                    return s3UploadService.uploadWavAndReturnCloudFrontUrl(musicData);
-                } else if ("failed".equals(status) || "canceled".equals(status)) {
-                    throw new RuntimeException("Music generation failed or was canceled");
-                }
-                Thread.sleep(5000); // TODO : 효율개선이 필요해보임
-            }
-        }
+    private Member findMemberByEmail(String email) {
+        return email != null ? memberRepository.findByEmail(email).orElse(null) : null;
     }
 }

@@ -70,7 +70,7 @@ public class AlbumService {
 
     private Album findAlbum(Long albumId){
         return albumRepository.findById(albumId).orElseThrow(() ->
-                new BusinessLogicException(ExceptionCode.ALBUM_NOT_FOUND, String.format("$s 을 찾을 수 없음", albumId)));
+                new BusinessLogicException(ExceptionCode.ALBUM_NOT_FOUND, String.format("%s 을 찾을 수 없음", albumId)));
     }
 
     private void checkAlbumMember(Album album, Member member, String email, Long albumId) {
