@@ -6,8 +6,9 @@ import com.createver.server.domain.member.dto.MemberDto;
 import com.createver.server.domain.member.dto.request.MemberDeleteRequest;
 import com.createver.server.domain.member.dto.request.MemberJoinRequest;
 import com.createver.server.domain.member.dto.request.MemberUpdateRequest;
-import com.createver.server.domain.member.entity.Member;
 import com.createver.server.domain.member.service.MemberService;
+import com.createver.server.domain.music.dto.AlbumDto;
+import com.createver.server.domain.music.dto.MusicDto;
 import com.createver.server.global.config.SecurityConfig;
 import com.createver.server.global.user.WithMockCustomMember;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,8 +39,6 @@ import static com.createver.server.global.util.ApiDocumentUtils.getDocumentRespo
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -387,6 +386,113 @@ class MemberControllerTest {
                                 subsectionWithPath("result.sort").description("정렬 정보"),
                                 fieldWithPath("result.numberOfElements").description("현재 페이지의 게시글 수"),
                                 fieldWithPath("result.empty").description("결과가 비어 있는지 여부")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("회원의 음악 목록 조회 테스트")
+    @WithMockCustomMember
+    void getMusicTest() throws Exception {
+        // given
+        List<MusicDto> musicDtos = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            MusicDto musicDto = new MusicDto(
+                    i + 1L,
+                    "Test Prompt " + i,
+                    "Test Url" + i,
+                    "Status",
+                    "Test Id",
+                    new MemberDto(i + 1L, "test" + i + "@example.com", "김테스트", "password", "imageUrl", LocalDateTime.now(), LocalDateTime.now(), null, false), // member
+                    LocalDateTime.now(),
+                    LocalDateTime.now()
+            );
+            musicDtos.add(musicDto);
+        }
+        Page<MusicDto> page = new PageImpl<>(musicDtos, PageRequest.of(0, 20), 1);
+        when(memberService.getMyMusic(anyString(), any(Pageable.class))).thenReturn(page);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/api/v1/member/my-music")
+                        .param("page", "0")
+                        .param("size", "20")
+                        .param("sort", "createdAt,desc")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer {JWT_ACCESS_TOKEN}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf().asHeader())
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andDo(document(
+                        "get-my-album",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        queryParameters(
+                                parameterWithName("page").description("페이지 번호"),
+                                parameterWithName("size").description("페이지 크기"),
+                                parameterWithName("sort").description("정렬 기준 (예: [createdAt, desc]")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("응답 상태 코드"),
+                                fieldWithPath("message").description("응답 메시지"),
+                                subsectionWithPath("result").description("페이징 처리된 회원의 음악 목록과 관련된 결과 데이터"),
+                                subsectionWithPath("result.content[]").description("음악 목록")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("회원의 음악 목록 조회 테스트")
+    @WithMockCustomMember
+    void getAlbumTest() throws Exception {
+        // given
+        List<AlbumDto> albumDtos = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            AlbumDto albumDto = new AlbumDto(
+                    i + 1L,
+                    "Test Title " + i,
+                    "Test Image Url" + i,
+                    "Test Music Url",
+                    new MemberDto(i + 1L, "test" + i + "@example.com", "김테스트", "password", "imageUrl", LocalDateTime.now(), LocalDateTime.now(), null, false), // member
+                    LocalDateTime.now(),
+                    LocalDateTime.now()
+            );
+            albumDtos.add(albumDto);
+        }
+        Page<AlbumDto> page = new PageImpl<>(albumDtos, PageRequest.of(0, 20), 1);
+        when(memberService.getMyAlbum(anyString(), any(Pageable.class))).thenReturn(page);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/api/v1/member/my-album")
+                        .param("page", "0")
+                        .param("size", "20")
+                        .param("sort", "createdAt,desc")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer {JWT_ACCESS_TOKEN}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf().asHeader())
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andDo(document(
+                        "get-my-album",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        queryParameters(
+                                parameterWithName("page").description("페이지 번호"),
+                                parameterWithName("size").description("페이지 크기"),
+                                parameterWithName("sort").description("정렬 기준 (예: [createdAt, desc]")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("응답 상태 코드"),
+                                fieldWithPath("message").description("응답 메시지"),
+                                subsectionWithPath("result").description("페이징 처리된 회원의 앨범 목록과 관련된 결과 데이터"),
+                                subsectionWithPath("result.content[]").description("앨범 목록")
                         )
                 ));
     }

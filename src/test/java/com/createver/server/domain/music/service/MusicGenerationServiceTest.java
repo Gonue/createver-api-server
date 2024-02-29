@@ -1,24 +1,21 @@
 package com.createver.server.domain.music.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import com.createver.server.domain.member.entity.Member;
+import com.createver.server.domain.member.repository.MemberRepository;
+import com.createver.server.domain.music.dto.request.MusicGenerationRequest;
 import com.createver.server.domain.music.dto.request.MusicPromptRequest;
-import com.createver.server.domain.music.dto.response.MusicGenerationResponse;
-import com.createver.server.global.util.aws.service.S3UploadService;
-import com.createver.server.global.util.translate.Translate;
-import org.junit.jupiter.api.BeforeEach;
+import com.createver.server.global.client.SageMakerApiClient;
+import com.createver.server.global.error.exception.BusinessLogicException;
+import com.createver.server.global.error.exception.ExceptionCode;
+import com.createver.server.global.util.translate.service.TranslateService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,68 +29,57 @@ class MusicGenerationServiceTest {
     private MusicGenerationService musicGenerationService;
 
     @Mock
-    private RestTemplate restTemplate;
+    private MemberRepository memberRepository;
 
     @Mock
-    private S3UploadService s3UploadService;
+    private TranslateService translateService;
 
     @Mock
-    private Translate translate;
+    private SageMakerApiClient sageMakerApiClient;
 
-    private String sageMakerEndPoint;
+    @Mock
+    private MusicService musicService;
 
-
-    @DisplayName("음악 생성 및 S3 업로드 성공 테스트")
+    @DisplayName("음악 생성 성공 테스트")
     @Test
-    void generateAndUploadMusic_Success() throws InterruptedException {
+    void generateMusic_Success() {
         // Given
-        MusicPromptRequest request = new MusicPromptRequest("Test Prompt");
-        Map<String, Object> apiResponse = new HashMap<>();
-        apiResponse.put("id", "predictionId");
 
-        MusicGenerationResponse mockResponse = new MusicGenerationResponse();
-        mockResponse.setStatus("succeeded");
-        mockResponse.setOutput("mockUrl");
+        String prompt = "테스트 프롬프트";
+        String email = "test@example.com";
+        String expectedPredictionId = "predictionId";
 
-        when(restTemplate.postForObject(eq(sageMakerEndPoint), any(HttpEntity.class), eq(Map.class))).thenReturn(apiResponse);
-        when(restTemplate.exchange(anyString(), any(), any(), eq(MusicGenerationResponse.class)))
-                .thenReturn(ResponseEntity.ok(mockResponse));
-        when(restTemplate.execute(anyString(), any(), any(), any())).thenReturn(new byte[]{});
-        when(s3UploadService.uploadWavAndReturnCloudFrontUrl(any())).thenReturn("cloudFrontUrl");
+        Member member = Member.builder()
+                .email(email)
+                .build();
 
-        // When
-        String resultUrl = musicGenerationService.generateAndUploadMusic(request);
+        MusicPromptRequest musicPromptRequest = MusicPromptRequest.builder()
+                .prompt(prompt)
+                .build();
+
+        when(memberRepository.findByEmail(eq(email))).thenReturn(Optional.of(member));
+        when(translateService.translateIfKorean(eq(prompt))).thenReturn("Translated prompt");
+        when(sageMakerApiClient.callSageMakerApi(any(MusicGenerationRequest.class))).thenReturn(expectedPredictionId);
+
+        String predictionId = musicGenerationService.generateMusic(musicPromptRequest, email);
 
         // Then
-        assertNotNull(resultUrl);
-        assertEquals("cloudFrontUrl", resultUrl);
+        assertNotNull(predictionId);
+        assertEquals(expectedPredictionId, predictionId);
     }
 
-    @DisplayName("API 응답이 null이거나 id가 없는 경우 예외 발생 테스트")
     @Test
-    void generateAndUploadMusic_ApiResponseNull_ThrowsException() {
-        MusicPromptRequest request = new MusicPromptRequest("Test Prompt");
+    @DisplayName("아바타 이미지 생성 실패 - SageMaker API 호출 실패")
+    void generateMusic_FailsDueToSageMakerApiException() {
+        MusicPromptRequest musicPromptRequest = MusicPromptRequest.builder()
+                .prompt("테스트 프롬프트")
+                .build();
+        String email = "user@example.com";
 
-        when(restTemplate.postForObject(eq(sageMakerEndPoint), any(HttpEntity.class), eq(Map.class))).thenReturn(null);
+        when(translateService.translateIfKorean(anyString())).thenReturn("Translated prompt");
+        when(sageMakerApiClient.callSageMakerApi(any(MusicGenerationRequest.class)))
+            .thenThrow(new BusinessLogicException(ExceptionCode.SAGEMAKER_NO_RESPONSE));
 
-        assertThrows(RuntimeException.class, () -> musicGenerationService.generateAndUploadMusic(request));
-    }
-
-
-    @DisplayName("API 상태가 failed 또는 canceled일 때 예외 발생 테스트")
-    @Test
-    void generateAndUploadMusic_FailedOrCanceled_ThrowsException() {
-        MusicPromptRequest request = new MusicPromptRequest("Test Prompt");
-        Map<String, Object> apiResponse = new HashMap<>();
-        apiResponse.put("id", "predictionId");
-
-        MusicGenerationResponse failedResponse = new MusicGenerationResponse();
-        failedResponse.setStatus("failed");
-
-        when(restTemplate.postForObject(eq(sageMakerEndPoint), any(HttpEntity.class), eq(Map.class))).thenReturn(apiResponse);
-        when(restTemplate.exchange(anyString(), any(), any(), eq(MusicGenerationResponse.class)))
-                .thenReturn(ResponseEntity.ok(failedResponse));
-
-        assertThrows(RuntimeException.class, () -> musicGenerationService.generateAndUploadMusic(request));
+        assertThrows(BusinessLogicException.class, () -> musicGenerationService.generateMusic(musicPromptRequest, email));
     }
 }
