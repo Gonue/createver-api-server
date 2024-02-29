@@ -4,7 +4,7 @@ import com.createver.server.domain.image.dto.request.AvatarPromptRequest;
 import com.createver.server.domain.image.dto.response.ImageAvatarWebhookResponse;
 import com.createver.server.domain.image.service.avatar.ImageAvatarProcessingService;
 import com.createver.server.domain.image.service.avatar.ImageAvatarGenerationService;
-import com.createver.server.domain.image.service.avatar.ImageAvatarSseService;
+import com.createver.server.global.sse.SseService;
 import com.createver.server.global.util.aws.service.S3DownloadService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +47,7 @@ class ImageAvatarControllerTest {
     private Authentication authentication;
 
     @Mock
-    private ImageAvatarSseService imageAvatarSseService;
+    private SseService sseService;
 
     @Mock
     private S3DownloadService s3DownloadService;
@@ -91,14 +91,6 @@ class ImageAvatarControllerTest {
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(webhookResponse)))
                 .andExpect(status().isOk());
-    }
-    @Test
-    @DisplayName("SSE 스트림 테스트")
-    void streamTest() throws Exception {
-        String id = "testId";
-        mockMvc.perform(get("/api/v1/image/avatar/stream/{id}", id))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_EVENT_STREAM_VALUE));
     }
 
     @Test

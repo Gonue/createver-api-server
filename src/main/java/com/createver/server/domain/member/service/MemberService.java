@@ -9,6 +9,12 @@ import com.createver.server.domain.image.repository.gallery.GalleryRepository;
 import com.createver.server.domain.member.dto.MemberDto;
 import com.createver.server.domain.member.entity.Member;
 import com.createver.server.domain.member.repository.MemberRepository;
+import com.createver.server.domain.music.dto.AlbumDto;
+import com.createver.server.domain.music.dto.MusicDto;
+import com.createver.server.domain.music.entity.Album;
+import com.createver.server.domain.music.entity.Music;
+import com.createver.server.domain.music.repository.album.AlbumRepository;
+import com.createver.server.domain.music.repository.music.MusicRepository;
 import com.createver.server.global.auth.utils.CustomAuthorityUtils;
 import com.createver.server.global.error.exception.BusinessLogicException;
 import com.createver.server.global.error.exception.ExceptionCode;
@@ -28,11 +34,14 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthorityUtils customAuthorityUtils;
     private final GalleryRepository galleryRepository;
     private final ImageAvatarRepository imageAvatarRepository;
+    private final MusicRepository musicRepository;
+    private final AlbumRepository albumRepository;
 
     public static final String DEFAULT_IMAGE = "https://d2xbqs28wc0ywi.cloudfront.net/images/65fc23b3-e151-47cc-9c9b-1af57381e6fa_ham1.png";
 
@@ -106,9 +115,21 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ImageAvatarDto> getMyAvatar(String email, Pageable pageable){
+    public Page<ImageAvatarDto> getMyAvatar(String email, Pageable pageable) {
         Page<ImageAvatar> imageAvatarPage = imageAvatarRepository.findByMemberEmail(email, pageable);
         return imageAvatarPage.map(ImageAvatarDto::from);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<MusicDto> getMyMusic(String email, Pageable pageable) {
+        Page<Music> musicPage = musicRepository.findByMemberEmail(email, pageable);
+        return musicPage.map(MusicDto::from);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<AlbumDto> getMyAlbum(String email, Pageable pageable){
+        Page<Album> albumPage = albumRepository.findByMemberEmail(email, pageable);
+        return albumPage.map(AlbumDto::from);
     }
 
     private Member memberOrException(String email) {

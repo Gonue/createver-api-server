@@ -1,4 +1,4 @@
-package com.createver.server.domain.image.service.avatar;
+package com.createver.server.global.sse;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,12 +13,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Image Avatar Sse Servie 테스트")
 @ExtendWith(MockitoExtension.class)
 
-class ImageAvatarSseServiceTest {
+class SseServiceTest {
 
     @DisplayName("새 SSE 연결 추가 테스트")
     @Test
     void addEmitter_AddsNewEmitterSuccessfully() {
-        ImageAvatarSseService service = new ImageAvatarSseService();
+        SseService service = new SseService();
         SseEmitter emitter = new SseEmitter();
         String predictionId = "testId";
 
@@ -31,7 +31,7 @@ class ImageAvatarSseServiceTest {
     @DisplayName("SSE 연결 제거 테스트")
     @Test
     void removeEmitter_RemovesEmitterSuccessfully() {
-        ImageAvatarSseService service = new ImageAvatarSseService();
+        SseService service = new SseService();
         SseEmitter emitter1 = new SseEmitter();
         SseEmitter emitter2 = new SseEmitter();
         String predictionId = "testId";
@@ -48,7 +48,7 @@ class ImageAvatarSseServiceTest {
     @DisplayName("ID에 해당하는 SSE 연결 목록 가져오기 테스트")
     @Test
     void getEmitters_ReturnsCorrectEmittersForId() {
-        ImageAvatarSseService service = new ImageAvatarSseService();
+        SseService service = new SseService();
         SseEmitter emitter1 = new SseEmitter();
         SseEmitter emitter2 = new SseEmitter();
         String predictionId1 = "testId1";

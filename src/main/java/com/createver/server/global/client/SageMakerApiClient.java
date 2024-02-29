@@ -1,6 +1,5 @@
 package com.createver.server.global.client;
 
-import com.createver.server.domain.image.dto.request.ImageAvatarRequest;
 import com.createver.server.global.config.SageMakerConfig;
 import com.createver.server.global.error.exception.BusinessLogicException;
 import com.createver.server.global.error.exception.ExceptionCode;
@@ -30,12 +29,12 @@ public class SageMakerApiClient {
     @Value("${sagemaker.end-point}")
     private String sageMakerEndPoint;
 
-    public String callSageMakerApi(ImageAvatarRequest request) {
+    public String callSageMakerApi(Object request) {
         try {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setContentType(MediaType.parseMediaType(SageMakerConfig.MEDIA_TYPE));
             httpHeaders.add(SageMakerConfig.AUTHORIZATION, SageMakerConfig.TOKEN + sageMakerKey);
-            HttpEntity<ImageAvatarRequest> entity = new HttpEntity<>(request, httpHeaders);
+            HttpEntity<Object> entity = new HttpEntity<>(request, httpHeaders);
             ResponseEntity<Map> response = restTemplate.postForEntity(sageMakerEndPoint, entity, Map.class);
 
             Map body = response.getBody();

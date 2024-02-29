@@ -3,6 +3,7 @@ package com.createver.server.domain.image.service.avatar;
 import com.createver.server.domain.image.dto.response.ImageAvatarWebhookResponse;
 import com.createver.server.domain.image.entity.ImageAvatar;
 import com.createver.server.domain.image.repository.avatar.ImageAvatarRepository;
+import com.createver.server.global.sse.SseService;
 import com.createver.server.global.util.aws.service.S3UploadService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ class ImageAvatarProcessingServiceTest {
     @InjectMocks
     private ImageAvatarProcessingService imageAvatarProcessingService;
     @Mock
-    private ImageAvatarSseService imageAvatarSseService;
+    private SseService sseService;
 
     @Mock
     private ImageAvatarRepository imageAvatarRepository;
@@ -113,7 +114,7 @@ class ImageAvatarProcessingServiceTest {
 
         when(imageAvatarRepository.findByPredictionId(predictionId)).thenReturn(imageAvatar);
         when(s3UploadService.uploadFromUrl(imageUrl, "image/png")).thenReturn("s3ImageUrl");
-        when(imageAvatarSseService.getEmitters(predictionId)).thenReturn(Arrays.asList(emitter));
+        when(sseService.getEmitters(predictionId)).thenReturn(Arrays.asList(emitter));
 
         ImageAvatarWebhookResponse response = new ImageAvatarWebhookResponse();
         response.setId(predictionId);
