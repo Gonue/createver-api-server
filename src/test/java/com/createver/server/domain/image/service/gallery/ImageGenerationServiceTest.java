@@ -1,23 +1,20 @@
 package com.createver.server.domain.image.service.gallery;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import com.createver.server.domain.image.dto.request.ImageGenerationRequest;
 import com.createver.server.domain.image.dto.request.PromptRequest;
 import com.createver.server.domain.image.dto.response.CustomGenerationResponse;
 import com.createver.server.domain.image.dto.response.ImageGenerationResponse;
 import com.createver.server.domain.image.entity.Gallery;
 import com.createver.server.domain.image.entity.ImageTag;
-import com.createver.server.global.client.OpenAiApiClient;
 import com.createver.server.domain.image.service.tag.ImageTagService;
 import com.createver.server.domain.member.entity.Member;
 import com.createver.server.domain.member.repository.MemberRepository;
+import com.createver.server.global.client.OpenAiApiClient;
 import com.createver.server.global.error.exception.BusinessLogicException;
 import com.createver.server.global.error.exception.ExceptionCode;
 import com.createver.server.global.util.aws.service.S3UploadService;
+import com.createver.server.global.util.aws.service.TranslateService;
 import com.createver.server.global.util.ratelimit.RateLimiterManager;
-import com.createver.server.global.util.translate.service.TranslateService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +24,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 
 @DisplayName("Image Generation Service 테스트")

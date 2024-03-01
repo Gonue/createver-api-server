@@ -7,7 +7,7 @@ import com.createver.server.domain.music.dto.request.MusicPromptRequest;
 import com.createver.server.global.client.SageMakerApiClient;
 import com.createver.server.global.error.exception.BusinessLogicException;
 import com.createver.server.global.error.exception.ExceptionCode;
-import com.createver.server.global.util.translate.service.TranslateService;
+import com.createver.server.global.util.aws.service.TranslateService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
