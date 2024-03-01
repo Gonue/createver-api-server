@@ -5,7 +5,6 @@ import com.createver.server.domain.image.dto.request.ImageGenerationRequest;
 import com.createver.server.domain.image.dto.request.PromptRequest;
 import com.createver.server.domain.image.dto.response.CustomGenerationResponse;
 import com.createver.server.domain.image.dto.response.ImageGenerationResponse;
-
 import com.createver.server.domain.image.entity.Gallery;
 import com.createver.server.domain.image.entity.ImageTag;
 import com.createver.server.domain.image.service.tag.ImageTagService;
@@ -16,8 +15,8 @@ import com.createver.server.global.config.OpenAiConfig;
 import com.createver.server.global.error.exception.BusinessLogicException;
 import com.createver.server.global.error.exception.ExceptionCode;
 import com.createver.server.global.util.aws.service.S3UploadService;
+import com.createver.server.global.util.aws.service.TranslateService;
 import com.createver.server.global.util.ratelimit.RateLimiterManager;
-import com.createver.server.global.util.translate.service.TranslateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

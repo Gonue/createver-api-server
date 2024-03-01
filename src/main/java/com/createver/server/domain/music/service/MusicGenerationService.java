@@ -8,7 +8,7 @@ import com.createver.server.global.client.SageMakerApiClient;
 import com.createver.server.global.config.SageMakerConfig;
 import com.createver.server.global.error.exception.BusinessLogicException;
 import com.createver.server.global.error.exception.ExceptionCode;
-import com.createver.server.global.util.translate.service.TranslateService;
+import com.createver.server.global.util.aws.service.TranslateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
